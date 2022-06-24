@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\HomeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,13 +17,13 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/', [Controller::class, 'index'])->name('main');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/login', [Controller::class, 'index'])->name('login');
-Route::post('/login', [Controller::class, 'authorize']);
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::post('/login', [LoginController::class, 'authorize']);
 
-Route::get('/registration', [Controller::class, 'index'])->name('registration');
-Route::post('/registration', [Controller::class, 'register']);
+Route::get('/signup', [RegisterController::class, 'index'])->name('signup');
+Route::post('/signup', [RegisterController::class, 'register']);
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/profile', [Controller::class, 'index'])->name('profile');
@@ -52,4 +55,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::get('/catalog', [Controller::class, 'index'])->name('catalog');
+
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
