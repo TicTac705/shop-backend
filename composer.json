@@ -11,7 +11,7 @@
         "laravel/framework": "^8.75",
         "laravel/tinker": "^2.5",
         "jenssegers/mongodb": "3.8",
-        "laravel/passport": "*"
+        "laravel/passport": "10.4"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
