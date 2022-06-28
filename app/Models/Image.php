@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Models\Catalog;
+namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\Model;
 
 class Image extends Model
 {
-    use HasFactory;
+    protected $collection = 'images';
 
     protected $fillable = [
         'user_id',

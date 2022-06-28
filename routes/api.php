@@ -55,7 +55,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::delete('/delete/{product}', [CatalogBasketController::class, 'deleteProduct'])->name('delete');
     });
 
-    Route::get('/', [CatalogController::class, 'index'])->name('catalog');
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
+    Route::get('/', [CatalogController::class, 'index'])->name('home');

@@ -2,14 +2,16 @@
 
 namespace App\Models\Auth;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\Model;
-use phpDocumentor\Reflection\Types\This;
 
+/**
+ * @property string $id
+ * @property string $name
+ * @property string $slug
+ *
+ */
 class UserRole extends Model
 {
-    use HasFactory;
-
     protected $collection = 'user_roles';
 
     protected $fillable = [
@@ -48,6 +50,6 @@ class UserRole extends Model
 
     public function getIdBySlug(string $slug): string
     {
-        return UserRole::where('slug', $slug)->pluck('_id')[0];
+        return UserRole::where('slug', $slug)->first()->id;
     }
 }

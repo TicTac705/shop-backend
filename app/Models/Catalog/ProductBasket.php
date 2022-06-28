@@ -2,14 +2,11 @@
 
 namespace App\Models\Catalog;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\Model;
 
 class ProductBasket extends Model
 {
-    use HasFactory;
-
-    protected $collection = 'basket_product';
+    protected $collection = 'catalog_basket_products';
 
     protected $fillable = [
         'basket_id',

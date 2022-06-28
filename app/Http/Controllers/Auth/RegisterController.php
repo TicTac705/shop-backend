@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\EntityServices\Auth\RegisterServiceController;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RegisterRequest;
-use App\Models\Auth\User;
-use App\Models\Auth\UserRole;
+use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Http\RedirectResponse;
 
 class RegisterController extends Controller
@@ -16,17 +15,6 @@ class RegisterController extends Controller
 
     public function register(RegisterRequest $request): RedirectResponse
     {
-        $request->validated();
-
-        $roleId = UserRole::getIdBySlug('user');
-
-        User::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'password' => bcrypt($request['password']),
-            'role_id' => $roleId
-        ]);
-
-        return redirect()->route('catalog');
+        return RegisterServiceController::register($request);
     }
 }
