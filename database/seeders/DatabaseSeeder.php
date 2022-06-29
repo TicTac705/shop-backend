@@ -63,7 +63,7 @@ class DatabaseSeeder extends Seeder
             'store' => 50,
             'price' => 19.99,
             'unit_measure' => $unitKgId,
-            'categories' => $categoryFruitId
+            'categories' => [$categoryFruitId]
         ]);
 
         Product::create([
@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
             'store' => 90,
             'price' => 11.02,
             'unit_measure' => $unitKgId,
-            'categories' => $categoryFruitId
+            'categories' => [$categoryFruitId]
         ]);
 
         Product::create([
@@ -81,7 +81,7 @@ class DatabaseSeeder extends Seeder
             'store' => 90,
             'price' => 11.02,
             'unit_measure' => $unitKgId,
-            'categories' => $categoryVegetablesId
+            'categories' => [$categoryVegetablesId]
         ]);
     }
 }

@@ -4,43 +4,53 @@ namespace App\EntityServices\Auth;
 
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Http\Requests\Auth\AuthorizeRequest;
-use Carbon\Carbon;
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\Client;
+use Psr\Http\Message\StreamInterface;
 
 class LoginServiceController
 {
-    public function signIn(AuthorizeRequest $request): JsonResponse
+    /**
+     * @param AuthorizeRequest $request
+     * @return JsonResponse|StreamInterface
+     * @throws GuzzleException
+     */
+    public function signIn(AuthorizeRequest $request)
     {
-        $request->validated();
+        $http = new \GuzzleHttp\Client;
 
-        $loginData = $request->only('email', 'password');
+        $passwordGrantClient = Client::where('password_client', true)->first();
 
-        if (!Auth::attempt($loginData)) {
-            return response()->json(
-                [
-                    'message' => 'Incorrect data for authorization'
-                ],
-                HTTPResponseStatuses::UNAUTHORIZED);
+        try {
+            $response = $http->post(route('passport.token'), [
+                'form_params' => [
+                    'grant_type' => 'password',
+                    'client_id' => $passwordGrantClient->id,
+                    'client_secret' => $passwordGrantClient->secret,
+                    'username' => $request->email,
+                    'password' => $request->password,
+                    'scope' => ''
+                ]
+            ]);
+
+            return $response->getBody();
+        } catch (BadResponseException $e) {
+            if ($e->getCode() === HTTPResponseStatuses::BAD_REQUEST) {
+                return response()->json('Invalid Request', $e->getCode());
+            } else if ($e->getCode() === HTTPResponseStatuses::UNAUTHORIZED) {
+                return response()->json('Your credentials are incorrect', $e->getCode());
+            }
+
+            return response()->json('Something went wrong on the server', $e->getCode());
         }
-
-        $token = Auth::user()->createToken(config('app.name'));
-        $token->token->expires_at = Carbon::now()->addDay();
-        $token->token->save();
-
-        return response()->json([
-            'token' => $token->accessToken,
-            'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString()
-        ]);
     }
 
-    public function logout(Request $request): JsonResponse
+    public function logout(): JsonResponse
     {
-        $request->user()->token()->revoke();
+        auth()->user()->token()->revoke();
 
-        return response()->json([
-            'message' => 'You successfully logged out',
-        ]);
+        return response()->json(['message' => 'You successfully logged out']);
     }
 }

@@ -13,5 +13,6 @@ class HTTPResponseStatuses
     /**
      * Client (Клиентские)
      */
+    public const BAD_REQUEST = 400;
     public const UNAUTHORIZED = 401;
 }

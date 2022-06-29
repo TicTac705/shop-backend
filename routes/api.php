@@ -57,5 +57,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-});
+
     Route::get('/', [CatalogController::class, 'index'])->name('home');
+});
