@@ -2,54 +2,56 @@
 
 namespace App\EntityServices\Auth;
 
+use App\Dto\Auth\AuthorizeData;
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Http\Requests\Auth\AuthorizeRequest;
+use App\Services\Auth\LoginService;
 use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
-use Laravel\Passport\Client;
-use Psr\Http\Message\StreamInterface;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginServiceController
 {
     /**
      * @param AuthorizeRequest $request
-     * @return JsonResponse|StreamInterface
-     * @throws GuzzleException
+     * @return JsonResponse
      */
-    public function signIn(AuthorizeRequest $request)
+    public function signIn(AuthorizeRequest $request): JsonResponse
     {
-        $http = new \GuzzleHttp\Client;
-
-        $passwordGrantClient = Client::where('password_client', true)->first();
+        $authData = AuthorizeData::fromRequest($request);
 
         try {
-            $response = $http->post(route('passport.token'), [
-                'form_params' => [
-                    'grant_type' => 'password',
-                    'client_id' => $passwordGrantClient->id,
-                    'client_secret' => $passwordGrantClient->secret,
-                    'username' => $request->email,
-                    'password' => $request->password,
-                    'scope' => ''
-                ]
-            ]);
-
-            return $response->getBody();
+            return response()->json(LoginService::createToken($authData));
         } catch (BadResponseException $e) {
             if ($e->getCode() === HTTPResponseStatuses::BAD_REQUEST) {
-                return response()->json('Invalid Request', $e->getCode());
+                return response()->json(['message' => 'Invalid Request'], $e->getCode());
             } else if ($e->getCode() === HTTPResponseStatuses::UNAUTHORIZED) {
-                return response()->json('Your credentials are incorrect', $e->getCode());
+                return response()->json(['message' => 'Your credentials are incorrect'], $e->getCode());
             }
 
-            return response()->json('Something went wrong on the server', $e->getCode());
+            return response()->json(['message' => 'Something went wrong on the server'], $e->getCode());
+        }
+    }
+
+    public function refresh(Request $request): JsonResponse
+    {
+        try {
+            return response()->json(LoginService::refreshToken($request->get('refresh_token')));
+        } catch (BadResponseException $e) {
+            if ($e->getCode() === HTTPResponseStatuses::BAD_REQUEST) {
+                return response()->json(['message' => 'Invalid Request'], $e->getCode());
+            } else if ($e->getCode() === HTTPResponseStatuses::UNAUTHORIZED) {
+                return response()->json(['message' => 'Your credentials are incorrect'], $e->getCode());
+            }
+
+            return response()->json(['message' => 'Something went wrong on the server'], $e->getCode());
         }
     }
 
     public function logout(): JsonResponse
     {
-        auth()->user()->token()->revoke();
+        Auth::user()->token()->delete();
 
         return response()->json(['message' => 'You successfully logged out']);
     }

@@ -52,4 +52,9 @@ class UserRole extends Model
     {
         return UserRole::where('slug', $slug)->first()->id;
     }
+
+    public function getSlugById(string $id): string
+    {
+        return UserRole::where('_id', $id)->first()->slug;
+    }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\AuthorizeRequest;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Psr\Http\Message\StreamInterface;
 
 class LoginController extends Controller
@@ -17,12 +18,16 @@ class LoginController extends Controller
 
     /**
      * @param AuthorizeRequest $request
-     * @return JsonResponse|StreamInterface
-     * @throws GuzzleException
+     * @return JsonResponse
      */
     public function signIn(AuthorizeRequest $request)
     {
         return LoginServiceController::signin($request);
+    }
+
+    public function refresh(Request $request): JsonResponse
+    {
+        return LoginServiceController::refresh($request);
     }
 
     public function logout(): JsonResponse

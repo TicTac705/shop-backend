@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/sign-in', [LoginController::class, 'index'])->name('sign-in');
 Route::post('/sign-in', [LoginController::class, 'signIn']);
 
+Route::post('/token/refresh', [LoginController::class, 'refresh'])->name('refresh');
+
 Route::get('/signup', [RegisterController::class, 'index'])->name('signup');
 Route::post('/signup', [RegisterController::class, 'register']);
 
@@ -58,5 +60,5 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    Route::get('/', [CatalogController::class, 'index'])->name('home');
+    Route::get('/', [CatalogController::class, 'index'])->name('home')->middleware('role:admin');
 });
