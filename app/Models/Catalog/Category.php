@@ -2,9 +2,9 @@
 
 namespace App\Models\Catalog;
 
-use Jenssegers\Mongodb\Eloquent\Model;
+use App\Models\ModelBase;
 
-class Category extends Model
+class Category extends ModelBase
 {
     protected $collection = 'catalog_categories';
 

@@ -29,7 +29,10 @@ Route::get('/signup', [RegisterController::class, 'index'])->name('signup');
 Route::post('/signup', [RegisterController::class, 'register']);
 
 Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('/', [CatalogController::class, 'index'])->name('home');
+
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+
     Route::group([
         'name' => 'profile.',
         'prefix' => 'profile'
@@ -37,14 +40,16 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/order', [ProfileController::class, 'getOrders'])->name('order');
         Route::put('/order/{id}/recall', [ProfileController::class, 'recallOrder'])->name('order.recall');
 
-        Route::get('/catalog-management', [CatalogManagementController::class, 'index'])->name('catalogManagement');
-        Route::get('/catalog-management/add', [CatalogManagementController::class, 'formAddProduct'])->name('catalogManagement.addForm');
-        Route::post('/catalog-management/add', [CatalogManagementController::class, 'addProduct'])->name('catalogManagement.addProduct');
+        Route::group(['middleware' => 'role:admin'], function () {
+            Route::get('/catalog-management', [CatalogManagementController::class, 'index'])->name('catalogManagement');
+            Route::get('/catalog-management/add', [CatalogManagementController::class, 'formAddProduct'])->name('catalogManagement.addForm');
+            Route::post('/catalog-management/add', [CatalogManagementController::class, 'addProduct'])->name('catalogManagement.addProduct');
 
-        Route::get('/catalog-management/change/{product}', [CatalogManagementController::class, 'formChangeProduct'])->name('catalogManagement.changeForm');
-        Route::put('/catalog-management/change/{product}', [CatalogManagementController::class, 'changeProduct'])->name('catalogManagement.changeProduct');
+            Route::get('/catalog-management/change/{product}', [CatalogManagementController::class, 'formChangeProduct'])->name('catalogManagement.changeForm');
+            Route::put('/catalog-management/change/{product}', [CatalogManagementController::class, 'changeProduct'])->name('catalogManagement.changeProduct');
 
-        Route::delete('/catalog-management/delete/{product}', [CatalogManagementController::class, 'deleteProduct'])->name('catalogManagement.deleteProduct');
+            Route::delete('/catalog-management/delete/{product}', [CatalogManagementController::class, 'deleteProduct'])->name('catalogManagement.deleteProduct');
+        });
     });
 
     Route::get('/basket', [CatalogBasketController::class, 'index'])->name('basket');
@@ -57,8 +62,5 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::delete('/delete/{product}', [CatalogBasketController::class, 'deleteProduct'])->name('delete');
     });
 
-
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-    Route::get('/', [CatalogController::class, 'index'])->name('home')->middleware('role:admin');
 });

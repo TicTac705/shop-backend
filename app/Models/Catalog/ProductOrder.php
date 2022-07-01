@@ -2,9 +2,9 @@
 
 namespace App\Models\Catalog;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\ModelBase;
 
-class ProductOrder extends Model
+class ProductOrder extends ModelBase
 {
     protected $collection = 'catalog_order_products';
 

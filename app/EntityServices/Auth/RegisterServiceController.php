@@ -3,14 +3,21 @@
 namespace App\EntityServices\Auth;
 
 use App\Dto\Auth\RegisterData;
+use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\Auth\User;
 use App\Models\Auth\UserRole;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Response;
 
 class RegisterServiceController
 {
-    public function register(RegisterRequest $request): RedirectResponse
+    /**
+     * @param RegisterRequest $request
+     * @return Application|ResponseFactory|Response
+     */
+    public function register(RegisterRequest $request)
     {
         $registerData = RegisterData::fromRequest($request);
 
@@ -23,6 +30,6 @@ class RegisterServiceController
             $roleId
         )->save();
 
-        return redirect()->route('home');
+        return response('', HTTPResponseStatuses::OK);
     }
 }

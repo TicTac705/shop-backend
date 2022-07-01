@@ -2,15 +2,14 @@
 
 namespace App\Models\Auth;
 
-use Jenssegers\Mongodb\Eloquent\Model;
-
+use App\Models\ModelBase;
 /**
  * @property string $id
  * @property string $name
  * @property string $slug
  *
  */
-class UserRole extends Model
+class UserRole extends ModelBase
 {
     protected $collection = 'user_roles';
 

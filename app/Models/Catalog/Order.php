@@ -2,9 +2,9 @@
 
 namespace App\Models\Catalog;
 
-use Jenssegers\Mongodb\Eloquent\Model;
+use App\Models\ModelBase;
 
-class Order extends Model
+class Order extends ModelBase
 {
     protected $collection = 'catalog_orders';
 

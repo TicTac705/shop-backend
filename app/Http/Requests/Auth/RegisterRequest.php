@@ -11,8 +11,6 @@ class RegisterRequest extends FormRequest
 
     protected $stopOnFirstFailure = true;
 
-    protected $redirectRoute = 'sign-in';
-
     /**
      * Determine if the user is authorized to make this request.
      *
