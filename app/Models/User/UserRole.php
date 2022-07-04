@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Models\Auth;
+namespace App\Models\User;
 
 use App\Models\ModelBase;
+
 /**
  * @property string $id
  * @property string $name
@@ -11,7 +12,7 @@ use App\Models\ModelBase;
  */
 class UserRole extends ModelBase
 {
-    protected $collection = 'user_roles';
+    protected $table = 'user_role';
 
     protected $fillable = [
         'name',

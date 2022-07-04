@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models\Auth;
+namespace App\Models\User;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Jenssegers\Mongodb\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 
 /**

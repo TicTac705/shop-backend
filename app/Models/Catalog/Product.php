@@ -2,7 +2,7 @@
 
 namespace App\Models\Catalog;
 
-use Jenssegers\Mongodb\Eloquent\Model;
+use App\Models\ModelBase;
 
 /**
  * @property string $id
@@ -16,9 +16,9 @@ use Jenssegers\Mongodb\Eloquent\Model;
  * @property string $user_id
  *
  */
-class Product extends Model
+class Product extends ModelBase
 {
-    protected $collection = 'catalog_products';
+    protected $table = 'catalog_products';
 
     protected $fillable = [
         'name',

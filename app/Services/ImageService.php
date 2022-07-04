@@ -10,20 +10,6 @@ class ImageService
 {
     /**
      * @param string $path
-     * @param UploadedFile|UploadedFile[] $images
-     * @return array<string>|string
-     */
-    public function upload(string $path, $images)
-    {
-        if (is_array($images)) {
-            return self::saveMany($path, $images);
-        }
-
-        return self::save($path, $images);
-    }
-
-    /**
-     * @param string $path
      * @param UploadedFile[] $images
      * @return array<string>
      */

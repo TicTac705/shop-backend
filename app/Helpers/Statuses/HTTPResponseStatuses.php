@@ -8,6 +8,8 @@ class HTTPResponseStatuses
      * Successful (Успешные)
      */
     public const OK = 200;
+    public const CREATED = 201;
+    public const ACCEPTED = 202;
 
 
     /**

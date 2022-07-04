@@ -16,7 +16,7 @@ class CatalogManagementController extends Controller
 
     }
 
-    public function formAddProduct()
+    public function create()
     {
 
     }
@@ -25,8 +25,8 @@ class CatalogManagementController extends Controller
      * @param AdditionProductRequest $request
      * @return Application|ResponseFactory|Response
      */
-    public function addProduct(AdditionProductRequest $request)
+    public function store(AdditionProductRequest $request)
     {
-        return CatalogManagementServiceController::addProduct($request);
+        return CatalogManagementServiceController::store($request);
     }
 }

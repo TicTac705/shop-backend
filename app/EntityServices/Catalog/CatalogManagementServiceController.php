@@ -17,18 +17,14 @@ class CatalogManagementServiceController
      * @param AdditionProductRequest $request
      * @return Application|ResponseFactory|Response
      */
-    public function addProduct(AdditionProductRequest $request)
+    public function store(AdditionProductRequest $request)
     {
         $userId = Auth::id();
 
         $uploadedImages = null;
 
         if ($request->hasFile('pictures')) {
-            $uploadedImages = ImageService::upload('catalog_img', $request->file('pictures'));
-        }
-
-        if ($uploadedImages !== null && !is_array($uploadedImages)){
-            $uploadedImages = [$uploadedImages];
+            $uploadedImages = ImageService::saveMany('catalog_img', $request->file('pictures'));
         }
 
         $productFormData = ProductAddFormData::fromRequest($request, $uploadedImages);
@@ -44,6 +40,6 @@ class CatalogManagementServiceController
             $userId
         )->save();
 
-        return response('', HTTPResponseStatuses::OK);
+        return response('', HTTPResponseStatuses::CREATED);
     }
 }

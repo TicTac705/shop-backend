@@ -5,10 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\EntityServices\Auth\LoginServiceController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\AuthorizeRequest;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Psr\Http\Message\StreamInterface;
 
 class LoginController extends Controller
 {

@@ -8,18 +8,6 @@ use App\Http\Controllers\Catalog\CatalogBasketController;
 use App\Http\Controllers\Catalog\CatalogController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-
 Route::get('/sign-in', [LoginController::class, 'index'])->name('sign-in');
 Route::post('/sign-in', [LoginController::class, 'signIn']);
 
@@ -37,18 +25,18 @@ Route::group(['middleware' => 'auth:api'], function () {
         'name' => 'profile.',
         'prefix' => 'profile'
     ], function () {
-        Route::get('/order', [ProfileController::class, 'getOrders'])->name('order');
-        Route::put('/order/{id}/recall', [ProfileController::class, 'recallOrder'])->name('order.recall');
+        Route::get('/orders', [ProfileController::class, 'index'])->name('order');
+        Route::put('/orders/{id}/recall', [ProfileController::class, 'recall'])->name('order.recall');
 
         Route::group(['middleware' => 'role:admin'], function () {
-            Route::get('/catalog-management', [CatalogManagementController::class, 'index'])->name('catalogManagement');
-            Route::get('/catalog-management/add', [CatalogManagementController::class, 'formAddProduct'])->name('catalogManagement.addForm');
-            Route::post('/catalog-management/add', [CatalogManagementController::class, 'addProduct'])->name('catalogManagement.addProduct');
+            Route::get('/catalog-management/products/', [CatalogManagementController::class, 'index'])->name('catalogManagement.products');
+            Route::get('/catalog-management/products/create', [CatalogManagementController::class, 'create'])->name('catalogManagement.products.create');
+            Route::post('/catalog-management/products/create', [CatalogManagementController::class, 'store'])->name('catalogManagement.products.store');
 
-            Route::get('/catalog-management/change/{product}', [CatalogManagementController::class, 'formChangeProduct'])->name('catalogManagement.changeForm');
-            Route::put('/catalog-management/change/{product}', [CatalogManagementController::class, 'changeProduct'])->name('catalogManagement.changeProduct');
+            Route::get('/catalog-management/products/update/{product}', [CatalogManagementController::class, 'edit'])->name('catalogManagement.products.edit');
+            Route::put('/catalog-management/products/update/{product}', [CatalogManagementController::class, 'update'])->name('catalogManagement.products.update');
 
-            Route::delete('/catalog-management/delete/{product}', [CatalogManagementController::class, 'deleteProduct'])->name('catalogManagement.deleteProduct');
+            Route::delete('/catalog-management/products/destroy/{product}', [CatalogManagementController::class, 'destroy'])->name('catalogManagement.products.destroy');
         });
     });
 
@@ -57,9 +45,9 @@ Route::group(['middleware' => 'auth:api'], function () {
         'name' => 'basket.',
         'prefix' => 'basket'
     ], function () {
-        Route::post('/add/{product}', [CatalogBasketController::class, 'addProduct'])->name('add');
-        Route::put('/change/{product}/quantity/{quantity}', [CatalogBasketController::class, 'changeQuantityProduct'])->name('change');
-        Route::delete('/delete/{product}', [CatalogBasketController::class, 'deleteProduct'])->name('delete');
+        Route::post('/add/{product}', [CatalogBasketController::class, 'store'])->name('store');
+        Route::put('/change/{product}/quantity/{quantity}', [CatalogBasketController::class, 'update'])->name('update');
+        Route::delete('/destroy/{product}', [CatalogBasketController::class, 'destroy'])->name('destroy');
     });
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

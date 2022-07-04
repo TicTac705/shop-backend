@@ -6,7 +6,7 @@ use App\Models\ModelBase;
 
 class Category extends ModelBase
 {
-    protected $collection = 'catalog_categories';
+    protected $table = 'catalog_categories';
 
     protected $fillable = [
         'name',
@@ -24,4 +24,6 @@ class Category extends ModelBase
     {
         return Category::where('slug', $slug)->first()->id;
     }
+
+
 }

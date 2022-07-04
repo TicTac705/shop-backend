@@ -10,7 +10,7 @@ namespace App\Models;
  */
 class UnitMeasure extends ModelBase
 {
-    protected $collection = 'unit_measure';
+    protected $table = 'unit_measure';
 
     protected $fillable = [
         'name',
