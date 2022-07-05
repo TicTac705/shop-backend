@@ -17,8 +17,9 @@ class CreateCatalogProductsTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->integer('price');
+            $table->double('price');
             $table->unsignedBigInteger('unit_measure_id');
+            $table->bigInteger('store');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
 

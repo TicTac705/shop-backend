@@ -7,12 +7,12 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-final class ResponseData extends BaseObjectData implements Responsable
+final class ResponseData extends BaseDto implements Responsable
 {
     public int $status = HTTPResponseStatuses::OK;
 
     /**
-     * @var BaseObjectData|BaseObjectDataCollection
+     * @var BaseDto|BaseDtoCollection
      */
     public $data;
 

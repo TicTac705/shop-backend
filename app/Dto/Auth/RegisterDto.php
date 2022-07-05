@@ -2,11 +2,11 @@
 
 namespace App\Dto\Auth;
 
-use App\Dto\BaseObjectData;
+use App\Dto\BaseDto;
 use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Support\Facades\Hash;
 
-class RegisterData extends BaseObjectData
+class RegisterDto extends BaseDto
 {
     public string $name;
     public string $email;

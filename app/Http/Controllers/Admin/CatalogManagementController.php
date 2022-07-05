@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Admin;
 
-use App\EntityServices\Catalog\CatalogManagementServiceController;
+use App\EntityServices\Catalog\CatalogManagementEntityService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\AdditionProductRequest;
 use Illuminate\Contracts\Foundation\Application;
@@ -27,6 +27,6 @@ class CatalogManagementController extends Controller
      */
     public function store(AdditionProductRequest $request)
     {
-        return CatalogManagementServiceController::store($request);
+        return CatalogManagementEntityService::store($request);
     }
 }

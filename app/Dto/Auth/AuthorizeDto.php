@@ -1,10 +1,10 @@
 <?php
 namespace App\Dto\Auth;
 
-use App\Dto\BaseObjectData;
+use App\Dto\BaseDto;
 use App\Http\Requests\Auth\AuthorizeRequest;
 
-class AuthorizeData extends BaseObjectData
+class AuthorizeDto extends BaseDto
 {
     public string $email;
     public string $password;

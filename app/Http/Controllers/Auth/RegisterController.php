@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\EntityServices\Auth\RegisterServiceController;
+use App\EntityServices\Auth\RegisterEntityService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Contracts\Foundation\Application;
@@ -22,6 +22,6 @@ class RegisterController extends Controller
      */
     public function register(RegisterRequest $request)
     {
-        return RegisterServiceController::register($request);
+        return RegisterEntityService::register($request);
     }
 }

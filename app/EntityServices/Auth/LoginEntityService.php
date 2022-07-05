@@ -2,25 +2,18 @@
 
 namespace App\EntityServices\Auth;
 
-use App\Dto\Auth\AuthorizeData;
+use App\Dto\Auth\AuthorizeDto;
 use App\Helpers\Statuses\HTTPResponseStatuses;
-use App\Http\Requests\Auth\AuthorizeRequest;
 use App\Services\Auth\LoginService;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class LoginServiceController
+class LoginEntityService
 {
-    /**
-     * @param AuthorizeRequest $request
-     * @return JsonResponse
-     */
-    public function signIn(AuthorizeRequest $request): JsonResponse
+    public function signIn(AuthorizeDto $authData): JsonResponse
     {
-        $authData = AuthorizeData::fromRequest($request);
-
         try {
             return response()->json(LoginService::createToken($authData));
         } catch (BadResponseException $e) {

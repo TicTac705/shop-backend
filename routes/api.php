@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\Auth\CatalogManagementController;
+use App\Http\Controllers\Admin\CatalogManagementController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Catalog\CatalogBasketController;
 use App\Http\Controllers\Catalog\CatalogController;
+use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/sign-in', [LoginController::class, 'index'])->name('sign-in');

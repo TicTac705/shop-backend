@@ -2,7 +2,9 @@
 
 namespace App\Models\User;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\UserBase as Authenticatable;
+use App\PivotModels\User\UserRole;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
@@ -11,7 +13,6 @@ use Laravel\Passport\HasApiTokens;
  * @property string $name
  * @property string $email
  * @property string $password
- * @property string $role_id
  *
  */
 class User extends Authenticatable
@@ -26,8 +27,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'password',
-        'role_id'
+        'password'
     ];
 
     /**
@@ -52,8 +52,7 @@ class User extends Authenticatable
     public static function create(
         string $name,
         string $email,
-        string $password,
-        string $roleId
+        string $password
     ): self
     {
         $user = new self();
@@ -61,7 +60,6 @@ class User extends Authenticatable
         $user->setName($name);
         $user->setEmail($email);
         $user->setPassword($password);
-        $user->setRoleId($roleId);
 
         return $user;
     }
@@ -86,11 +84,6 @@ class User extends Authenticatable
         return $this->password;
     }
 
-    public function getRoleId(string $roleId): string
-    {
-        return $this->role_id;
-    }
-
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -109,16 +102,13 @@ class User extends Authenticatable
         return $this;
     }
 
-    public function setRoleId(string $roleId): self
+    public function role(): BelongsToMany
     {
-        $this->role_id = $roleId;
-        return $this;
+        return $this->belongsToMany(Role::class, 'users_roles')->using(UserRole::class);
     }
 
     public function hasRole(string $slug):bool
     {
-        $roleSlug = UserRole::getSlugById($this->role_id);
-
-        return $slug === $roleSlug;
+        return $this->role()->where('slug', $slug)->exists();
     }
 }

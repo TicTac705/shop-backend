@@ -14,16 +14,4 @@ class Category extends ModelBase
     ];
 
     protected $dates = ['created_at', 'updated_at'];
-
-    public function checkBySlug(string $slug): bool
-    {
-        return Category::where('slug', $slug)->exists();
-    }
-
-    public function getIdBySlug(string $slug): string
-    {
-        return Category::where('slug', $slug)->first()->id;
-    }
-
-
 }

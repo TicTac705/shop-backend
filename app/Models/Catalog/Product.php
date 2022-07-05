@@ -3,17 +3,17 @@
 namespace App\Models\Catalog;
 
 use App\Models\ModelBase;
+use App\Models\User\User;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property string $id
+ * @property int $id
  * @property string $name
  * @property string $description
  * @property float $price
- * @property string $unit_measure
+ * @property int $unit_measure_id
  * @property int $store
- * @property null|array<string> $pictures
- * @property array<string> $categories
- * @property string $user_id
+ * @property int $user_id
  *
  */
 class Product extends ModelBase
@@ -24,29 +24,20 @@ class Product extends ModelBase
         'name',
         'description',
         'price',
-        'unit_measure',
+        'unit_measure_id',
         'store',
-        'pictures',
-        'categories',
         'user_id'
     ];
 
     protected $dates = ['created_at', 'updated_at'];
 
-    protected $casts = [
-        'pictures' => 'array',
-        'categories' => 'array',
-    ];
-
     public function create(
         string $name,
         string $description,
         float  $price,
-        string $unitMeasure,
+        int $unitMeasureId,
         int    $store,
-        array  $pictures,
-        array  $categories,
-        string $userId
+        int $userId
     ): self
     {
         $product = new self();
@@ -54,10 +45,8 @@ class Product extends ModelBase
         $product->setName($name);
         $product->setDescription($description);
         $product->setPrice($price);
-        $product->setUnitMeasure($unitMeasure);
+        $product->setUnitMeasure($unitMeasureId);
         $product->setStore($store);
-        $product->setPictures($pictures);
-        $product->setCategories($categories);
         $product->setUserId($userId);
 
         return $product;
@@ -93,9 +82,9 @@ class Product extends ModelBase
         return $this;
     }
 
-    public function setUnitMeasure(string $unitMeasure): self
+    public function setUnitMeasure(int $unitMeasureId): self
     {
-        $this->unit_measure = $unitMeasure;
+        $this->unit_measure_id = $unitMeasureId;
         return $this;
     }
 
@@ -105,22 +94,14 @@ class Product extends ModelBase
         return $this;
     }
 
-    public function setPictures(array $pictures): self
-    {
-        $this->pictures = $pictures;
-        return $this;
-    }
-
-    public function setCategories(array $categories): self
-    {
-        $this->categories = $categories;
-        return $this;
-    }
-
-    public function setUserId(string $userId): self
+    public function setUserId(int $userId): self
     {
         $this->user_id = $userId;
         return $this;
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

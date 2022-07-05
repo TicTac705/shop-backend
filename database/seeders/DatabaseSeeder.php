@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Catalog\Category;
 use App\Models\UnitMeasure;
-use App\Models\User\UserRole;
+use App\Models\User\Role;
+use App\Models\User\User;
+use App\PivotModels\User\UserRole;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,31 +18,47 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $roleAdminId = UserRole::create([
-            'name' => 'Administrator',
-            'slug' => 'admin'
-        ]);
+        $roleAdminId = Role::create('Administrator', 'admin')->saveAndReturnId();
+        $roleUserId = Role::create('User', 'user')->saveAndReturnId();
 
-        $roleUserId = UserRole::create([
-            'name' => 'User',
-            'slug' => 'user'
-        ]);
+        $adminId = User::create(
+            'Admin',
+            'admin@example.com',
+            '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'
+        )->saveAndReturnId();
+
+        $userId = User::create(
+            'Alesha',
+            'alesha@example.com',
+            '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'
+        )->saveAndReturnId();
+
+        UserRole::create($adminId, $roleAdminId)->save();
+        UserRole::create($userId, $roleUserId)->save();
+
 
         $categoryFruitId = Category::create(['name' => 'Fruit', 'slug' => 'fruit']);
         $categoryVegetablesId = Category::create(['name' => 'Vegetables', 'slug' => 'vegetables']);
         Category::create(['name' => 'cereals', 'slug' => 'cereals']);
 
-        $unitKgId = UnitMeasure::create(['name' => 'Kilogram', 'slug' => 'kg']);
+        $unitKg = UnitMeasure::create(['name' => 'Kilogram', 'slug' => 'kg']);
         UnitMeasure::create(['name' => 'Piece', 'slug' => 'piece']);
 
-//        Product::create([
-//            'name' => 'Orange',
-//            'description' => 'Ripe, juicy and the most delicious',
-//            'store' => 50,
-//            'price' => 19.99,
-//            'unit_measure' => $unitKgId,
-//            'categories' => [$categoryFruitId]
-//        ]);
+//        Product::create(
+//            'Orange',
+//            'Ripe, juicy and the most delicious',
+//            19.99,
+//            $unitKg->id,
+//
+//
+//            [
+//                'name' => 'Orange',
+//                'description' => 'Ripe, juicy and the most delicious',
+//                'store' => 50,
+//                'price' => 19.99,
+//                'unit_measure' => $unitKgId,
+//                'categories' => [$categoryFruitId]
+//            ]);
 //
 //        Product::create([
 //            'name' => 'Apple',

@@ -4,7 +4,7 @@ namespace App\Dto;
 
 use Spatie\DataTransferObject\DataTransferObject;
 
-class BaseObjectData extends DataTransferObject
+class BaseDto extends DataTransferObject
 {
 
 }

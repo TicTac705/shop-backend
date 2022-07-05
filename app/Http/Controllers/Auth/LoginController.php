@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\EntityServices\Auth\LoginServiceController;
+use App\Dto\Auth\AuthorizeDto;
+use App\EntityServices\Auth\LoginEntityService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\AuthorizeRequest;
 use Illuminate\Http\JsonResponse;
@@ -20,16 +21,18 @@ class LoginController extends Controller
      */
     public function signIn(AuthorizeRequest $request)
     {
-        return LoginServiceController::signin($request);
+        $authDTO = AuthorizeDto::fromRequest($request);
+
+        return LoginEntityService::signin($authDTO);
     }
 
     public function refresh(Request $request): JsonResponse
     {
-        return LoginServiceController::refresh($request);
+        return LoginEntityService::refresh($request);
     }
 
     public function logout(): JsonResponse
     {
-        return LoginServiceController::logout();
+        return LoginEntityService::logout();
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 
 class CatalogController extends Controller
 {
-    public function index(): JsonResponse
+    public function index()
     {
         return response()->json([
             'products' => Product::paginate(10)

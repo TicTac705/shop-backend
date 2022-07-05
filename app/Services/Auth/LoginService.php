@@ -2,13 +2,13 @@
 
 namespace App\Services\Auth;
 
-use App\Dto\Auth\AuthorizeData;
-use App\Dto\Auth\PasswordGrantClientData;
+use App\Dto\Auth\AuthorizeDto;
+use App\Dto\Auth\PasswordGrantClientDto;
 use Laravel\Passport\Client;
 
 class LoginService
 {
-    public static function createToken(AuthorizeData $data): array
+    public static function createToken(AuthorizeDto $data): array
     {
         $options = [
             'grant_type' => 'password',
@@ -29,11 +29,11 @@ class LoginService
         return self::getRequestResponse($options);
     }
 
-    public static function getClient(): PasswordGrantClientData
+    public static function getClient(): PasswordGrantClientDto
     {
         $passwordGrantClient = Client::where('password_client', true)->first();
 
-        return PasswordGrantClientData::formQuery($passwordGrantClient);
+        return PasswordGrantClientDto::formQuery($passwordGrantClient);
     }
 
     private function getRequestResponse(array $options): array

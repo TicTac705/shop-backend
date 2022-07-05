@@ -3,16 +3,11 @@
 namespace App\Models\User;
 
 use App\Models\ModelBase;
+use App\PivotModels\User\UserRole;
 
-/**
- * @property string $id
- * @property string $name
- * @property string $slug
- *
- */
-class UserRole extends ModelBase
+class Role extends ModelBase
 {
-    protected $table = 'user_role';
+    protected $table = 'roles';
 
     protected $fillable = [
         'name',
@@ -20,6 +15,24 @@ class UserRole extends ModelBase
     ];
 
     protected $dates = ['created_at', 'updated_at'];
+
+    protected $casts = [
+        'name' => 'string',
+        'slug' => 'string'
+    ];
+
+    public static function create(
+        string $name,
+        string $slug
+    ): self
+    {
+        $userRole = new self();
+
+        $userRole->setSlug($slug);
+        $userRole->setName($name);
+
+        return $userRole;
+    }
 
     public function getName():string
     {
@@ -31,16 +44,16 @@ class UserRole extends ModelBase
         return $this->slug;
     }
 
-    public function setName(string $name):void
+    public function setName(string $name): self
     {
         $this->name = $name;
-        $this->save();
+        return $this;
     }
 
-    public function setSlug(string $slug):void
+    public function setSlug(string $slug):self
     {
-        $this->name = $slug;
-        $this->save();
+        $this->slug = $slug;
+        return $this;
     }
 
     public function checkBySlug(string $slug): bool

@@ -32,10 +32,10 @@ class AdditionProductRequest extends FormRequest
             'name' => ['required', 'string', 'max:255', 'unique:catalog_products'],
             'description' => ['required', 'string'],
             'price' => ['required', 'numeric', 'gt:0'],
-            'unit_measure' => ['required', 'string', 'exists:App\Models\UnitMeasure,_id'],
+            'unit_measure_id' => ['required', 'integer', 'exists:App\Models\UnitMeasure,id'],
             'store' => ['required', 'integer', 'gt:0', 'lte:10000'],
             'pictures.*' => ['image', 'max:5120'],
-            'categories.*' => ['required', 'string', 'exists:App\Models\Catalog\Category,_id']
+            'categories.*' => ['required', 'integer', 'exists:App\Models\Catalog\Category,id']
         ];
     }
 }

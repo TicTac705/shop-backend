@@ -15,12 +15,16 @@ class Authenticate extends Middleware
      * Get the path the user should be redirected to when they are not authenticated.
      *
      * @param Request $request
-     * @return Application|ResponseFactory|Response|void
+     * @return string|void
      */
     protected function redirectTo($request)
     {
+//        if (!$request->expectsJson()) {
+//            return response('', HTTPResponseStatuses::UNAUTHORIZED);
+//        }
+
         if (!$request->expectsJson()) {
-            return response('', HTTPResponseStatuses::UNAUTHORIZED);
+            return route('sign-in');
         }
     }
 }

@@ -11,7 +11,7 @@ namespace App\Models;
  */
 class Image extends ModelBase
 {
-    protected $table = 'image';
+    protected $table = 'images';
 
     protected $fillable = [
         'user_id',

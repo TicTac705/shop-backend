@@ -2,41 +2,33 @@
 
 namespace App\Dto\Catalog;
 
-use App\Dto\BaseObjectData;
+use App\Dto\BaseDto;
 use App\Http\Requests\Catalog\AdditionProductRequest;
+use Illuminate\Support\Facades\Auth;
 
-class ProductAddFormData extends BaseObjectData
+class ProductAddFormDto extends BaseDto
 {
     public string $name;
     public string $description;
     public float $price;
-    public string $unitMeasure;
+    public int $unitMeasureId;
     public int $store;
-
-    /**
-     * @var null|array<string>
-     */
-    public ?array $pictures;
-
-    /**
-     * @var array<string>
-     */
+    public int $userId;
     public array $categories;
 
     /**
      * @param AdditionProductRequest $request
-     * @param array<string>|null $uploadedImages
      * @return static
      */
-    static function fromRequest(AdditionProductRequest $request, ?array $uploadedImages): self
+    static function fromRequest(AdditionProductRequest $request): self
     {
         return new self([
             'name' => $request->get('name'),
             'description' => $request->get('description'),
             'price' => floatval($request->get('price')),
-            'unitMeasure' => $request->get('unit_measure'),
+            'unitMeasureId' => intval($request->get('unit_measure_id')),
             'store' => intval($request->get('store')),
-            'pictures' => $uploadedImages,
+            'userId' => Auth::user()->id,
             'categories' => $request->get('categories'),
         ]);
     }

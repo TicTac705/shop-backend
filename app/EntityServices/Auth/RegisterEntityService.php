@@ -2,16 +2,16 @@
 
 namespace App\EntityServices\Auth;
 
-use App\Dto\Auth\RegisterData;
+use App\Dto\Auth\RegisterDto;
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User\User;
-use App\Models\User\UserRole;
+use App\PivotModels\User\UserRole;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Response;
 
-class RegisterServiceController
+class RegisterEntityService
 {
     /**
      * @param RegisterRequest $request
@@ -19,7 +19,7 @@ class RegisterServiceController
      */
     public function register(RegisterRequest $request)
     {
-        $registerData = RegisterData::fromRequest($request);
+        $registerData = RegisterDto::fromRequest($request);
 
         $roleId = UserRole::getIdBySlug('user');
 

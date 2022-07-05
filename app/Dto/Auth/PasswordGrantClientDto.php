@@ -2,10 +2,10 @@
 
 namespace App\Dto\Auth;
 
-use App\Dto\BaseObjectData;
+use App\Dto\BaseDto;
 use Laravel\Passport\Client;
 
-class PasswordGrantClientData extends BaseObjectData
+class PasswordGrantClientDto extends BaseDto
 {
     public string $id;
     public string $secret;
