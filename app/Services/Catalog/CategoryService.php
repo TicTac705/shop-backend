@@ -1,20 +1,27 @@
 <?php
+
 namespace App\Services\Catalog;
 
 use App\PivotModels\Catalog\ProductCategory;
 
 class CategoryService
 {
-    public function saveManyRelationship(array $categories, int $productId): void
+    /**
+     * @param array<int> $categoryIds
+     * @param int $productId
+     * @return void
+     */
+    public function saveManyRelationshipToProduct(array $categoryIds, int $productId): void
     {
         $records = [];
-        foreach ($categories as $category) {
-            $records[] = [
-                'product_id' => $productId,
-                'category_id' => $category
-            ];
+        foreach ($categoryIds as $categoryId) {
+            $model = ProductCategory::create(
+                $productId,
+                $categoryId
+            );
+            $records[] = $model;
         }
 
-        ProductCategory::insert($records);
+        ProductCategory::saveMany($records);
     }
 }

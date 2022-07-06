@@ -3,11 +3,15 @@
 namespace App\PivotModels\Catalog;
 
 use App\PivotModels\PivotBase;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property int $product_id
  * @property int $category_id
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ *
  */
 class ProductCategory extends PivotBase
 {
@@ -31,12 +35,12 @@ class ProductCategory extends PivotBase
         int $categoryId
     ): self
     {
-        $userRole = new self();
+        $productCategory = new self();
 
-        $userRole->setProductId($productId);
-        $userRole->setCategoryId($categoryId);
+        $productCategory->setProductId($productId);
+        $productCategory->setCategoryId($categoryId);
 
-        return $userRole;
+        return $productCategory;
     }
 
     public function getUserId(): string

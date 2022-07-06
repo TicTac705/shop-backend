@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
+
 /**
  * @property string $id
  * @property string $name
  * @property string $slug
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  *
  */
 class UnitMeasure extends ModelBase

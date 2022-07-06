@@ -3,8 +3,10 @@
 namespace App\Models\Catalog;
 
 use App\Models\ModelBase;
+use App\Models\UnitMeasure;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -14,6 +16,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $unit_measure_id
  * @property int $store
  * @property int $user_id
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  *
  */
 class Product extends ModelBase
@@ -103,5 +107,10 @@ class Product extends ModelBase
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function unitMeasure(): BelongsTo
+    {
+        return $this->belongsTo(UnitMeasure::class);
     }
 }

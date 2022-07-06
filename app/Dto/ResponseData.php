@@ -5,29 +5,15 @@ namespace App\Dto;
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 final class ResponseData extends BaseDto implements Responsable
 {
     public int $status = HTTPResponseStatuses::OK;
 
-    /**
-     * @var BaseDto|BaseDtoCollection
-     */
-    public $data;
+    public BaseDto $data;
 
-
-    /**
-     * @param $request
-     * @return JsonResponse|Response
-     */
-    public function toResponse($request)
+    public function toResponse($request): JsonResponse
     {
-        return response()->json(
-            [
-                'data' => $this->data->toArray(),
-            ],
-            $this->status
-        );
+        return response()->json(['data' => $this->data->toArray()], $this->status);
     }
 }

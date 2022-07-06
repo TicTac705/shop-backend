@@ -3,11 +3,14 @@
 namespace App\PivotModels\Catalog;
 
 use App\PivotModels\PivotBase;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property int $product_id
  * @property int $image_id
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  *
  */
 class ProductImage extends PivotBase
@@ -32,12 +35,12 @@ class ProductImage extends PivotBase
         int $imageId
     ): self
     {
-        $userRole = new self();
+        $productImage = new self();
 
-        $userRole->setProductId($productId);
-        $userRole->setImageId($imageId);
+        $productImage->setProductId($productId);
+        $productImage->setImageId($imageId);
 
-        return $userRole;
+        return $productImage;
     }
 
     public function getUserId(): string

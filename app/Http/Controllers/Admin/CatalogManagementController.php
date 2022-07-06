@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\EntityServices\Catalog\CatalogManagementEntityService;
+use App\EntityServices\Admin\CatalogManagementEntityService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\AdditionProductRequest;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 
 class CatalogManagementController extends Controller
 {
@@ -23,7 +21,7 @@ class CatalogManagementController extends Controller
 
     /**
      * @param AdditionProductRequest $request
-     * @return Application|ResponseFactory|Response
+     * @return JsonResponse
      */
     public function store(AdditionProductRequest $request)
     {

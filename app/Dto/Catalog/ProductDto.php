@@ -3,6 +3,7 @@
 namespace App\Dto\Catalog;
 
 use App\Dto\BaseDto;
+use App\Dto\UnitMeasureDto;
 use App\Dto\User\UserDto;
 use App\Models\Catalog\Product;
 
@@ -12,18 +13,25 @@ class ProductDto extends BaseDto
     public string $name;
     public string $description;
     public float $price;
-    public int $unit_measure_id;
+    public UnitMeasureDto $unitMeasureId;
     public int $store;
-    public int $user_id;
-    public string $updated_at;
-    public string $created_at;
+    public UserDto $creator;
+    public int $updatedAt;
+    public int $createdAt;
 
-    public ?UserDto $author;
 
-    public function __construct(array $parameters = [])
+    public static function fromModel(Product $product): self
     {
-        parent::__construct($parameters);
-
-        $this->author = new UserDto(Product::find($this->id)->user->toArray());
+        return new self([
+            'id' => $product->id,
+            'name' => $product->name,
+            'description' => $product->description,
+            'price' => $product->price,
+            'unitMeasureId' => UnitMeasureDto::fromModel($product->unitMeasure)->only('id', 'name'),
+            'store' => $product->store,
+            'creator' => UserDto::fromModel($product->user)->only('id', 'name'),
+            'updatedAt' => $product->updated_at->timestamp,
+            'createdAt' => $product->created_at->timestamp,
+        ]);
     }
 }

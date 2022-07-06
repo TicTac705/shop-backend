@@ -4,7 +4,16 @@ namespace App\Models\User;
 
 use App\Models\ModelBase;
 use App\PivotModels\User\UserRole;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property string $id
+ * @property string $name
+ * @property string $slug
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ *
+ */
 class Role extends ModelBase
 {
     protected $table = 'roles';
@@ -58,16 +67,16 @@ class Role extends ModelBase
 
     public function checkBySlug(string $slug): bool
     {
-        return UserRole::where('slug', $slug)->exists();
+        return self::where('slug', $slug)->exists();
     }
 
     public function getIdBySlug(string $slug): string
     {
-        return UserRole::where('slug', $slug)->first()->id;
+        return self::where('slug', $slug)->first()->id;
     }
 
     public function getSlugById(string $id): string
     {
-        return UserRole::where('_id', $id)->first()->slug;
+        return self::where('id', $id)->first()->slug;
     }
 }

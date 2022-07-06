@@ -6,6 +6,7 @@ use App\Models\UserBase as Authenticatable;
 use App\PivotModels\User\UserRole;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Laravel\Passport\HasApiTokens;
 
 /**
@@ -13,6 +14,9 @@ use Laravel\Passport\HasApiTokens;
  * @property string $name
  * @property string $email
  * @property string $password
+ * @property ?Carbon $email_verified_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  *
  */
 class User extends Authenticatable

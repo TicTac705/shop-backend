@@ -48,17 +48,17 @@ class ImageService
      * @param int $productId
      * @return void
      */
-    public function saveManyRelationship(array $imageIds, int $productId): void
+    public function saveManyRelationshipToProduct(array $imageIds, int $productId): bool
     {
         $records = [];
         foreach ($imageIds as $imageId) {
-            $records[] = [
-                'product_id' => $productId,
-                'image_id' => $imageId
-            ];
+            $model = ProductImage::create(
+                $productId,
+                $imageId
+            );
+            $records[] = $model;
         }
 
-        ProductImage::insert($records);
-//        ProductImage::saveMany($records);
+        return ProductImage::saveMany($records);
     }
 }

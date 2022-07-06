@@ -3,23 +3,28 @@ namespace App\Dto\User;
 
 use App\Dto\BaseDto;
 use App\Models\User\User;
+use Carbon\Carbon;
 
 class UserDto extends BaseDto
 {
     public int $id;
     public string $name;
     public string $email;
-    public ?string $email_verified_at;
-    public string $updated_at;
-    public string $created_at;
+    public ?Carbon $emailVerifiedAt;
+    public RoleDto $role;
+    public int $updatedAt;
+    public int $createdAt;
 
-    public ?RoleDto $role;
-
-    public function __construct(array $parameters = [])
+    public static function fromModel(User $user): self
     {
-        parent::__construct($parameters);
-
-        dd(User::find($this->id)->role->first()->toArray());
-        $this->role = new RoleDto(User::find($this->id)->role->first()->hide('pivot')->toArray());
+        return new self([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'emailVerifiedAt' => $user->email_verified_at,
+            'role' => RoleDto::fromModel($user->role->first())->only('id', 'name'),
+            'updatedAt' => $user->updated_at->timestamp,
+            'createdAt' => $user->created_at->timestamp,
+        ]);
     }
 }
