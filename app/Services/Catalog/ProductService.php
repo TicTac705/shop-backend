@@ -2,12 +2,12 @@
 
 namespace App\Services\Catalog;
 
-use App\Dto\Catalog\ProductAddFormDto;
+use App\Dto\Catalog\ProductCreateDto;
 use App\Models\Catalog\Product;
 
 class ProductService
 {
-    public function save(ProductAddFormDto $productFormDto): Product
+    public function save(ProductCreateDto $productFormDto): Product
     {
         return Product::create(
             $productFormDto->name,

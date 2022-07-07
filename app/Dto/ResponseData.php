@@ -10,10 +10,19 @@ final class ResponseData extends BaseDto implements Responsable
 {
     public int $status = HTTPResponseStatuses::OK;
 
-    public BaseDto $data;
+    /**
+     * @var BaseDto|array
+     */
+    public $data;
 
     public function toResponse($request): JsonResponse
     {
-        return response()->json(['data' => $this->data->toArray()], $this->status);
+        $result = $this->data;
+
+        if (!is_array($this->data)) {
+            $result = $this->data->toArray();
+        }
+
+        return response()->json(['data' => $result], $this->status);
     }
 }

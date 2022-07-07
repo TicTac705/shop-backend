@@ -10,6 +10,7 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        return response()->json(UserDto::fromModel(Auth::user())->toArray());
+        Auth::user()->createToken('my_user', []);
+//        return response()->json(UserDto::fromModel(Auth::user())->toArray());
     }
 }

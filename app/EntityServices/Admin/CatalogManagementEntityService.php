@@ -2,7 +2,7 @@
 
 namespace App\EntityServices\Admin;
 
-use App\Dto\Catalog\ProductAddFormDto;
+use App\Dto\Catalog\ProductCreateDto;
 use App\Dto\Catalog\ProductDto;
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Http\Requests\Catalog\AdditionProductRequest;
@@ -17,24 +17,24 @@ class CatalogManagementEntityService
     {
         $uploadedImageIds = [];
         if ($request->hasFile('pictures')) {
-            $uploadedImageIds = ImageService::saveMany('catalog_img', $request->file('pictures'));
+            $uploadedImageIds = ImageService::saveMany('public/catalog_img', $request->file('pictures'));
         }
 
-        $productFormDto = ProductAddFormDto::fromRequest($request);
+        $productFormDto = ProductCreateDto::fromRequest($request);
 
-        $newProduct = ProductDto::fromModel(ProductService::save($productFormDto));
+        $newProduct = ProductService::save($productFormDto);
 
         if (count($uploadedImageIds) > 0) {
-            ImageService::saveManyRelationshipToProduct($uploadedImageIds, $newProduct->id);
+            ImageService::saveManyRelationshipToProduct($uploadedImageIds, $newProduct->getId());
         }
 
         if (count($productFormDto->categories) > 0) {
-            CategoryService::saveManyRelationshipToProduct($productFormDto->categories, $newProduct->id);
+            CategoryService::saveManyRelationshipToProduct($productFormDto->categories, $newProduct->getId());
         }
 
         return response()->json(
             [
-                'data' => $newProduct->toArray()
+                'data' => ProductDto::fromModel($newProduct)->toArray()
             ],
             HTTPResponseStatuses::CREATED
         );

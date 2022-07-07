@@ -6,7 +6,7 @@ use App\Dto\BaseDto;
 use App\Http\Requests\Catalog\AdditionProductRequest;
 use Illuminate\Support\Facades\Auth;
 
-class ProductAddFormDto extends BaseDto
+class ProductCreateDto extends BaseDto
 {
     public string $name;
     public string $description;

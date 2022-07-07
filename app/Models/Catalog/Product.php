@@ -2,10 +2,14 @@
 
 namespace App\Models\Catalog;
 
+use App\Models\Image;
 use App\Models\ModelBase;
 use App\Models\UnitMeasure;
 use App\Models\User\User;
+use App\PivotModels\Catalog\ProductCategory;
+use App\PivotModels\Catalog\ProductImage;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -54,11 +58,6 @@ class Product extends ModelBase
         $product->setUserId($userId);
 
         return $product;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
     }
 
     public function getName(): string
@@ -112,5 +111,15 @@ class Product extends ModelBase
     public function unitMeasure(): BelongsTo
     {
         return $this->belongsTo(UnitMeasure::class);
+    }
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'catalog_products_categories')->using(ProductCategory::class);
+    }
+
+    public function images(): BelongsToMany
+    {
+        return $this->belongsToMany(Image::class, 'catalog_products_images')->using(ProductImage::class);
     }
 }

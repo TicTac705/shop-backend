@@ -6,11 +6,10 @@ use App\Dto\Catalog\ProductDtoCollection;
 use App\Dto\ResponsePaginationData;
 use App\Http\Controllers\Controller;
 use App\Models\Catalog\Product;
-use Illuminate\Http\JsonResponse;
 
 class CatalogController extends Controller
 {
-    public function index()
+    public function index(): ResponsePaginationData
     {
         $products = Product::paginate(10);
 

@@ -2,12 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
+
 /**
+ * @property int $id
  * @property string $user_id;
  * @property string $name;
  * @property string $name_original;
  * @property int $size;
  * @property string $src;
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ *
  */
 class Image extends ModelBase
 {

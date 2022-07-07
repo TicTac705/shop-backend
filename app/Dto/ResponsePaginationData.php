@@ -23,7 +23,11 @@ class ResponsePaginationData extends BaseDto implements Responsable
         return response()->json(
             [
                 'data' => $this->collection->toArray(),
-                'paginate' => $this->paginator->linkCollection()
+                'paginate' => [
+                    'links' => $this->paginator->linkCollection(),
+                    'hasPages' => $this->paginator->hasPages(),
+                    'hasMorePages' => $this->paginator->hasMorePages()
+                ]
             ],
             $this->status
         );

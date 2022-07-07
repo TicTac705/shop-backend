@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 class ModelBase extends Model
 {
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
     public function saveAndReturn(): ModelBase
     {
         $this->save();
@@ -14,7 +18,7 @@ class ModelBase extends Model
         return $this;
     }
 
-    public function saveAndReturnId(): string
+    public function saveAndReturnId(): int
     {
         $this->save();
 

@@ -10,7 +10,7 @@ use Illuminate\Support\Carbon;
 use Laravel\Passport\HasApiTokens;
 
 /**
- * @property string $id
+ * @property int $id
  * @property string $name
  * @property string $email
  * @property string $password
@@ -66,11 +66,6 @@ class User extends Authenticatable
         $user->setPassword($password);
 
         return $user;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
     }
 
     public function getName(): string
