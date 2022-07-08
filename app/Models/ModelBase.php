@@ -38,4 +38,13 @@ class ModelBase extends Model
 
         return self::insert($records);
     }
+
+    /**
+     * @param int[] $ids
+     * @return bool
+     */
+    public function deleteManyByIds(array $ids): bool
+    {
+        return self::whereIn('id', $ids);
+    }
 }

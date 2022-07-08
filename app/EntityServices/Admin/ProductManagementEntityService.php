@@ -5,15 +5,15 @@ namespace App\EntityServices\Admin;
 use App\Dto\Catalog\ProductCreateDto;
 use App\Dto\Catalog\ProductDto;
 use App\Helpers\Statuses\HTTPResponseStatuses;
-use App\Http\Requests\Catalog\AdditionProductRequest;
+use App\Http\Requests\Catalog\ProductCreationRequest;
 use App\Services\Catalog\CategoryService;
 use App\Services\Catalog\ProductService;
 use App\Services\ImageService;
 use Illuminate\Http\JsonResponse;
 
-class CatalogManagementEntityService
+class ProductManagementEntityService
 {
-    public function store(AdditionProductRequest $request): JsonResponse
+    public function store(ProductCreationRequest $request): JsonResponse
     {
         $uploadedImageIds = [];
         if ($request->hasFile('pictures')) {

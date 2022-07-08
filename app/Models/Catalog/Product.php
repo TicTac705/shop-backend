@@ -43,9 +43,9 @@ class Product extends ModelBase
         string $name,
         string $description,
         float  $price,
-        int $unitMeasureId,
+        int    $unitMeasureId,
         int    $store,
-        int $userId
+        int    $userId
     ): self
     {
         $product = new self();

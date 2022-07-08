@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Models\Image;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ImageController extends Controller
 {
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse
     {
         try {
             $image = Image::findOrFail($id);

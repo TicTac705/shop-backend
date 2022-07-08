@@ -3,7 +3,7 @@
 namespace App\Dto\Catalog;
 
 use App\Dto\BaseDto;
-use App\Http\Requests\Catalog\AdditionProductRequest;
+use App\Http\Requests\Catalog\ProductCreationRequest;
 use Illuminate\Support\Facades\Auth;
 
 class ProductCreateDto extends BaseDto
@@ -16,11 +16,7 @@ class ProductCreateDto extends BaseDto
     public int $userId;
     public array $categories;
 
-    /**
-     * @param AdditionProductRequest $request
-     * @return static
-     */
-    static function fromRequest(AdditionProductRequest $request): self
+    static function fromRequest(ProductCreationRequest $request): self
     {
         return new self([
             'name' => $request->get('name'),

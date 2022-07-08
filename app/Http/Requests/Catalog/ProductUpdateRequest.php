@@ -5,31 +5,21 @@ namespace App\Http\Requests\Catalog;
 use App\Http\Requests\ApiFormRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AdditionProductRequest extends FormRequest
+class ProductUpdateRequest extends FormRequest
 {
     use ApiFormRequest;
 
     protected $stopOnFirstFailure = true;
 
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255', 'unique:catalog_products'],
+            'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'price' => ['required', 'numeric', 'gt:0'],
             'unit_measure_id' => ['required', 'integer', 'exists:App\Models\UnitMeasure,id'],
