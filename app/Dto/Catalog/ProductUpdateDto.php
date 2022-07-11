@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductUpdateDto extends BaseDto
 {
-    public string $name;
-    public string $description;
-    public float $price;
-    public int $unitMeasureId;
-    public int $store;
-    public int $userId;
-    public array $categories;
+    public ?string $name;
+    public ?string $description;
+    public ?float $price;
+    public ?int $unitMeasureId;
+    public ?int $store;
+    public ?int $userId;
+    public ?array $categories;
     public bool $haveNewImages;
 
     static function fromRequest(ProductUpdateRequest $request): self

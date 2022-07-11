@@ -4,7 +4,10 @@ namespace App\Services\Catalog;
 
 use App\Dto\Catalog\ProductCreateDto;
 use App\Dto\Catalog\ProductUpdateDto;
+use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Models\Catalog\Product;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 
 class ProductService
 {
@@ -20,19 +23,46 @@ class ProductService
         )->saveAndReturn();
     }
 
-    public function update(Product $model, ProductUpdateDto $data): ?Product
+    public function update(Product $model, ProductUpdateDto $data): Product
     {
-        $model->setName($data->name);
-        $model->setDescription($data->description);
-        $model->setPrice($data->price);
-        $model->setUnitMeasure($data->unitMeasureId);
-        $model->setStore($data->store);
+        if ($data->name) {
+            $model->setName($data->name);
+        }
 
-        if ($model->wasChanged() || $data->haveNewImages) {
+        if ($data->description) {
+            $model->setDescription($data->description);
+        }
+
+        if ($data->price) {
+            $model->setPrice($data->price);
+        }
+
+        if ($data->unitMeasureId) {
+            $model->setUnitMeasure($data->unitMeasureId);
+        }
+
+        if ($data->store) {
+            $model->setStore($data->store);
+        }
+
+        if ($model->isDirty() || $data->haveNewImages) {
             $model->touch();
             return $model->saveAndReturn();
         }
 
-        return null;
+        return $model;
+    }
+
+    /**
+     * @param int $id
+     * @return Product|JsonResponse
+     */
+    public function getById(int $id)
+    {
+        try {
+            return Product::findOrFail($id);
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(['message' => 'Invalid Request'], HTTPResponseStatuses::NOT_FOUND);
+        }
     }
 }

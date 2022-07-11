@@ -19,11 +19,11 @@ class ProductUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'price' => ['required', 'numeric', 'gt:0'],
-            'unit_measure_id' => ['required', 'integer', 'exists:App\Models\UnitMeasure,id'],
-            'store' => ['required', 'integer', 'gt:0', 'lte:10000'],
+            'name' => ['string', 'max:255', 'unique:catalog_products'],
+            'description' => ['string'],
+            'price' => ['numeric', 'gt:0'],
+            'unit_measure_id' => ['integer', 'exists:App\Models\UnitMeasure,id'],
+            'store' => ['integer', 'gt:0', 'lte:10000'],
             'pictures.*' => ['image', 'max:5120'],
             'categories.*' => ['required', 'integer', 'exists:App\Models\Catalog\Category,id']
         ];

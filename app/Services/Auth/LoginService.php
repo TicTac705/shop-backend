@@ -4,10 +4,19 @@ namespace App\Services\Auth;
 
 use App\Dto\Auth\AuthorizeDto;
 use App\Dto\Auth\PasswordGrantClientDto;
-use Laravel\Passport\Client;
+use Illuminate\Http\JsonResponse;
 
 class LoginService
 {
+    public function createNewToken($token): JsonResponse
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 120
+        ]);
+    }
+
     public static function createToken(AuthorizeDto $data): array
     {
         $options = [

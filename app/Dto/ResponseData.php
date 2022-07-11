@@ -11,7 +11,7 @@ final class ResponseData extends BaseDto implements Responsable
     public int $status = HTTPResponseStatuses::OK;
 
     /**
-     * @var BaseDto|array
+     * @var mixed
      */
     public $data;
 

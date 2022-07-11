@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Dto\Catalog\CategoryDtoCollection;
-use App\Dto\Catalog\ProductCreateDto;
 use App\Dto\Catalog\ProductDto;
 use App\Dto\Catalog\ProductDtoCollection;
 use App\Dto\Catalog\ProductUpdateDto;
@@ -21,9 +20,7 @@ use App\Models\UnitMeasure;
 use App\Services\Catalog\CategoryService;
 use App\Services\Catalog\ProductService;
 use App\Services\ImageService;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class ProductManagementController extends Controller
 {
@@ -62,15 +59,11 @@ class ProductManagementController extends Controller
 
     /**
      * @param int $id
-     * @return ResponseData|JsonResponse
+     * @return ResponseData
      */
     public function getUpdateData(int $id)
     {
-        try {
-            $product = Product::findOrFail($id);
-        } catch (ModelNotFoundException $exception) {
-            return response()->json(['message' => 'Invalid Request'], HTTPResponseStatuses::NOT_FOUND);
-        }
+        $product = ProductService::getById($id);
 
         $unitsMeasure = UnitMeasure::all()->all();
         $categories = Category::all()->all();
@@ -90,37 +83,6 @@ class ProductManagementController extends Controller
 
     public function update(ProductUpdateRequest $request, int $id)
     {
-        try {
-            $product = Product::findOrFail($id);
-        } catch (ModelNotFoundException $exception) {
-            return response()->json(['message' => 'Invalid Request'], HTTPResponseStatuses::NOT_FOUND);
-        }
-
-        $uploadedImageIds = [];
-        if ($request->hasFile('pictures')) {
-            $uploadedImageIds = ImageService::saveMany('public/catalog_img', $request->file('pictures'));
-        }
-
-        $productFormDto = ProductUpdateDto::fromRequest($request);
-
-        $changedProduct = ProductService::update($product, $productFormDto);
-
-        if ($changedProduct !== null) {
-            if (count($uploadedImageIds) > 0) {
-                ImageService::saveManyRelationshipToProduct($uploadedImageIds, $changedProduct->getId());
-            }
-
-            if (count($productFormDto->categories) > 0) {
-                CategoryService::updateManyRelationshipToProduct($productFormDto->categories, $changedProduct->getId());
-            }
-
-            return response()->json(
-                [
-                    'data' => ProductDto::fromModel($newProduct)->toArray()
-                ],
-                HTTPResponseStatuses::CREATED
-            );
-        }
-
+        return ProductManagementEntityService::update($request, $id);
     }
 }

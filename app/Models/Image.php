@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Catalog\Product;
+use App\PivotModels\Catalog\ProductImage;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -26,6 +29,8 @@ class Image extends ModelBase
         'size',
         'src'
     ];
+
+    protected $touches = ['products'];
 
     public function create(
         string $userId,
@@ -99,5 +104,10 @@ class Image extends ModelBase
     {
         $this->src = $src;
         return $this;
+    }
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'catalog_products_images')->withTimestamps()->using(ProductImage::class);
     }
 }

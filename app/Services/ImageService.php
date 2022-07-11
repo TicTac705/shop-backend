@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Catalog\Product;
 use App\Models\Image;
 use App\PivotModels\Catalog\ProductImage;
 use Illuminate\Http\UploadedFile;
@@ -45,20 +46,11 @@ class ImageService
 
     /**
      * @param array<int> $imageIds
-     * @param int $productId
+     * @param Product $model
      * @return void
      */
-    public function saveManyRelationshipToProduct(array $imageIds, int $productId): bool
+    public function saveManyRelationshipToProduct(array $imageIds, Product $model): void
     {
-        $records = [];
-        foreach ($imageIds as $imageId) {
-            $model = ProductImage::create(
-                $productId,
-                $imageId
-            );
-            $records[] = $model;
-        }
-
-        return ProductImage::saveMany($records);
+        $model->images()->sync($imageIds);
     }
 }

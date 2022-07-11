@@ -9,42 +9,29 @@ use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginEntityService
 {
     public function signIn(AuthorizeDto $authData): JsonResponse
     {
-        try {
-            return response()->json(LoginService::createToken($authData));
-        } catch (BadResponseException $e) {
-            if ($e->getCode() === HTTPResponseStatuses::BAD_REQUEST) {
-                return response()->json(['message' => 'Invalid Request'], $e->getCode());
-            } else if ($e->getCode() === HTTPResponseStatuses::UNAUTHORIZED) {
-                return response()->json(['message' => 'Your credentials are incorrect'], $e->getCode());
-            }
-
-            return response()->json(['message' => 'Something went wrong on the server'], $e->getCode());
+        if (!$token = JWTAuth::attempt($authData->toArray())) {
+            return response()->json(['message' => 'Your credentials are incorrect'], HTTPResponseStatuses::UNAUTHORIZED);
         }
+
+        return LoginService::createNewToken($token);
     }
 
-    public function refresh(Request $request): JsonResponse
+    public function refresh(): JsonResponse
     {
-        try {
-            return response()->json(LoginService::refreshToken($request->get('refresh_token')));
-        } catch (BadResponseException $e) {
-            if ($e->getCode() === HTTPResponseStatuses::BAD_REQUEST) {
-                return response()->json(['message' => 'Invalid Request'], $e->getCode());
-            } else if ($e->getCode() === HTTPResponseStatuses::UNAUTHORIZED) {
-                return response()->json(['message' => 'Your credentials are incorrect'], $e->getCode());
-            }
+        $token = JWTAuth::getToken();
 
-            return response()->json(['message' => 'Something went wrong on the server'], $e->getCode());
-        }
+        return LoginService::createNewToken(JWTAuth::refresh($token));
     }
 
     public function logout(): JsonResponse
     {
-        Auth::user()->token()->delete();
+        auth()->logout();
 
         return response()->json(['message' => 'You successfully logged out']);
     }

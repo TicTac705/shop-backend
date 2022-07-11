@@ -3,6 +3,8 @@
 namespace App\Models\Catalog;
 
 use App\Models\ModelBase;
+use App\PivotModels\Catalog\ProductCategory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -28,6 +30,8 @@ class Category extends ModelBase
         'name' => 'string',
         'slug' => 'string'
     ];
+
+    protected $touches = ['products'];
 
     public static function create(
         string $name,
@@ -62,5 +66,10 @@ class Category extends ModelBase
     {
         $this->slug = $slug;
         return $this;
+    }
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'catalog_products_categories')->withTimestamps()->using(ProductCategory::class);
     }
 }

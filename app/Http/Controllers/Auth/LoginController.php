@@ -7,7 +7,6 @@ use App\EntityServices\Auth\LoginEntityService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\AuthorizeRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -15,10 +14,6 @@ class LoginController extends Controller
     {
     }
 
-    /**
-     * @param AuthorizeRequest $request
-     * @return JsonResponse
-     */
     public function signIn(AuthorizeRequest $request)
     {
         $authDTO = AuthorizeDto::fromRequest($request);
@@ -26,9 +21,9 @@ class LoginController extends Controller
         return LoginEntityService::signin($authDTO);
     }
 
-    public function refresh(Request $request): JsonResponse
+    public function refresh(): JsonResponse
     {
-        return LoginEntityService::refresh($request);
+        return LoginEntityService::refresh();
     }
 
     public function logout(): JsonResponse

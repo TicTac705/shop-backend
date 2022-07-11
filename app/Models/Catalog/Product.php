@@ -115,11 +115,11 @@ class Product extends ModelBase
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class, 'catalog_products_categories')->using(ProductCategory::class);
+        return $this->belongsToMany(Category::class, 'catalog_products_categories')->withTimestamps()->using(ProductCategory::class);
     }
 
     public function images(): BelongsToMany
     {
-        return $this->belongsToMany(Image::class, 'catalog_products_images')->using(ProductImage::class);
+        return $this->belongsToMany(Image::class, 'catalog_products_images')->withTimestamps()->using(ProductImage::class);
     }
 }

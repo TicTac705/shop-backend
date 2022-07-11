@@ -2,12 +2,14 @@
 
 namespace App\Models\User;
 
+use App\Dto\User\RoleDtoCollection;
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Models\UserBase as Authenticatable;
 use App\PivotModels\User\UserRole;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
-use Laravel\Passport\HasApiTokens;
 
 /**
  * @property int $id
@@ -19,9 +21,9 @@ use Laravel\Passport\HasApiTokens;
  * @property Carbon $updated_at
  *
  */
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, Notifiable;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -68,6 +70,28 @@ class User extends Authenticatable
         return $user;
     }
 
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims(): array
+    {
+        return [
+            'roles' => (new RoleDtoCollection(Auth::user()->role->all()))->only(['slug'])->toArray(),
+        ];
+    }
+
     public function getName(): string
     {
         return $this->name;
@@ -106,7 +130,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class, 'users_roles')->using(UserRole::class);
     }
 
-    public function hasRole(string $slug):bool
+    public function hasRole(string $slug): bool
     {
         return $this->role()->where('slug', $slug)->exists();
     }
