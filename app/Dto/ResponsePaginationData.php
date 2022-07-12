@@ -24,9 +24,9 @@ class ResponsePaginationData extends BaseDto implements Responsable
             [
                 'data' => $this->collection->toArray(),
                 'paginate' => [
-                    'links' => $this->paginator->linkCollection(),
-                    'hasPages' => $this->paginator->hasPages(),
-                    'hasMorePages' => $this->paginator->hasMorePages()
+                    'links' => $this->paginator->total(),
+//                    'hasPages' => $this->paginator->hasPages(),
+//                    'hasMorePages' => $this->paginator->hasMorePages()
                 ]
             ],
             $this->status

@@ -43,14 +43,14 @@ class ProductCategory extends PivotBase
         return $productCategory;
     }
 
-    public function getUserId(): string
+    public function getProductId(): int
     {
-        return $this->user_id;
+        return $this->product_id;
     }
 
-    public function getRoleId(): string
+    public function getCategoryId(): int
     {
-        return $this->role_id;
+        return $this->category_id;
     }
 
     public function setProductId(int $productId): self

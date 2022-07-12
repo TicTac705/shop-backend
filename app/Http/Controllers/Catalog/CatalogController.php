@@ -11,6 +11,14 @@ class CatalogController extends Controller
 {
     public function index(): ResponsePaginationData
     {
+        //Всего эл
+        //Кол-во на одной странице
+
+        //Убрать обращения к БД из контроллеров
+        //Убрать всю логику
+        //DtoCollection придумать замену
+
+
         $products = Product::paginate(10);
 
         $productsDto = new ProductDtoCollection($products->items());

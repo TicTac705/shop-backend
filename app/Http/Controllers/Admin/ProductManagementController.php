@@ -24,12 +24,12 @@ use Illuminate\Http\JsonResponse;
 
 class ProductManagementController extends Controller
 {
-    public function index(): ResponsePaginationData
+    public function getList(): ResponsePaginationData
     {
         $products = Product::paginate(10);
 
         $productsDto = new ProductDtoCollection($products->items());
-
+        //        $collection = array_map(fn(Product $item):ProductDto => ProductDto::fromModel($item), $data);
         return new ResponsePaginationData([
             'paginator' => $products,
             'collection' => $productsDto,

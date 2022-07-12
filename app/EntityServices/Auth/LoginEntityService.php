@@ -5,10 +5,7 @@ namespace App\EntityServices\Auth;
 use App\Dto\Auth\AuthorizeDto;
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Services\Auth\LoginService;
-use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginEntityService

@@ -22,7 +22,7 @@ class UserDto extends BaseDto
             'name' => $user->name,
             'email' => $user->email,
             'emailVerifiedAt' => $user->email_verified_at,
-            'role' => RoleDto::fromModel($user->role->first())->only('id', 'name', 'slug'),
+            'role' => RoleDto::fromModel($user->role()->first())->only('id', 'name', 'slug'),
             'updatedAt' => $user->updated_at->timestamp,
             'createdAt' => $user->created_at->timestamp,
         ]);

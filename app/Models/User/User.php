@@ -3,6 +3,8 @@
 namespace App\Models\User;
 
 use App\Dto\User\RoleDtoCollection;
+use App\Models\Catalog\Basket;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Models\UserBase as Authenticatable;
@@ -127,11 +129,16 @@ class User extends Authenticatable implements JWTSubject
 
     public function role(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'users_roles')->using(UserRole::class);
+        return $this->belongsToMany(Role::class, 'users_roles')->withTimestamps()->using(UserRole::class);
     }
 
     public function hasRole(string $slug): bool
     {
         return $this->role()->where('slug', $slug)->exists();
+    }
+
+    public function baskets(): HasMany
+    {
+        return $this->hasMany(Basket::class);
     }
 }

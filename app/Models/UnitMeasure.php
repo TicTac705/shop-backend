@@ -23,13 +23,35 @@ class UnitMeasure extends ModelBase
 
     protected $dates = ['created_at', 'updated_at'];
 
-    public function checkBySlug(string $slug): bool
+    public function create(string $name, string $slug): self
     {
-        return UnitMeasure::where('slug', $slug)->exists();
+        $unitMeasure = new self();
+
+        $unitMeasure->setName($name);
+        $unitMeasure->setSlug($slug);
+
+        return $unitMeasure;
     }
 
-    public function getIdBySlug(string $slug): string
+    public function getName():string
     {
-        return UnitMeasure::where('slug', $slug)->first()->id;
+        return $this->name;
+    }
+
+    public function getSlug():string
+    {
+        return $this->slug;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    public function setSlug(string $slug):self
+    {
+        $this->slug = $slug;
+        return $this;
     }
 }

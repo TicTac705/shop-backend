@@ -65,4 +65,9 @@ class ProductService
             return response()->json(['message' => 'Invalid Request'], HTTPResponseStatuses::NOT_FOUND);
         }
     }
+
+    public function getList()
+    {
+        /*...*/
+    }
 }
