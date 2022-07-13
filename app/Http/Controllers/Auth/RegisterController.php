@@ -2,23 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Dto\ResponseData;
 use App\EntityServices\Auth\RegisterEntityService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
 
 class RegisterController extends Controller
 {
-    public function index(): void
-    {
-    }
-
     /**
      * @param RegisterRequest $request
-     * @return Application|ResponseFactory|Response
+     * @return ResponseData
      */
     public function register(RegisterRequest $request)
     {

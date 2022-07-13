@@ -2,6 +2,7 @@
 
 namespace App\Models\User;
 
+use App\Dto\User\RoleDto;
 use App\Dto\User\RoleDtoCollection;
 use App\Models\Catalog\Basket;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -90,7 +91,7 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(): array
     {
         return [
-            'roles' => (new RoleDtoCollection(Auth::user()->role->all()))->only(['slug'])->toArray(),
+            'roles' => RoleDto::fromList(Auth::user()->role->all()),
         ];
     }
 
@@ -99,12 +100,17 @@ class User extends Authenticatable implements JWTSubject
         return $this->name;
     }
 
-    public function getEmail(string $email): string
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function getPassword(string $password): string
+    public function getEmailVerifiedAt(): ?string
+    {
+        return $this->email_verified_at;
+    }
+
+    public function getPassword(): string
     {
         return $this->password;
     }

@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Models\Catalog\Product;
 use App\Models\Image;
-use App\PivotModels\Catalog\ProductImage;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,7 +15,7 @@ class ImageService
     /**
      * @param string $path
      * @param UploadedFile[] $images
-     * @return array<int>
+     * @return int[]
      */
     public function saveMany(string $path, array $images): array
     {
@@ -45,12 +47,26 @@ class ImageService
     }
 
     /**
-     * @param array<int> $imageIds
+     * @param int[] $imageIds
      * @param Product $model
      * @return void
      */
     public function saveManyRelationshipToProduct(array $imageIds, Product $model): void
     {
         $model->images()->sync($imageIds);
+    }
+
+    /**
+     * @param int $id
+     * @return void|JsonResponse
+     */
+    public function findAndDelete(int $id)
+    {
+        try {
+            $image = Image::findOrFail($id);
+            $image->delete();
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(['message' => 'Invalid Request'], HTTPResponseStatuses::NOT_FOUND);
+        }
     }
 }

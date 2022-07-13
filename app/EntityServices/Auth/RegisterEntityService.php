@@ -8,7 +8,7 @@ use App\Dto\User\UserDto;
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User\Role;
-use App\PivotModels\User\UserRole;
+use App\Services\User\UserRoleService;
 use App\Services\User\UserService;
 
 class RegisterEntityService
@@ -19,8 +19,8 @@ class RegisterEntityService
 
         $userNew = UserService::save($registerData);
 
-        UserRole::create($userNew->id, Role::getIdBySlug('user'))->save();
+        UserRoleService::save($userNew->id, Role::getIdBySlug('user'));
 
-        return new ResponseData(['data' => UserDto::fromModel($userNew), 'status' => HTTPResponseStatuses::CREATED]);
+        return new ResponseData(UserDto::fromModel($userNew), HTTPResponseStatuses::CREATED);
     }
 }

@@ -9,16 +9,13 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/sign-in', [LoginController::class, 'index'])->name('sign-in');
 Route::post('/sign-in', [LoginController::class, 'signIn']);
-
-Route::get('/signup', [RegisterController::class, 'index'])->name('signup');
 Route::post('/signup', [RegisterController::class, 'register']);
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::get('/', [CatalogController::class, 'index'])->name('home');
+    Route::get('/', [CatalogController::class, 'getList'])->name('home');
 
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::get('/profile', [ProfileController::class, 'getUserInfo'])->name('profile');
 
     Route::group([
         'name' => 'profile.',
@@ -35,14 +32,14 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::get('/catalog-management/products/get-update-data/{id}', [ProductManagementController::class, 'getUpdateData'])->name('catalogManagement.products.edit');
             Route::put('/catalog-management/products/{id}', [ProductManagementController::class, 'update'])->name('catalogManagement.products.update');
 
-            Route::delete('/catalog-management/products/{id}', [ProductManagementController::class, 'destroy'])->name('catalogManagement.products.destroy');
+//            Route::delete('/catalog-management/products/{id}', [ProductManagementController::class, 'destroy'])->name('catalogManagement.products.destroy');
 
 //            Route::post('/catalog-management/image/', [ImageController::class, 'create'])->name('catalogManagement.image.create');
             Route::delete('/catalog-management/image/{id}', [ImageController::class, 'destroy'])->name('catalogManagement.image.destroy');
         });
     });
 
-    Route::get('/basket', [BasketController::class, 'index'])->name('basket');
+    Route::get('/basket', [BasketController::class, 'getList'])->name('basket');
     Route::group([
         'name' => 'basket.',
         'prefix' => 'basket'

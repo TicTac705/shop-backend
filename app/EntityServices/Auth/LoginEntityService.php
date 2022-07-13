@@ -4,16 +4,24 @@ namespace App\EntityServices\Auth;
 
 use App\Dto\Auth\AuthorizeDto;
 use App\Helpers\Statuses\HTTPResponseStatuses;
+use App\Http\Requests\Auth\AuthorizeRequest;
 use App\Services\Auth\LoginService;
 use Illuminate\Http\JsonResponse;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginEntityService
 {
-    public function signIn(AuthorizeDto $authData): JsonResponse
+    public function signIn(AuthorizeRequest $request): JsonResponse
     {
-        if (!$token = JWTAuth::attempt($authData->toArray())) {
-            return response()->json(['message' => 'Your credentials are incorrect'], HTTPResponseStatuses::UNAUTHORIZED);
+        $authDTO = AuthorizeDto::fromRequest($request);
+
+        try {
+            if (!$token = JWTAuth::attempt($authDTO->toArray())) {
+                return response()->json(['message' => 'Your credentials are incorrect'], HTTPResponseStatuses::UNAUTHORIZED);
+            }
+        } catch (JWTException $e) {
+            return response()->json(['message' => 'Could not create token'], HTTPResponseStatuses::INTERNAL_SERVER_ERROR);
         }
 
         return LoginService::createNewToken($token);

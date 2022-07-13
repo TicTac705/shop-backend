@@ -2,12 +2,21 @@
 
 namespace App\Services\Catalog;
 
+use App\Models\Catalog\Category;
 use App\Models\Catalog\Product;
 
 class CategoryService
 {
     /**
-     * @param array<int> $categoryIds
+     * @return Category[]
+     */
+    public function getAll(): array
+    {
+        return Category::all()->all();
+    }
+
+    /**
+     * @param int[] $categoryIds
      * @param Product $model
      * @return void
      */

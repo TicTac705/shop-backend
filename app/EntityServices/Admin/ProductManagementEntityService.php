@@ -2,20 +2,37 @@
 
 namespace App\EntityServices\Admin;
 
+use App\Dto\Catalog\CategoryLightDto;
 use App\Dto\Catalog\ProductCreateDto;
 use App\Dto\Catalog\ProductDto;
 use App\Dto\Catalog\ProductUpdateDto;
+use App\Dto\ResponseData;
+use App\Dto\UnitMeasureLightDto;
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Http\Requests\Catalog\ProductCreationRequest;
 use App\Http\Requests\Catalog\ProductUpdateRequest;
 use App\Services\Catalog\CategoryService;
 use App\Services\Catalog\ProductService;
 use App\Services\ImageService;
-use Illuminate\Http\JsonResponse;
+use App\Services\UnitMeasureService;
 
 class ProductManagementEntityService
 {
-    public function store(ProductCreationRequest $request): JsonResponse
+    public function getCreateData(): ResponseData
+    {
+        $unitsMeasure = UnitMeasureService::getAll();
+        $categories = CategoryService::getAll();
+
+        $unitsMeasureDtoList = UnitMeasureLightDto::fromList($unitsMeasure);
+        $categoriesDtoList = CategoryLightDto::fromList($categories);
+
+        return new ResponseData([
+            'unitsMeasure' => $unitsMeasureDtoList,
+            'categories' => $categoriesDtoList
+        ]);
+    }
+
+    public function store(ProductCreationRequest $request): ResponseData
     {
         $uploadedImageIds = [];
         if ($request->hasFile('pictures')) {
@@ -34,15 +51,31 @@ class ProductManagementEntityService
             CategoryService::saveManyRelationshipToProduct($productFormDto->categories, $newProduct);
         }
 
-        return response()->json(
-            [
-                'data' => ProductDto::fromModel($newProduct)->toArray()
-            ],
+        return new ResponseData(
+            ProductDto::fromModel($newProduct),
             HTTPResponseStatuses::CREATED
         );
     }
 
-    public function update(ProductUpdateRequest $request, int $id): JsonResponse
+    public function getUpdateData(int $id): ResponseData
+    {
+        $product = ProductService::getById($id);
+
+        $unitsMeasure = UnitMeasureService::getAll();
+        $categories = CategoryService::getAll();
+
+        $productDto = ProductDto::fromModel($product);
+        $unitsMeasureDtoList = UnitMeasureLightDto::fromList($unitsMeasure);
+        $categoriesDtoList = CategoryLightDto::fromList($categories);
+
+        return new ResponseData([
+            'product' => $productDto,
+            'unitsMeasure' => $unitsMeasureDtoList,
+            'categories' => $categoriesDtoList
+        ]);
+    }
+
+    public function update(ProductUpdateRequest $request, int $id): ResponseData
     {
         $product = ProductService::getById($id);
 
@@ -63,11 +96,6 @@ class ProductManagementEntityService
             ImageService::saveManyRelationshipToProduct($uploadedImageIds, $changedProduct);
         }
 
-        return response()->json(
-            [
-                'data' => ProductDto::fromModel($changedProduct)->toArray()
-            ],
-            HTTPResponseStatuses::OK
-        );
+        return new ResponseData(ProductDto::fromModel($changedProduct));
     }
 }

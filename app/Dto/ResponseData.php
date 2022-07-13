@@ -15,6 +15,16 @@ final class ResponseData extends BaseDto implements Responsable
      */
     public $data;
 
+    /**
+     * @param mixed $data
+     * @param int $status
+     */
+    public function __construct($data, int $status = HTTPResponseStatuses::OK)
+    {
+        $parameters = ['data' => $data, 'status' => $status];
+        parent::__construct($parameters);
+    }
+
     public function toResponse($request): JsonResponse
     {
         $result = $this->data;

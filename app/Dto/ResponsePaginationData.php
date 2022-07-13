@@ -3,16 +3,17 @@
 namespace App\Dto;
 
 use App\Helpers\Statuses\HTTPResponseStatuses;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Symfony\Component\HttpFoundation\Response;
 
 class ResponsePaginationData extends BaseDto implements Responsable
 {
     public int $status = HTTPResponseStatuses::OK;
     public LengthAwarePaginator $paginator;
-    public BaseDtoCollection $collection;
+
+    public array $collection;
 
     /**
      * @param $request
@@ -22,11 +23,11 @@ class ResponsePaginationData extends BaseDto implements Responsable
     {
         return response()->json(
             [
-                'data' => $this->collection->toArray(),
+                'data' => $this->collection,
                 'paginate' => [
-                    'links' => $this->paginator->total(),
-//                    'hasPages' => $this->paginator->hasPages(),
-//                    'hasMorePages' => $this->paginator->hasMorePages()
+                    'lastPage' => $this->paginator->lastPage(),
+                    'currentPage' => $this->paginator->currentPage(),
+                    'totalElements' => $this->paginator->total(),
                 ]
             ],
             $this->status

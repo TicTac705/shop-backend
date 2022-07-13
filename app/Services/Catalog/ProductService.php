@@ -8,6 +8,7 @@ use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Models\Catalog\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductService
 {
@@ -38,7 +39,7 @@ class ProductService
         }
 
         if ($data->unitMeasureId) {
-            $model->setUnitMeasure($data->unitMeasureId);
+            $model->setUnitMeasureId($data->unitMeasureId);
         }
 
         if ($data->store) {
@@ -66,8 +67,8 @@ class ProductService
         }
     }
 
-    public function getList()
+    public function getListWithPagination(int $numberItemsPerPage): LengthAwarePaginator
     {
-        /*...*/
+        return Product::paginate($numberItemsPerPage);
     }
 }

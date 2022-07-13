@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Dto\User\UserDto;
+use App\Dto\ResponseData;
+use App\EntityServices\User\ProfileEntityService;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
-    public function index()
+    public function getUserInfo():ResponseData
     {
-        return response()->json(UserDto::fromModel(Auth::user())->toArray());
+        return ProfileEntityService::getUserInfo();
     }
 }

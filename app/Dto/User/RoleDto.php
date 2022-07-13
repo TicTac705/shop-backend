@@ -15,11 +15,20 @@ class RoleDto extends BaseDto
     public static function fromModel(Role $role): self
     {
         return new self([
-            'id' => $role->id,
-            'name' => $role->name,
-            'slug' => $role->slug,
+            'id' => $role->getId(),
+            'name' => $role->getName(),
+            'slug' => $role->getSlug(),
             'updatedAt' => $role->updated_at->timestamp,
             'createdAt' => $role->created_at->timestamp,
         ]);
+    }
+
+    /**
+     * @param Role[] $items
+     * @return self[]
+     */
+    public function fromList(array $items): array
+    {
+        return array_map(fn(Role $item): self => self::fromModel($item), $items);
     }
 }

@@ -2,86 +2,37 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Dto\Catalog\CategoryDtoCollection;
-use App\Dto\Catalog\ProductDto;
-use App\Dto\Catalog\ProductDtoCollection;
-use App\Dto\Catalog\ProductUpdateDto;
 use App\Dto\ResponseData;
 use App\Dto\ResponsePaginationData;
-use App\Dto\UnitMeasureDtoCollection;
 use App\EntityServices\Admin\ProductManagementEntityService;
-use App\Helpers\Statuses\HTTPResponseStatuses;
+use App\EntityServices\Catalog\CatalogEntityService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\ProductCreationRequest;
 use App\Http\Requests\Catalog\ProductUpdateRequest;
-use App\Models\Catalog\Category;
-use App\Models\Catalog\Product;
-use App\Models\UnitMeasure;
-use App\Services\Catalog\CategoryService;
-use App\Services\Catalog\ProductService;
-use App\Services\ImageService;
-use Illuminate\Http\JsonResponse;
 
 class ProductManagementController extends Controller
 {
     public function getList(): ResponsePaginationData
     {
-        $products = Product::paginate(10);
-
-        $productsDto = new ProductDtoCollection($products->items());
-        //        $collection = array_map(fn(Product $item):ProductDto => ProductDto::fromModel($item), $data);
-        return new ResponsePaginationData([
-            'paginator' => $products,
-            'collection' => $productsDto,
-        ]);
+        return CatalogEntityService::getList();
     }
 
     public function getCreateData(): ResponseData
     {
-        $unitsMeasure = UnitMeasure::all()->all();
-        $categories = Category::all()->all();
-
-        $unitsMeasureDtoCollection = new UnitMeasureDtoCollection($unitsMeasure);
-        $categoriesDtoCollection = new CategoryDtoCollection($categories);
-
-        return new ResponseData([
-            'data' => [
-                'unitsMeasure' => $unitsMeasureDtoCollection->only(['id', 'name'])->toArray(),
-                'categories' => $categoriesDtoCollection->only(['id', 'name'])->toArray()
-            ]
-        ]);
+        return ProductManagementEntityService::getCreateData();
     }
 
-    public function store(ProductCreationRequest $request): JsonResponse
+    public function store(ProductCreationRequest $request): ResponseData
     {
         return ProductManagementEntityService::store($request);
     }
 
-    /**
-     * @param int $id
-     * @return ResponseData
-     */
-    public function getUpdateData(int $id)
+    public function getUpdateData(int $id): ResponseData
     {
-        $product = ProductService::getById($id);
-
-        $unitsMeasure = UnitMeasure::all()->all();
-        $categories = Category::all()->all();
-
-        $productDto = ProductDto::fromModel($product);
-        $unitsMeasureDtoCollection = new UnitMeasureDtoCollection($unitsMeasure);
-        $categoriesDtoCollection = new CategoryDtoCollection($categories);
-
-        return new ResponseData([
-            'data' => [
-                'product' => $productDto->toArray(),
-                'unitsMeasure' => $unitsMeasureDtoCollection->only(['id', 'name'])->toArray(),
-                'categories' => $categoriesDtoCollection->only(['id', 'name'])->toArray()
-            ]
-        ]);
+        return ProductManagementEntityService::getUpdateData($id);
     }
 
-    public function update(ProductUpdateRequest $request, int $id)
+    public function update(ProductUpdateRequest $request, int $id): ResponseData
     {
         return ProductManagementEntityService::update($request, $id);
     }

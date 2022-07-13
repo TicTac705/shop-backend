@@ -53,7 +53,7 @@ class Product extends ModelBase
         $product->setName($name);
         $product->setDescription($description);
         $product->setPrice($price);
-        $product->setUnitMeasure($unitMeasureId);
+        $product->setUnitMeasureId($unitMeasureId);
         $product->setStore($store);
         $product->setUserId($userId);
 
@@ -65,7 +65,30 @@ class Product extends ModelBase
         return $this->name;
     }
 
-    /*...*/
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function getPrice(): int
+    {
+        return $this->price;
+    }
+
+    public function getUnitMeasureId(): int
+    {
+        return $this->unit_measure_id;
+    }
+
+    public function getStore(): int
+    {
+        return $this->store;
+    }
+
+    public function getUserId(): int
+    {
+        return $this->user_id;
+    }
 
     public function setName(string $name): self
     {
@@ -85,7 +108,7 @@ class Product extends ModelBase
         return $this;
     }
 
-    public function setUnitMeasure(int $unitMeasureId): self
+    public function setUnitMeasureId(int $unitMeasureId): self
     {
         $this->unit_measure_id = $unitMeasureId;
         return $this;
