@@ -9,8 +9,8 @@ class RoleDto extends BaseDto
     public int $id;
     public string $name;
     public string $slug;
-    public int $updatedAt;
-    public int $createdAt;
+    public ?int $updatedAt;
+    public ?int $createdAt;
 
     public static function fromModel(Role $role): self
     {
@@ -18,8 +18,8 @@ class RoleDto extends BaseDto
             'id' => $role->getId(),
             'name' => $role->getName(),
             'slug' => $role->getSlug(),
-            'updatedAt' => $role->updated_at->timestamp,
-            'createdAt' => $role->created_at->timestamp,
+            'updatedAt' => $role->getUpdatedAtTimestamp(),
+            'createdAt' => $role->getCreatedAtTimestamp(),
         ]);
     }
 

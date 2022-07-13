@@ -21,24 +21,24 @@ class ProductDto extends BaseDto
     /** @var \App\Dto\ImageLightDto[] */
     public array $images;
     public UserLightDto $creator;
-    public int $updatedAt;
-    public int $createdAt;
+    public ?int $updatedAt;
+    public ?int $createdAt;
 
 
     public static function fromModel(Product $product): self
     {
         return new self([
-            'id' => $product->id,
-            'name' => $product->name,
-            'description' => $product->description,
-            'price' => $product->price,
+            'id' => $product->getId(),
+            'name' => $product->getName(),
+            'description' => $product->getDescription(),
+            'price' => $product->getPrice(),
             'unitMeasure' => UnitMeasureLightDto::fromModel($product->unitMeasure()->getResults()),
-            'store' => $product->store,
+            'store' => $product->getStore(),
             'categories' => CategoryLightDto::fromList($product->categories()->getResults()->all()),
             'images' => ImageLightDto::fromList($product->images()->getResults()->all()),
             'creator' => UserLightDto::fromModel($product->user()->getResults()),
-            'updatedAt' => $product->updated_at->timestamp,
-            'createdAt' => $product->created_at->timestamp,
+            'updatedAt' => $product->getUpdatedAtTimestamp(),
+            'createdAt' => $product->getCreatedAtTimestamp(),
         ]);
     }
 

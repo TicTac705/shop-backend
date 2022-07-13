@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class ModelBase extends Model
 {
@@ -13,6 +16,17 @@ class ModelBase extends Model
     {
         return $this->id;
     }
+
+    public function getCreatedAtTimestamp(): ?int
+    {
+        return $this->created_at === null ? null : $this->created_at->timestamp;
+    }
+
+    public function getUpdatedAtTimestamp(): ?int
+    {
+        return $this->updated_at === null ? null : $this->updated_at->timestamp;
+    }
+
 
     public function saveAndReturn(): ModelBase
     {

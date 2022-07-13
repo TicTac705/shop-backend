@@ -3,23 +3,22 @@
 namespace App\Models\User;
 
 use App\Dto\User\RoleDto;
-use App\Dto\User\RoleDtoCollection;
 use App\Models\Catalog\Basket;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Auth;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-use App\Models\UserBase as Authenticatable;
+use App\Models\User\UserBase as Authenticatable;
 use App\PivotModels\User\UserRole;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
  * @property int $id
  * @property string $name
  * @property string $email
  * @property string $password
- * @property ?Carbon $email_verified_at
+ * @property null|Carbon $email_verified_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *

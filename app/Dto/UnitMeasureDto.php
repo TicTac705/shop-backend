@@ -9,8 +9,8 @@ class UnitMeasureDto extends BaseDto
     public int $id;
     public string $name;
     public string $slug;
-    public int $updatedAt;
-    public int $createdAt;
+    public ?int $updatedAt;
+    public ?int $createdAt;
 
     public function fromModel(UnitMeasure $unitMeasure): self
     {
@@ -18,8 +18,8 @@ class UnitMeasureDto extends BaseDto
             'id' => $unitMeasure->getId(),
             'name' => $unitMeasure->getName(),
             'slug' => $unitMeasure->getSlug(),
-            'updatedAt' => $unitMeasure->updated_at->timestamp,
-            'createdAt' => $unitMeasure->created_at->timestamp,
+            'updatedAt' => $unitMeasure->getUpdatedAtTimestamp(),
+            'createdAt' => $unitMeasure->getCreatedAtTimestamp(),
         ]);
     }
 

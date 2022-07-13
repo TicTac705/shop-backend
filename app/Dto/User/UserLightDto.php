@@ -12,8 +12,8 @@ class UserLightDto extends BaseDto
     public static function fromModel(User $user): self
     {
         return new self([
-            'id' => $user->id,
-            'name' => $user->name
+            'id' => $user->getId(),
+            'name' => $user->getName()
         ]);
     }
 }

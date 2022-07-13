@@ -9,7 +9,7 @@ class BasketService
 {
     public function getUserCart(User $user): Basket
     {
-        $baskets = $user->baskets;
+        $baskets = $user->baskets()->getResults();
         $basket = null;
 
         if ($baskets->isNotEmpty()) {
@@ -17,7 +17,7 @@ class BasketService
         }
 
         if ($basket === null) {
-            return $this->createUserCart($user);
+            return self::createUserCart($user);
         }
 
         return $basket;
@@ -25,6 +25,6 @@ class BasketService
 
     public function createUserCart(User $user): Basket
     {
-        return Basket::create($user->id)->saveAndReturn();
+        return Basket::create($user->getId())->saveAndReturn();
     }
 }

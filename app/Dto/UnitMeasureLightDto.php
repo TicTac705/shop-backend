@@ -11,8 +11,8 @@ class UnitMeasureLightDto extends BaseDto
     public function fromModel(UnitMeasure $unitMeasure): self
     {
         return new self([
-            'id' => $unitMeasure->id,
-            'name' => $unitMeasure->name
+            'id' => $unitMeasure->getId(),
+            'name' => $unitMeasure->getName()
         ]);
     }
 

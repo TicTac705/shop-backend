@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Models\Catalog\Product;
+use App\Models\User\User;
 use App\PivotModels\Catalog\ProductImage;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
@@ -109,5 +111,10 @@ class Image extends ModelBase
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'catalog_products_images')->withTimestamps()->using(ProductImage::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

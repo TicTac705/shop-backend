@@ -9,8 +9,8 @@ class CategoryDto extends BaseDto
     public int $id;
     public string $name;
     public string $slug;
-    public int $updatedAt;
-    public int $createdAt;
+    public ?int $updatedAt;
+    public ?int $createdAt;
 
     public static function fromModel(Category $category): self
     {
@@ -18,8 +18,8 @@ class CategoryDto extends BaseDto
             'id' => $category->getId(),
             'name' => $category->getName(),
             'slug' => $category->getSlug(),
-            'updatedAt' => $category->updated_at->timestamp,
-            'createdAt' => $category->created_at->timestamp,
+            'updatedAt' => $category->getUpdatedAtTimestamp(),
+            'createdAt' => $category->getCreatedAtTimestamp(),
         ]);
     }
 

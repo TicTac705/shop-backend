@@ -3,7 +3,9 @@
 namespace App\Models\Catalog;
 
 use App\Models\ModelBase;
+use App\Models\User\User;
 use App\PivotModels\Catalog\BasketProduct;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
@@ -67,5 +69,10 @@ class Basket extends ModelBase
     public function items(): HasMany
     {
         return $this->hasMany(BasketProduct::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

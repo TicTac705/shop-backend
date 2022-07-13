@@ -12,8 +12,8 @@ class UserDto extends BaseDto
     public string $email;
     public ?Carbon $emailVerifiedAt;
     public RoleDto $role;
-    public int $updatedAt;
-    public int $createdAt;
+    public ?int $updatedAt;
+    public ?int $createdAt;
 
     public static function fromModel(User $user): self
     {
@@ -22,9 +22,9 @@ class UserDto extends BaseDto
             'name' => $user->getName(),
             'email' => $user->getEmail(),
             'emailVerifiedAt' => $user->getEmailVerifiedAt(),
-            'role' => RoleDto::fromModel($user->role()->first())->only('id', 'name', 'slug'),
-            'updatedAt' => $user->updated_at->timestamp,
-            'createdAt' => $user->created_at->timestamp,
+            'role' => RoleDto::fromModel($user->role()->first()),
+            'updatedAt' => $user->getUpdatedAtTimestamp(),
+            'createdAt' => $user->getCreatedAtTimestamp(),
         ]);
     }
 }

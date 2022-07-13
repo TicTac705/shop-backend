@@ -25,8 +25,8 @@ class BasketItemDto extends BaseDto
             'count' => $basketItem->getCount(),
             'price' => $basketItem->getPrice(),
             'totalPrice' => $basketItem->getPrice() * $basketItem->getCount(),
-            'updatedAt' => null,
-            'createdAt' => null,
+            'updatedAt' => $basketItem->getUpdatedAtTimestamp(),
+            'createdAt' => $basketItem->getCreatedAtTimestamp(),
         ]);
     }
 
