@@ -1,30 +1,31 @@
 <?php
 namespace App\Dto;
 
+use App\Dto\User\UserLightDto;
 use App\Models\Image;
 
 class ImageDto extends BaseDto
 {
     public int $id;
-    public int $userId;
+    public UserLightDto $creator;
     public string $name;
     public string $nameOriginal;
     public int $size;
     public string $src;
-    public int $updatedAt;
-    public int $createdAt;
+    public ?int $updatedAt;
+    public ?int $createdAt;
 
     public function fromModel(Image $image): self
     {
         return new self([
-            'id' => $image->id,
-            'name' => $image->name,
-            'nameOriginal' => $image->name_original,
-            'size' => $image->size,
-            'src' => $image->src,
-            'userId' => $image->user_id,
-            'updatedAt' => $image->updated_at->timestamp,
-            'createdAt' => $image->created_at->timestamp,
+            'id' => $image->getId(),
+            'name' => $image->getName(),
+            'nameOriginal' => $image->getNameOriginal(),
+            'size' => $image->getSize(),
+            'src' => $image->getSrc(),
+            'creator' => UserLightDto::fromModel($image->user()->getResults()),
+            'updatedAt' => $image->getUpdatedAtTimestamp(),
+            'createdAt' => $image->getCreatedAtTimestamp(),
         ]);
     }
 }
