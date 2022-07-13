@@ -18,6 +18,8 @@ use App\Services\UnitMeasureService;
 
 class ProductManagementEntityService
 {
+    //создать конструктор с сервисами
+
     public function getCreateData(): ResponseData
     {
         $unitsMeasure = UnitMeasureService::getAll();
@@ -84,7 +86,7 @@ class ProductManagementEntityService
             $uploadedImageIds = ImageService::saveMany('public/catalog_img', $request->file('pictures'));
         }
 
-        $productFormDto = ProductUpdateDto::fromRequest($request);
+        $productFormDto = ProductUpdateDto::fromRequest($request);//вынести в контроллер
 
         $changedProduct = ProductService::update($product, $productFormDto);
 
@@ -96,6 +98,6 @@ class ProductManagementEntityService
             ImageService::saveManyRelationshipToProduct($uploadedImageIds, $changedProduct);
         }
 
-        return new ResponseData(ProductDto::fromModel($changedProduct));
+        return new ResponseData(ProductDto::fromModel($changedProduct));//вынести в контроллер
     }
 }

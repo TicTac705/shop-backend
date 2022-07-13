@@ -66,7 +66,7 @@ class ImageService
             $image = Image::findOrFail($id);
             $image->delete();
         } catch (ModelNotFoundException $exception) {
-            return response()->json(['message' => 'Invalid Request'], HTTPResponseStatuses::NOT_FOUND);
+            return response()->json(['message' => 'Invalid Request'], HTTPResponseStatuses::NOT_FOUND);//Нельзя так!!! =)
         }
     }
 }

@@ -44,9 +44,9 @@ Route::group(['middleware' => 'auth:api'], function () {
         'name' => 'basket.',
         'prefix' => 'basket'
     ], function () {
-        Route::post('/{product}', [BasketController::class, 'store'])->name('store');
-        Route::put('/{product}', [BasketController::class, 'update'])->name('update');
-        Route::delete('/{product}', [BasketController::class, 'destroy'])->name('destroy');
+        Route::post('/product', [BasketController::class, 'store'])->name('store');
+        Route::put('/product', [BasketController::class, 'update'])->name('update');
+        Route::delete('/product', [BasketController::class, 'destroy'])->name('destroy');
     });
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
