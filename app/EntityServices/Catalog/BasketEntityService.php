@@ -3,8 +3,9 @@
 namespace App\EntityServices\Catalog;
 
 use App\Dto\Catalog\BasketDto;
-use App\Dto\Catalog\ProductAddedToCartDto;
-use App\PivotModels\Catalog\BasketProduct;
+use App\Dto\Catalog\BasketItemDto;
+use App\Dto\Catalog\ProductAddedToBasketDto;
+use App\Exceptions\NonExistingBasketItemException;
 use App\Services\Catalog\BasketService;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +23,7 @@ class BasketEntityService
         return BasketDto::fromModel($this->basketService->getUserCart(Auth::user()));
     }
 
-    public function store(ProductAddedToCartDto $dto): BasketProduct
+    public function storeOrUpdate(ProductAddedToBasketDto $dto): BasketItemDto
     {
         $basket = $this->basketService->getUserCart(Auth::user());
 
@@ -32,6 +33,20 @@ class BasketEntityService
             $item = $this->basketService->addItem($basket, $dto->productId, $dto->quantity);
         }
 
-        return $item;
+        return BasketItemDto::fromModel($item);
+    }
+
+    /**
+     * @throws NonExistingBasketItemException
+     */
+    public function destroy(int $productId): void
+    {
+        $basket = $this->basketService->getUserCart(Auth::user());
+
+        if (!$this->basketService->checkItem($basket, $productId)) {
+            throw new NonExistingBasketItemException();
+        }
+
+        $this->basketService->deleteItem($basket, $productId);
     }
 }

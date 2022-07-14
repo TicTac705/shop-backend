@@ -71,4 +71,9 @@ class BasketService
             $quantity
         )->saveAndReturn();
     }
+
+    public function deleteItem(Basket $basket, int $productId): void
+    {
+        $basket->items()->where('product_id', '=', $productId)->delete();
+    }
 }

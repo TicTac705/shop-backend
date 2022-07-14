@@ -5,7 +5,7 @@ namespace App\Dto\Catalog;
 use App\Dto\BaseDto;
 use App\Http\Requests\Catalog\BasketItemAddingRequest;
 
-class ProductAddedToCartDto extends BaseDto
+class ProductAddedToBasketDto extends BaseDto
 {
     public int $productId;
     public int $quantity;

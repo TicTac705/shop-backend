@@ -26,7 +26,7 @@ class BasketItemAddingRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'product_id' => ['required', 'integer', 'exists:App\Models\Catalog\Product,id'],

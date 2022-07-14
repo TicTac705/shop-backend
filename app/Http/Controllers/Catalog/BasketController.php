@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Catalog;
 
-use App\Dto\Catalog\ProductAddedToCartDto;
+use App\Dto\Catalog\ProductAddedToBasketDto;
 use App\EntityServices\Catalog\BasketEntityService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\BasketItemAddingRequest;
@@ -22,10 +22,16 @@ class BasketController extends Controller
         return response()->json($this->basketEntityService->getBasket());
     }
 
-    public function store(BasketItemAddingRequest $request): JsonResponse
+    public function storeOrUpdate(BasketItemAddingRequest $request): JsonResponse
     {
-        $productAddedToCartDto = ProductAddedToCartDto::fromRequest($request);
+        $productAddedToCartDto = ProductAddedToBasketDto::fromRequest($request);
 
-        return response()->json(BasketEntityService::store($productAddedToCartDto));
+        return response()->json($this->basketEntityService->storeOrUpdate($productAddedToCartDto));
+    }
+
+    public function destroy(int $id): JsonResponse
+    {
+        $this->basketEntityService->destroy($id);
+        return response()->json(['message' => 'Item successfully deleted']);
     }
 }
