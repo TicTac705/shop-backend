@@ -39,14 +39,14 @@ Route::group(['middleware' => 'auth:api'], function () {
         });
     });
 
-    Route::get('/basket', [BasketController::class, 'getList'])->name('basket');
+    Route::get('/basket', [BasketController::class, 'getBasket'])->name('basket');
     Route::group([
         'name' => 'basket.',
         'prefix' => 'basket'
     ], function () {
-        Route::post('/product', [BasketController::class, 'store'])->name('store');
-        Route::put('/product', [BasketController::class, 'update'])->name('update');
-        Route::delete('/product', [BasketController::class, 'destroy'])->name('destroy');
+        Route::post('/product', [BasketController::class, 'store'])->name('product.store');
+        Route::put('/product', [BasketController::class, 'update'])->name('product.update');
+        Route::delete('/product', [BasketController::class, 'destroy'])->name('product.destroy');
     });
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

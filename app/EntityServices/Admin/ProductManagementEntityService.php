@@ -16,12 +16,28 @@ use App\Services\UnitMeasureService;
 
 class ProductManagementEntityService
 {
-    //создать конструктор с сервисами
+    private UnitMeasureService $unitMeasureService;
+    private CategoryService $categoryService;
+    private ImageService $imageService;
+    private ProductService $productService;
+
+    public function __construct(
+        UnitMeasureService $unitMeasureService,
+        CategoryService    $categoryService,
+        ImageService       $imageService,
+        ProductService     $productService
+    )
+    {
+        $this->unitMeasureService = $unitMeasureService;
+        $this->categoryService = $categoryService;
+        $this->imageService = $imageService;
+        $this->productService = $productService;
+    }
 
     public function getCreateData(): ProductCreationFormDto
     {
-        $unitsMeasure = UnitMeasureService::getAll();
-        $categories = CategoryService::getAll();
+        $unitsMeasure = $this->unitMeasureService->getAll();
+        $categories = $this->categoryService->getAll();
 
         $unitsMeasureDtoList = UnitMeasureLightDto::fromList($unitsMeasure);
         $categoriesDtoList = CategoryLightDto::fromList($categories);
@@ -33,17 +49,17 @@ class ProductManagementEntityService
     {
         $uploadedImageIds = [];
         if (is_array($dto->pictures) && count($dto->pictures) > 0) {
-            $uploadedImageIds = ImageService::saveMany('public/catalog_img', $dto->pictures);
+            $uploadedImageIds = $this->imageService->saveMany('public/catalog_img', $dto->pictures);
         }
 
-        $newProduct = ProductService::save($dto);
+        $newProduct = $this->productService->save($dto);
 
         if (count($uploadedImageIds) > 0) {
-            ImageService::saveManyRelationshipToProduct($uploadedImageIds, $newProduct);
+            $this->imageService->saveManyRelationshipToProduct($uploadedImageIds, $newProduct);
         }
 
         if (count($dto->categories) > 0) {
-            CategoryService::saveManyRelationshipToProduct($dto->categories, $newProduct);
+            $this->categoryService->saveManyRelationshipToProduct($dto->categories, $newProduct);
         }
 
         return ProductDto::fromModel($newProduct);
@@ -51,10 +67,10 @@ class ProductManagementEntityService
 
     public function getUpdateData(int $id): ProductEditFormDto
     {
-        $product = ProductService::getById($id);
+        $product = $this->productService->getById($id);
 
-        $unitsMeasure = UnitMeasureService::getAll();
-        $categories = CategoryService::getAll();
+        $unitsMeasure = $this->unitMeasureService->getAll();
+        $categories = $this->categoryService->getAll();
 
         $productDto = ProductDto::fromModel($product);
         $unitsMeasureDtoList = UnitMeasureLightDto::fromList($unitsMeasure);
@@ -63,23 +79,23 @@ class ProductManagementEntityService
         return ProductEditFormDto::fromDto($productDto, $unitsMeasureDtoList, $categoriesDtoList);
     }
 
-    public function update(ProductUpdateDto $dto, int $id): ProductDto
+    public function update(int $id, ProductUpdateDto $dto): ProductDto
     {
-        $product = ProductService::getById($id);
+        $product = $this->productService->getById($id);
 
         $uploadedImageIds = [];
         if (is_array($dto->pictures) && count($dto->pictures) > 0) {
-            $uploadedImageIds = ImageService::saveMany('public/catalog_img', $dto->pictures);
+            $uploadedImageIds = $this->imageService->saveMany('public/catalog_img', $dto->pictures);
         }
 
-        $changedProduct = ProductService::update($product, $dto);
+        $changedProduct = $this->productService->update($product, $dto);
 
         if (count($dto->categories) > 0) {
-            CategoryService::saveManyRelationshipToProduct($dto->categories, $changedProduct);
+            $this->categoryService->saveManyRelationshipToProduct($dto->categories, $changedProduct);
         }
 
         if (count($uploadedImageIds) > 0) {
-            ImageService::saveManyRelationshipToProduct($uploadedImageIds, $changedProduct);
+            $this->imageService->saveManyRelationshipToProduct($uploadedImageIds, $changedProduct);
         }
 
         return ProductDto::fromModel($changedProduct);

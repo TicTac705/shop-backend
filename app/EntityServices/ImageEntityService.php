@@ -6,8 +6,15 @@ use App\Services\ImageService;
 
 class ImageEntityService
 {
+    private ImageService $imageService;
+
+    public function __construct(ImageService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
+
     public function destroy(int $id): void
     {
-        ImageService::findAndDelete($id);
+        $this->imageService->findAndDelete($id);
     }
 }

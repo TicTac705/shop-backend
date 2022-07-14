@@ -12,7 +12,6 @@ use Illuminate\Support\Carbon;
  * @property int $basket_id
  * @property int $product_id
  * @property int $count
- * @property float $price
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
@@ -24,8 +23,7 @@ class BasketProduct extends PivotBase
     protected $fillable = [
         'basket_id',
         'product_id',
-        'count',
-        'price',
+        'count'
     ];
 
     protected $casts = [
@@ -41,8 +39,7 @@ class BasketProduct extends PivotBase
     public static function create(
         int $basketId,
         int $productId,
-        int $count,
-        float $price
+        int $count
     ): self
     {
         $productCategory = new self();
@@ -50,7 +47,6 @@ class BasketProduct extends PivotBase
         $productCategory->setBasketId($basketId);
         $productCategory->setProductId($productId);
         $productCategory->setCount($count);
-        $productCategory->setPrice($price);
 
         return $productCategory;
     }
@@ -70,11 +66,6 @@ class BasketProduct extends PivotBase
         return $this->count;
     }
 
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
     public function setBasketId(int $basketId): self
     {
         $this->basket_id = $basketId;
@@ -90,12 +81,6 @@ class BasketProduct extends PivotBase
     public function setCount(int $count): self
     {
         $this->count = $count;
-        return $this;
-    }
-
-    public function setPrice(float $price): self
-    {
-        $this->price = $price;
         return $this;
     }
 

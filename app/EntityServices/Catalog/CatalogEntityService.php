@@ -8,9 +8,16 @@ use App\Services\Catalog\ProductService;
 
 class CatalogEntityService
 {
+    private ProductService $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+
     public function getList(): PaginationDto
     {
-        $products = ProductService::getListWithPagination(10);
+        $products = $this->productService->getListWithPagination(10);
 
         return PaginationDto::fromResultService($products, ProductDto::fromList($products->items()));
     }

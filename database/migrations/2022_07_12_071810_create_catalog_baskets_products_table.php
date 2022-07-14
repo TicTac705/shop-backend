@@ -18,7 +18,6 @@ class CreateCatalogBasketsProductsTable extends Migration
             $table->unsignedBigInteger('basket_id');
             $table->unsignedBigInteger('product_id');
             $table->bigInteger('count');
-            $table->double('price');
             $table->timestamps();
 
             $table->foreign('product_id')

@@ -8,8 +8,15 @@ use Illuminate\Http\JsonResponse;
 
 class ProfileController extends Controller
 {
-    public function getUserInfo():JsonResponse
+    private ProfileEntityService $profileEntityService;
+
+    public function __construct(ProfileEntityService $profileEntityService)
     {
-        return response()->json(ProfileEntityService::getUserInfo());
+        $this->profileEntityService = $profileEntityService;
+    }
+
+    public function getUserInfo(): JsonResponse
+    {
+        return response()->json($this->profileEntityService->getUserInfo());
     }
 }

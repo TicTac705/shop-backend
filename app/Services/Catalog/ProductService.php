@@ -52,11 +52,7 @@ class ProductService
         return $model;
     }
 
-    /**
-     * @param int $id
-     * @return Product|JsonResponse
-     */
-    public function getById(int $id)
+    public function getById(int $id): Product
     {
         return Product::findOrFail($id);
     }

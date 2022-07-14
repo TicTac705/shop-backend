@@ -14,14 +14,26 @@ use Illuminate\Http\JsonResponse;
 
 class ProductManagementController extends Controller
 {
+    private CatalogEntityService $catalogEntityService;
+    private ProductManagementEntityService $productManagementEntityService;
+
+    public function __construct(
+        CatalogEntityService           $catalogEntityService,
+        ProductManagementEntityService $productManagementEntityService
+    )
+    {
+        $this->catalogEntityService = $catalogEntityService;
+        $this->productManagementEntityService = $productManagementEntityService;
+    }
+
     public function getList(): JsonResponse
     {
-        return response()->json(CatalogEntityService::getList());
+        return response()->json($this->catalogEntityService->getList());
     }
 
     public function getCreateData(): JsonResponse
     {
-        return response()->json(ProductManagementEntityService::getCreateData());
+        return response()->json($this->productManagementEntityService->getCreateData());
     }
 
     public function store(ProductCreationRequest $request): JsonResponse
@@ -29,20 +41,20 @@ class ProductManagementController extends Controller
         $productFormDto = ProductCreateDto::fromRequest($request);
 
         return response()->json(
-            ProductManagementEntityService::store($productFormDto),
+            $this->productManagementEntityService->store($productFormDto),
             HTTPResponseStatuses::CREATED
         );
     }
 
     public function getUpdateData(int $id): JsonResponse
     {
-        return response()->json(ProductManagementEntityService::getUpdateData($id));
+        return response()->json($this->productManagementEntityService->getUpdateData($id));
     }
 
     public function update(ProductUpdateRequest $request, int $id): JsonResponse
     {
         $productFormDto = ProductUpdateDto::fromRequest($request);
 
-        return response()->json(ProductManagementEntityService::update($productFormDto, $id));
+        return response()->json($this->productManagementEntityService->update($id, $productFormDto));
     }
 }

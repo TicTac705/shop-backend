@@ -11,8 +11,6 @@ class BasketItemDto extends BaseDto
     public int $basketId;
     public ProductDto $product;
     public int $count;
-    public float $price;
-    public float $totalPrice;
     public ?int $updatedAt;
     public ?int $createdAt;
 
@@ -23,8 +21,6 @@ class BasketItemDto extends BaseDto
             'basketId' => $basketItem->getBasketId(),
             'product' => ProductDto::fromModel($basketItem->product()->getResults()),
             'count' => $basketItem->getCount(),
-            'price' => $basketItem->getPrice(),
-            'totalPrice' => $basketItem->getPrice() * $basketItem->getCount(),
             'updatedAt' => $basketItem->getUpdatedAtTimestamp(),
             'createdAt' => $basketItem->getCreatedAtTimestamp(),
         ]);

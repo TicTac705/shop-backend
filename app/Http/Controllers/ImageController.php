@@ -7,9 +7,16 @@ use Illuminate\Http\JsonResponse;
 
 class ImageController extends Controller
 {
+    private ImageEntityService $imageEntityService;
+
+    public function __construct(ImageEntityService $imageEntityService)
+    {
+        $this->imageEntityService = $imageEntityService;
+    }
+
     public function destroy(int $id): JsonResponse
     {
-        ImageEntityService::destroy($id);
+        $this->imageEntityService->destroy($id);
 
         return response()->json(['message' => 'Deleted successfully']);
     }

@@ -2,24 +2,30 @@
 
 namespace App\Http\Controllers\Catalog;
 
-use App\Dto\Catalog\BasketDto;
+use App\Dto\Catalog\ProductAddedToCartDto;
+use App\EntityServices\Catalog\BasketEntityService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\BasketItemAddingRequest;
-use App\Services\Catalog\BasketService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 
 class BasketController extends Controller
 {
-    public function getList(): JsonResponse
+    private BasketEntityService $basketEntityService;
+
+    public function __construct(BasketEntityService $basketEntityService)
     {
-        return response()->json(BasketDto::fromModel(BasketService::getUserCart(Auth::user())));
+        $this->basketEntityService = $basketEntityService;
+    }
+
+    public function getBasket(): JsonResponse
+    {
+        return response()->json($this->basketEntityService->getBasket());
     }
 
     public function store(BasketItemAddingRequest $request): JsonResponse
     {
-        $basket = BasketService::getUserCart(Auth::user());
+        $productAddedToCartDto = ProductAddedToCartDto::fromRequest($request);
 
-        return response()->json(BasketDto::fromModel(BasketService::getUserCart(Auth::user())));
+        return response()->json(BasketEntityService::store($productAddedToCartDto));
     }
 }

@@ -11,23 +11,30 @@ use Illuminate\Http\JsonResponse;
 
 class LoginController extends Controller
 {
+    private LoginEntityService $loginEntityService;
+
+    public function __construct(LoginEntityService $loginEntityService)
+    {
+        $this->loginEntityService = $loginEntityService;
+    }
+
     /**
      * @throws AuthErrorException
      */
     public function signIn(AuthorizeRequest $request): JsonResponse
     {
         $authDTO = AuthorizeDto::fromRequest($request);
-        return response()->json(LoginEntityService::signin($authDTO));
+        return response()->json($this->loginEntityService->signin($authDTO));
     }
 
     public function refresh(): JsonResponse
     {
-        return response()->json(LoginEntityService::refresh());
+        return response()->json($this->loginEntityService->refresh());
     }
 
     public function logout(): JsonResponse
     {
-        LoginEntityService::logout();
+        $this->loginEntityService->logout();
         return response()->json(['message' => 'You successfully logged out']);
     }
 }

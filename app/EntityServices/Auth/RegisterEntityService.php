@@ -10,11 +10,23 @@ use App\Services\User\UserService;
 
 class RegisterEntityService
 {
+    private UserService $userService;
+    private UserRoleService $userRoleService;
+
+    public function __construct(
+        UserService     $userService,
+        UserRoleService $userRoleService
+    )
+    {
+        $this->userService = $userService;
+        $this->userRoleService = $userRoleService;
+    }
+
     public function register(RegisterDto $dto): UserDto
     {
-        $userNew = UserService::save($dto);
+        $userNew = $this->userService->save($dto);
 
-        UserRoleService::save($userNew->getId(), Role::getIdBySlug('user'));
+        $this->userRoleService->save($userNew->getId(), Role::getIdBySlug('user'));
 
         return UserDto::fromModel($userNew);
     }
