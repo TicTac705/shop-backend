@@ -3,18 +3,15 @@
 namespace App\EntityServices\Catalog;
 
 use App\Dto\Catalog\ProductDto;
-use App\Dto\ResponsePaginationData;
+use App\Dto\PaginationDto;
 use App\Services\Catalog\ProductService;
 
 class CatalogEntityService
 {
-    public function getList(): ResponsePaginationData
+    public function getList(): PaginationDto
     {
         $products = ProductService::getListWithPagination(10);
 
-        return new ResponsePaginationData([
-            'paginator' => $products,
-            'collection' => ProductDto::fromList($products->items()),
-        ]);
+        return PaginationDto::fromResultService($products, ProductDto::fromList($products->items()));
     }
 }

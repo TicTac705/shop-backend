@@ -2,11 +2,8 @@
 
 namespace App\Services;
 
-use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Models\Catalog\Product;
 use App\Models\Image;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 
@@ -56,17 +53,9 @@ class ImageService
         $model->images()->sync($imageIds);
     }
 
-    /**
-     * @param int $id
-     * @return void|JsonResponse
-     */
-    public function findAndDelete(int $id)
+    public function findAndDelete(int $id): void
     {
-        try {
-            $image = Image::findOrFail($id);
-            $image->delete();
-        } catch (ModelNotFoundException $exception) {
-            return response()->json(['message' => 'Invalid Request'], HTTPResponseStatuses::NOT_FOUND);//Нельзя так!!! =)
-        }
+        $image = Image::findOrFail($id);
+        $image->delete();
     }
 }

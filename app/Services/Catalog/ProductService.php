@@ -4,9 +4,7 @@ namespace App\Services\Catalog;
 
 use App\Dto\Catalog\ProductCreateDto;
 use App\Dto\Catalog\ProductUpdateDto;
-use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Models\Catalog\Product;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -60,11 +58,7 @@ class ProductService
      */
     public function getById(int $id)
     {
-        try {
-            return Product::findOrFail($id);
-        } catch (ModelNotFoundException $exception) {
-            return response()->json(['message' => 'Invalid Request'], HTTPResponseStatuses::NOT_FOUND);
-        }
+        return Product::findOrFail($id);
     }
 
     public function getListWithPagination(int $numberItemsPerPage): LengthAwarePaginator

@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Catalog;
 
-use App\Dto\ResponsePaginationData;
 use App\EntityServices\Catalog\CatalogEntityService;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 
 class CatalogController extends Controller
 {
-    public function getList(): ResponsePaginationData
+    public function getList(): JsonResponse
     {
-        return CatalogEntityService::getList();
+        return response()->json(CatalogEntityService::getList());
     }
 }

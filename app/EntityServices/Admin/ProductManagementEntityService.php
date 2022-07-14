@@ -4,13 +4,11 @@ namespace App\EntityServices\Admin;
 
 use App\Dto\Catalog\CategoryLightDto;
 use App\Dto\Catalog\ProductCreateDto;
+use App\Dto\Catalog\ProductCreationFormDto;
 use App\Dto\Catalog\ProductDto;
+use App\Dto\Catalog\ProductEditFormDto;
 use App\Dto\Catalog\ProductUpdateDto;
-use App\Dto\ResponseData;
 use App\Dto\UnitMeasureLightDto;
-use App\Helpers\Statuses\HTTPResponseStatuses;
-use App\Http\Requests\Catalog\ProductCreationRequest;
-use App\Http\Requests\Catalog\ProductUpdateRequest;
 use App\Services\Catalog\CategoryService;
 use App\Services\Catalog\ProductService;
 use App\Services\ImageService;
@@ -20,7 +18,7 @@ class ProductManagementEntityService
 {
     //создать конструктор с сервисами
 
-    public function getCreateData(): ResponseData
+    public function getCreateData(): ProductCreationFormDto
     {
         $unitsMeasure = UnitMeasureService::getAll();
         $categories = CategoryService::getAll();
@@ -28,38 +26,30 @@ class ProductManagementEntityService
         $unitsMeasureDtoList = UnitMeasureLightDto::fromList($unitsMeasure);
         $categoriesDtoList = CategoryLightDto::fromList($categories);
 
-        return new ResponseData([
-            'unitsMeasure' => $unitsMeasureDtoList,
-            'categories' => $categoriesDtoList
-        ]);
+        return ProductCreationFormDto::fromDto($unitsMeasureDtoList, $categoriesDtoList);
     }
 
-    public function store(ProductCreationRequest $request): ResponseData
+    public function store(ProductCreateDto $dto): ProductDto
     {
         $uploadedImageIds = [];
-        if ($request->hasFile('pictures')) {
-            $uploadedImageIds = ImageService::saveMany('public/catalog_img', $request->file('pictures'));
+        if (is_array($dto->pictures) && count($dto->pictures) > 0) {
+            $uploadedImageIds = ImageService::saveMany('public/catalog_img', $dto->pictures);
         }
 
-        $productFormDto = ProductCreateDto::fromRequest($request);
-
-        $newProduct = ProductService::save($productFormDto);
+        $newProduct = ProductService::save($dto);
 
         if (count($uploadedImageIds) > 0) {
             ImageService::saveManyRelationshipToProduct($uploadedImageIds, $newProduct);
         }
 
-        if (count($productFormDto->categories) > 0) {
-            CategoryService::saveManyRelationshipToProduct($productFormDto->categories, $newProduct);
+        if (count($dto->categories) > 0) {
+            CategoryService::saveManyRelationshipToProduct($dto->categories, $newProduct);
         }
 
-        return new ResponseData(
-            ProductDto::fromModel($newProduct),
-            HTTPResponseStatuses::CREATED
-        );
+        return ProductDto::fromModel($newProduct);
     }
 
-    public function getUpdateData(int $id): ResponseData
+    public function getUpdateData(int $id): ProductEditFormDto
     {
         $product = ProductService::getById($id);
 
@@ -70,34 +60,28 @@ class ProductManagementEntityService
         $unitsMeasureDtoList = UnitMeasureLightDto::fromList($unitsMeasure);
         $categoriesDtoList = CategoryLightDto::fromList($categories);
 
-        return new ResponseData([
-            'product' => $productDto,
-            'unitsMeasure' => $unitsMeasureDtoList,
-            'categories' => $categoriesDtoList
-        ]);
+        return ProductEditFormDto::fromDto($productDto, $unitsMeasureDtoList, $categoriesDtoList);
     }
 
-    public function update(ProductUpdateRequest $request, int $id): ResponseData
+    public function update(ProductUpdateDto $dto, int $id): ProductDto
     {
         $product = ProductService::getById($id);
 
         $uploadedImageIds = [];
-        if ($request->hasFile('pictures')) {
-            $uploadedImageIds = ImageService::saveMany('public/catalog_img', $request->file('pictures'));
+        if (is_array($dto->pictures) && count($dto->pictures) > 0) {
+            $uploadedImageIds = ImageService::saveMany('public/catalog_img', $dto->pictures);
         }
 
-        $productFormDto = ProductUpdateDto::fromRequest($request);//вынести в контроллер
+        $changedProduct = ProductService::update($product, $dto);
 
-        $changedProduct = ProductService::update($product, $productFormDto);
-
-        if (count($productFormDto->categories) > 0) {
-            CategoryService::saveManyRelationshipToProduct($productFormDto->categories, $changedProduct);
+        if (count($dto->categories) > 0) {
+            CategoryService::saveManyRelationshipToProduct($dto->categories, $changedProduct);
         }
 
         if (count($uploadedImageIds) > 0) {
             ImageService::saveManyRelationshipToProduct($uploadedImageIds, $changedProduct);
         }
 
-        return new ResponseData(ProductDto::fromModel($changedProduct));//вынести в контроллер
+        return ProductDto::fromModel($changedProduct);
     }
 }

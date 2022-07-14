@@ -3,41 +3,33 @@
 namespace App\EntityServices\Auth;
 
 use App\Dto\Auth\AuthorizeDto;
-use App\Helpers\Statuses\HTTPResponseStatuses;
-use App\Http\Requests\Auth\AuthorizeRequest;
-use App\Services\Auth\LoginService;
-use Illuminate\Http\JsonResponse;
-use Tymon\JWTAuth\Exceptions\JWTException;
+use App\Dto\User\TokenDto;
+use App\Exceptions\AuthErrorException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginEntityService
 {
-    public function signIn(AuthorizeRequest $request): JsonResponse
+    /**
+     * @throws AuthErrorException
+     */
+    public function signIn(AuthorizeDto $dto): TokenDto
     {
-        $authDTO = AuthorizeDto::fromRequest($request);
-
-        try {
-            if (!$token = JWTAuth::attempt($authDTO->toArray())) {
-                return response()->json(['message' => 'Your credentials are incorrect'], HTTPResponseStatuses::UNAUTHORIZED);
-            }
-        } catch (JWTException $e) {
-            return response()->json(['message' => 'Could not create token'], HTTPResponseStatuses::INTERNAL_SERVER_ERROR);
+        if (!$token = JWTAuth::attempt($dto->toArray())) {
+            throw new AuthErrorException();
         }
 
-        return LoginService::createNewToken($token);
+        return TokenDto::fromToken($token);
     }
 
-    public function refresh(): JsonResponse
+    public function refresh(): TokenDto
     {
         $token = JWTAuth::getToken();
 
-        return LoginService::createNewToken(JWTAuth::refresh($token));
+        return TokenDto::fromToken(JWTAuth::refresh($token));
     }
 
-    public function logout(): JsonResponse
+    public function logout(): void
     {
         auth()->logout();
-
-        return response()->json(['message' => 'You successfully logged out']);
     }
 }

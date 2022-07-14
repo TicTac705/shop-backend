@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Dto\ResponseData;
 use App\EntityServices\User\ProfileEntityService;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 
 class ProfileController extends Controller
 {
-    public function getUserInfo():ResponseData
+    public function getUserInfo():JsonResponse
     {
-        return ProfileEntityService::getUserInfo();
+        return response()->json(ProfileEntityService::getUserInfo());
     }
 }

@@ -4,8 +4,10 @@ namespace App\Exceptions;
 
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class Handler extends ExceptionHandler
 {
@@ -29,16 +31,17 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
-    /**
-     * Register the exception handling callbacks for the application.
-     *
-     * @return void
-     */
-    public function register()
+    public function render($request, Throwable $e)
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        if ($e instanceof JWTException) {
+            return response()->json(['message' => 'Could not create token'], HTTPResponseStatuses::INTERNAL_SERVER_ERROR);
+        }
+
+        if ($e instanceof ModelNotFoundException) {
+            return response()->json(['message' => $e->getMessage()], HTTPResponseStatuses::NOT_FOUND);
+        }
+
+        return parent::render($request, $e);
     }
 
     protected function unauthenticated($request, AuthenticationException $exception)
