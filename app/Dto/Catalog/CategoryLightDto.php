@@ -9,14 +9,12 @@ class CategoryLightDto extends BaseDto
 {
     public int $id;
     public string $name;
-    public string $slug;
 
     public static function fromModel(Category $category): self
     {
         return new self([
             'id' => $category->getId(),
-            'name' => $category->getName(),
-            'slug' => $category->getSlug()
+            'name' => $category->getName()
         ]);
     }
 

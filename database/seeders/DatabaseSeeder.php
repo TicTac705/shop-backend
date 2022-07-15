@@ -73,8 +73,8 @@ class DatabaseSeeder extends Seeder
             $adminId
         )->saveAndReturnId();
 
-        ProductCategory::create($orangeID, $categoryFruitId);
-        ProductCategory::create($appleId, $categoryFruitId);
-        ProductCategory::create($milletId, $categoryVegetablesId);
+        ProductCategory::create($orangeID, $categoryFruitId)->save();
+        ProductCategory::create($appleId, $categoryFruitId)->save();
+        ProductCategory::create($milletId, $categoryVegetablesId)->save();
     }
 }

@@ -7,22 +7,14 @@ use App\PivotModels\Catalog\BasketProduct;
 
 class BasketItemDto extends BaseDto
 {
-    public int $id;
-    public int $basketId;
-    public ProductDto $product;
+    public ProductLightDto $product;
     public int $count;
-    public ?int $updatedAt;
-    public ?int $createdAt;
 
     public static function fromModel(BasketProduct $basketItem): self
     {
         return new self([
-            'id' => $basketItem->getId(),
-            'basketId' => $basketItem->getBasketId(),
-            'product' => ProductDto::fromModel($basketItem->product()->getResults()),
+            'product' => ProductLightDto::fromModel($basketItem->product()->getResults()),
             'count' => $basketItem->getCount(),
-            'updatedAt' => $basketItem->getUpdatedAtTimestamp(),
-            'createdAt' => $basketItem->getCreatedAtTimestamp(),
         ]);
     }
 

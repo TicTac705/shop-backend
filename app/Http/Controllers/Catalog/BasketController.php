@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Catalog;
 
 use App\Dto\Catalog\ProductAddedToBasketDto;
-use App\EntityServices\Catalog\BasketEntityService;
+use App\EntityServices\Catalog\OrderEntityService;
 use App\Exceptions\NonExistingBasketItemException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\BasketItemAddingRequest;
@@ -11,9 +11,9 @@ use Illuminate\Http\JsonResponse;
 
 class BasketController extends Controller
 {
-    private BasketEntityService $basketEntityService;
+    private OrderEntityService $basketEntityService;
 
-    public function __construct(BasketEntityService $basketEntityService)
+    public function __construct(OrderEntityService $basketEntityService)
     {
         $this->basketEntityService = $basketEntityService;
     }

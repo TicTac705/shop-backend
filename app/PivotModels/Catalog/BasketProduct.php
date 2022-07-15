@@ -2,6 +2,7 @@
 
 namespace App\PivotModels\Catalog;
 
+use App\Models\Catalog\Basket;
 use App\Models\Catalog\Product;
 use App\PivotModels\PivotBase;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -82,6 +83,11 @@ class BasketProduct extends PivotBase
     {
         $this->count = $count;
         return $this;
+    }
+
+    public function basket(): BelongsTo
+    {
+        return $this->belongsTo(Basket::class)->withTimestamps();
     }
 
     public function product(): BelongsTo

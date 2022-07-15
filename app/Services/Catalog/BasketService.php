@@ -2,6 +2,7 @@
 
 namespace App\Services\Catalog;
 
+use App\Exceptions\BasketNotExistingException;
 use App\Models\Catalog\Basket;
 use App\Models\Catalog\Product;
 use App\Models\User\User;
@@ -9,7 +10,7 @@ use App\PivotModels\Catalog\BasketProduct;
 
 class BasketService
 {
-    public function getUserCart(User $user): Basket
+    public function getUserBasket(User $user): Basket
     {
         $baskets = $user->baskets()->getResults();
         $basket = null;
@@ -19,13 +20,13 @@ class BasketService
         }
 
         if ($basket === null) {
-            return self::createUserCart($user);
+            return self::createUserBasket($user);
         }
 
         return $basket;
     }
 
-    public function createUserCart(User $user): Basket
+    public function createUserBasket(User $user): Basket
     {
         return Basket::create($user->getId())->saveAndReturn();
     }
@@ -75,5 +76,19 @@ class BasketService
     public function deleteItem(Basket $basket, int $productId): void
     {
         $basket->items()->where('product_id', '=', $productId)->delete();
+    }
+
+    /**
+     * @throws BasketNotExistingException
+     */
+    public function getBasketByIdToCreateOrder(int $id): Basket
+    {
+        $basket = Basket::query()->findOrFail($id)->where('is_active', '=', true)->first();
+
+        if ($basket === null){
+            throw new BasketNotExistingException();
+        }
+
+        return $basket;
     }
 }

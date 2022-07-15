@@ -20,12 +20,12 @@ class BasketEntityService
 
     public function getBasket(): BasketDto
     {
-        return BasketDto::fromModel($this->basketService->getUserCart(Auth::user()));
+        return BasketDto::fromModel($this->basketService->getUserBasket(Auth::user()));
     }
 
     public function storeOrUpdate(ProductAddedToBasketDto $dto): BasketItemDto
     {
-        $basket = $this->basketService->getUserCart(Auth::user());
+        $basket = $this->basketService->getUserBasket(Auth::user());
 
         if ($this->basketService->checkItem($basket, $dto->productId)) {
             $item = $this->basketService->updateQuantityItem($basket, $dto->productId, $dto->quantity);
@@ -41,7 +41,7 @@ class BasketEntityService
      */
     public function destroy(int $productId): void
     {
-        $basket = $this->basketService->getUserCart(Auth::user());
+        $basket = $this->basketService->getUserBasket(Auth::user());
 
         if (!$this->basketService->checkItem($basket, $productId)) {
             throw new NonExistingBasketItemException();

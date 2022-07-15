@@ -55,7 +55,7 @@ class ImageService
 
     public function findAndDelete(int $id): void
     {
-        $image = Image::findOrFail($id);
+        $image = Image::query()->findOrFail($id);
         $image->delete();
     }
 }
