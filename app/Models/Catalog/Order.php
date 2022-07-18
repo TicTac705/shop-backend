@@ -3,12 +3,14 @@
 namespace App\Models\Catalog;
 
 use App\Models\ModelBase;
+use App\PivotModels\Catalog\OrderProduct;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property int $user_id
- * @property int $user_name
+ * @property string $user_name
  * @property string $user_email
  * @property int $delivery_id
  * @property null|string $delivery_address
@@ -35,7 +37,7 @@ class Order extends ModelBase
 
     public function create(
         int     $userId,
-        int     $userName,
+        string  $userName,
         string  $userEmail,
         int     $deliveryId,
         ?string $deliveryAddress,
@@ -66,12 +68,12 @@ class Order extends ModelBase
         $this->user_id = $userId;
     }
 
-    public function getUserName(): int
+    public function getUserName(): string
     {
         return $this->user_name;
     }
 
-    public function setUserName(int $userName): void
+    public function setUserName(string $userName): void
     {
         $this->user_name = $userName;
     }
@@ -124,5 +126,10 @@ class Order extends ModelBase
     public function setPaymentStatusId(int $paymentStatusId): void
     {
         $this->payment_status_id = $paymentStatusId;
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(OrderProduct::class);
     }
 }

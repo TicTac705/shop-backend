@@ -3,29 +3,24 @@
 namespace App\EntityServices\Catalog;
 
 use App\Dto\Catalog\OrderCreationFormDto;
+use App\Dto\Catalog\OrderDto;
 use App\Exceptions\BasketNotExistingException;
-use App\Services\Catalog\BasketService;
-use Illuminate\Support\Facades\Auth;
+use App\Services\Catalog\OrderService;
 
 class OrderEntityService
 {
-    private BasketService $basketService;
+    private OrderService $orderService;
 
-    public function __construct(BasketService $basketService)
+    public function __construct(OrderService $orderService)
     {
-        $this->basketService = $basketService;
+        $this->orderService = $orderService;
     }
-
 
     /**
      * @throws BasketNotExistingException
      */
-    public function create(OrderCreationFormDto $dto)
+    public function create(OrderCreationFormDto $dto): OrderDto
     {
-        $user = Auth::user();
-
-        $basket = $this->basketService->getBasketByIdToCreateOrder($dto->basketId);
-
-
+        return $this->orderService->create($dto);
     }
 }

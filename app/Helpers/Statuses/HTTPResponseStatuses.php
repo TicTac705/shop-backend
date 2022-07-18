@@ -2,7 +2,7 @@
 
 namespace App\Helpers\Statuses;
 
-class HTTPResponseStatuses
+class HTTPResponseStatuses extends StatusesBase
 {
     /** Successful (Успешные) */
     public const OK = 200;

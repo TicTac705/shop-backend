@@ -27,19 +27,24 @@ class ImageService
 
     public function save(string $path, UploadedFile $image): int
     {
+        $path = ltrim($path, " \n\r\t\v\x00\/");
+        $path = rtrim($path, " \n\r\t\v\x00\/");
+
         $userId = Auth::id();
 
         $fileNameOriginal = $image->getClientOriginalName();
         $fileName = rand() . '_' . $fileNameOriginal;
 
-        $path = $image->storeAs($path, $fileName);
+        $path = $image->storeAs('public/' . $path, $fileName);
+
+        $path = str_replace('public/', '', $path);
 
         return Image::create(
             $userId,
             $fileName,
             $fileNameOriginal,
             $image->getSize(),
-            $path
+            '/storage/' . $path
         )->saveAndReturnId();
     }
 

@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Catalog;
 
 use App\Http\Requests\ApiFormRequest;
+use App\PivotModels\Catalog\ProductImage;
+use App\Rules\NotExistsInDataBase;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProductUpdateRequest extends FormRequest
@@ -24,8 +26,10 @@ class ProductUpdateRequest extends FormRequest
             'price' => ['numeric', 'gt:0'],
             'unit_measure_id' => ['integer', 'exists:App\Models\UnitMeasure,id'],
             'store' => ['integer', 'gt:0', 'lte:10000'],
-            'pictures.*' => ['image', 'max:5120'],
-            'categories.*' => ['required', 'integer', 'exists:App\Models\Catalog\Category,id']
+            'imagesId' => ['array'],
+            'imagesId.*' => ['integer', 'exists:App\Models\Image,id', 'distinct', new NotExistsInDataBase(new ProductImage(), 'image_id')],
+            'categories' => ['required', 'array'],
+            'categories.*' => ['required', 'integer', 'exists:App\Models\Catalog\Category,id', 'distinct']
         ];
     }
 }

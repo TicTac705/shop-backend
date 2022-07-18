@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Dto\ImageCreateDto;
 use App\EntityServices\ImageEntityService;
+use App\Http\Requests\ImageCreationRequest;
 use Illuminate\Http\JsonResponse;
 
 class ImageController extends Controller
@@ -12,6 +14,13 @@ class ImageController extends Controller
     public function __construct(ImageEntityService $imageEntityService)
     {
         $this->imageEntityService = $imageEntityService;
+    }
+
+    public function store(ImageCreationRequest $request): JsonResponse
+    {
+        $imageCreateDto = ImageCreateDto::fromRequest($request);
+
+        return response()->json($this->imageEntityService->store($imageCreateDto));
     }
 
     public function destroy(int $id): JsonResponse

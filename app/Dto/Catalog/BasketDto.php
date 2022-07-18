@@ -7,6 +7,7 @@ use App\Models\Catalog\Basket;
 
 class BasketDto extends BaseDto
 {
+    public int $id;
     /** @var \App\Dto\Catalog\BasketItemDto[] */
     public array $items;
     public int $totalCount;
@@ -18,6 +19,7 @@ class BasketDto extends BaseDto
         $itemDtoList = BasketItemDto::fromList($basket->items()->getResults()->all());
 
         return new self([
+            'id' => $basket->getId(),
             'items' => $itemDtoList,
             'totalCount' => count($itemDtoList),
             'updatedAt' => $basket->getUpdatedAtTimestamp(),

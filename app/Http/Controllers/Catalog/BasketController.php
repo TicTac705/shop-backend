@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Catalog;
 
 use App\Dto\Catalog\ProductAddedToBasketDto;
-use App\EntityServices\Catalog\OrderEntityService;
+use App\Dto\Catalog\ProductUpdatedToBasketDto;
+use App\EntityServices\Catalog\BasketEntityService;
 use App\Exceptions\NonExistingBasketItemException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\BasketItemAddingRequest;
@@ -11,9 +12,9 @@ use Illuminate\Http\JsonResponse;
 
 class BasketController extends Controller
 {
-    private OrderEntityService $basketEntityService;
+    private BasketEntityService $basketEntityService;
 
-    public function __construct(OrderEntityService $basketEntityService)
+    public function __construct(BasketEntityService $basketEntityService)
     {
         $this->basketEntityService = $basketEntityService;
     }
@@ -23,11 +24,18 @@ class BasketController extends Controller
         return response()->json($this->basketEntityService->getBasket());
     }
 
-    public function storeOrUpdate(BasketItemAddingRequest $request): JsonResponse
+    public function store(BasketItemAddingRequest $request): JsonResponse
     {
         $productAddedToCartDto = ProductAddedToBasketDto::fromRequest($request);
 
-        return response()->json($this->basketEntityService->storeOrUpdate($productAddedToCartDto));
+        return response()->json($this->basketEntityService->store($productAddedToCartDto));
+    }
+
+    public function updateQuantity(BasketItemAddingRequest $request): JsonResponse
+    {
+        $productAddedToCartDto = ProductUpdatedToBasketDto::fromRequest($request);
+
+        return response()->json($this->basketEntityService->updateQuantity($productAddedToCartDto));
     }
 
     /**

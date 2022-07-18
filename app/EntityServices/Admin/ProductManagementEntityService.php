@@ -47,15 +47,10 @@ class ProductManagementEntityService
 
     public function store(ProductCreateDto $dto): ProductDto
     {
-        $uploadedImageIds = [];
-        if (is_array($dto->pictures) && count($dto->pictures) > 0) {
-            $uploadedImageIds = $this->imageService->saveMany('public/catalog_img', $dto->pictures);
-        }
-
         $newProduct = $this->productService->save($dto);
 
-        if (count($uploadedImageIds) > 0) {
-            $this->imageService->saveManyRelationshipToProduct($uploadedImageIds, $newProduct);
+        if (is_array($dto->imagesId) && count($dto->imagesId) > 0) {
+            $this->imageService->saveManyRelationshipToProduct($dto->imagesId, $newProduct);
         }
 
         if (count($dto->categories) > 0) {
@@ -83,19 +78,14 @@ class ProductManagementEntityService
     {
         $product = $this->productService->getById($id);
 
-        $uploadedImageIds = [];
-        if (is_array($dto->pictures) && count($dto->pictures) > 0) {
-            $uploadedImageIds = $this->imageService->saveMany('public/catalog_img', $dto->pictures);
-        }
-
         $changedProduct = $this->productService->update($product, $dto);
 
         if (count($dto->categories) > 0) {
             $this->categoryService->saveManyRelationshipToProduct($dto->categories, $changedProduct);
         }
 
-        if (count($uploadedImageIds) > 0) {
-            $this->imageService->saveManyRelationshipToProduct($uploadedImageIds, $changedProduct);
+        if (is_array($dto->imagesId) && count($dto->imagesId)) {
+            $this->imageService->saveManyRelationshipToProduct($dto->imagesId, $changedProduct);
         }
 
         return ProductDto::fromModel($changedProduct);

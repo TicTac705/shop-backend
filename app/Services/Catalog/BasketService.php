@@ -42,12 +42,16 @@ class BasketService
         return $items->where('product_id', '=', $itemId)->isNotEmpty();
     }
 
-    public function updateQuantityItem(Basket $basket, int $productId, int $quantity): BasketProduct
+    public function updateQuantityItem(Basket $basket, int $productId, ?int $quantity = null): BasketProduct
     {
         /** @var BasketProduct $item */
         $item = $basket->items()->where('product_id', '=', $productId)->first();
 
-        $item->setCount($quantity);
+        if ($quantity !== null) {
+            $item->setCount($quantity);
+        } else {
+            $item->setCount($item->getCount() + 1);
+        }
 
         if ($item->isDirty()) {
             $item->touch();
@@ -57,11 +61,11 @@ class BasketService
         return $item;
     }
 
-    public function addItem(Basket $basket, int $productId, int $quantity): BasketProduct
+    public function addItem(Basket $basket, int $productId): BasketProduct
     {
         $product = ProductService::getById($productId);
 
-        return self::createItem($basket, $product, $quantity);
+        return self::createItem($basket, $product, 1);
     }
 
     public function createItem(Basket $basket, Product $product, int $quantity): BasketProduct
@@ -81,14 +85,29 @@ class BasketService
     /**
      * @throws BasketNotExistingException
      */
-    public function getBasketByIdToCreateOrder(int $id): Basket
+    public function getBasketById(int $id): Basket
     {
         $basket = Basket::query()->findOrFail($id)->where('is_active', '=', true)->first();
 
-        if ($basket === null){
+        if ($basket === null) {
             throw new BasketNotExistingException();
         }
 
         return $basket;
+    }
+
+    /**
+     * @throws BasketNotExistingException
+     */
+    public function deactivateBasket(int $id): void
+    {
+        $basket = $this->getBasketById($id);
+
+        $basket->setActive(false);
+
+        if ($basket->isDirty()) {
+            $basket->touch();
+            $basket->save();
+        }
     }
 }

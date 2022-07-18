@@ -19,7 +19,7 @@ class CreateCatalogOrdersTable extends Migration
             $table->string('user_name');
             $table->string('user_email');
             $table->integer('delivery_id');
-            $table->string('delivery_address');
+            $table->string('delivery_address')->nullable();
             $table->integer('order_status_id');
             $table->integer('payment_status_id');
             $table->timestamps();

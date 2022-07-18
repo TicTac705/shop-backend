@@ -17,7 +17,7 @@ class CreateCatalogOrderProductTable extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('product_id');
-            $table->float('price');
+            $table->double('price');
             $table->bigInteger('count');
             $table->timestamps();
 

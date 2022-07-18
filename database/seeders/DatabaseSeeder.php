@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
         Category::create('Cereals', 'cereals')->save();
 
         $unitKgId = UnitMeasure::create('Kilogram', 'kg')->saveAndReturnId();
-        UnitMeasure::create('Piece', 'piece');
+        UnitMeasure::create('Piece', 'piece')->save();
 
         $orangeID = Product::create(
             'Orange',

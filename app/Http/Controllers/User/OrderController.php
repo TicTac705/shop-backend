@@ -5,8 +5,10 @@ namespace App\Http\Controllers\User;
 use App\Dto\Catalog\OrderCreationFormDto;
 use App\EntityServices\Catalog\OrderEntityService;
 use App\Exceptions\BasketNotExistingException;
+use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Catalog\OrderCreateRequest;
+use App\Http\Requests\Catalog\OrderCreationRequest;
+use Illuminate\Http\JsonResponse;
 
 class OrderController extends Controller
 {
@@ -26,10 +28,10 @@ class OrderController extends Controller
     /**
      * @throws BasketNotExistingException
      */
-    public function create(OrderCreateRequest $request)
+    public function create(OrderCreationRequest $request): JsonResponse
     {
         $orderCreationFormDto = OrderCreationFormDto::fromRequest($request);
 
-        $this->orderEntityService->create($orderCreationFormDto);
+        return response()->json($this->orderEntityService->create($orderCreationFormDto), HTTPResponseStatuses::CREATED);
     }
 }

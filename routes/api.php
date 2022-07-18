@@ -22,9 +22,9 @@ Route::group(['middleware' => 'auth:api'], function () {
         'name' => 'profile.',
         'prefix' => 'profile'
     ], function () {
-        Route::get('/orders', [OrderController::class, 'getList'])->name('orders');
+//        Route::get('/orders', [OrderController::class, 'getList'])->name('orders');
         Route::post('/orders', [OrderController::class, 'create']);
-        Route::put('/orders/{id}/recall', [OrderController::class, 'recall'])->name('order.recall');
+//        Route::put('/orders/{id}/recall', [OrderController::class, 'recall'])->name('order.recall');
 
         Route::group(['middleware' => 'role:admin'], function () {
             Route::get('/catalog-management/products/', [ProductManagementController::class, 'getList'])->name('catalogManagement.products');
@@ -36,9 +36,9 @@ Route::group(['middleware' => 'auth:api'], function () {
 
             //Добавить сво-во 'is_display' для управления отображением в каталоге
             //Добавить Soft Deleting для продуктов
-//            Route::delete('/catalog-management/products/{id}', [ProductManagementController::class, 'destroy'])->name('catalogManagement.products.destroy');
+            //Route::delete('/catalog-management/products/{id}', [ProductManagementController::class, 'destroy'])->name('catalogManagement.products.destroy');
 
-//            Route::post('/catalog-management/image/', [ImageController::class, 'create'])->name('catalogManagement.image.create');
+            Route::post('/catalog-management/image/', [ImageController::class, 'store'])->name('catalogManagement.image.store');
             Route::delete('/catalog-management/image/{id}', [ImageController::class, 'destroy'])->name('catalogManagement.image.destroy');
         });
     });
@@ -48,8 +48,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         'name' => 'basket.',
         'prefix' => 'basket'
     ], function () {
-        Route::post('/product', [BasketController::class, 'storeOrUpdate'])->name('product.store');
-        Route::put('/product', [BasketController::class, 'storeOrUpdate'])->name('product.update');
+        Route::post('/product', [BasketController::class, 'store'])->name('product.store');
+        Route::put('/product', [BasketController::class, 'updateQuantity'])->name('product.update');
         Route::delete('/product/{id}', [BasketController::class, 'destroy'])->name('product.destroy');
     });
 

@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests\Catalog;
 
+use App\Http\Requests\ApiFormRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class OrderCreateRequest extends FormRequest
+class BasketItemUpdatingRequest extends FormRequest
 {
+    use ApiFormRequest;
+
     protected $stopOnFirstFailure = true;
 
     public function authorize(): bool
@@ -16,9 +19,9 @@ class OrderCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'basket_id' => ['required', 'integer', 'exists:App\Models\Catalog\Basket,id'],
-            'delivery_id' => ['required', 'integer'],
-            'delivery_address' => ['string']
+            'product_id' => ['required', 'integer', 'exists:App\Models\Catalog\Product,id'],
+            'quantity' => ['required', 'integer', 'gt:0']
         ];
     }
 }
+
