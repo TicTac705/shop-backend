@@ -67,9 +67,6 @@ class ProductService
 
         $product->setStore($product->getStore() - $number);
 
-        if ($product->isDirty()) {
-            $product->touch();
-            $product->save();
-        }
+        $product->checkChangesAndSave();
     }
 }

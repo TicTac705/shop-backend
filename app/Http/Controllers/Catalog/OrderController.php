@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Catalog;
 
 use App\Dto\Catalog\OrderCreationFormDto;
 use App\EntityServices\Catalog\OrderEntityService;
-use App\Exceptions\BasketNotExistingException;
+use App\Exceptions\Basket\BasketNotExistingException;
+use App\Exceptions\Order\NoRightsRecallOrder;
+use App\Exceptions\Order\OrderCannotRecalled;
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\OrderCreationRequest;
@@ -35,8 +37,14 @@ class OrderController extends Controller
         return response()->json($this->orderEntityService->create($orderCreationFormDto), HTTPResponseStatuses::CREATED);
     }
 
+    /**
+     * @throws NoRightsRecallOrder
+     * @throws OrderCannotRecalled
+     */
     public function recall(int $id)
     {
-        return response()->json($this->orderEntityService->recall($id));
+        $this->orderEntityService->recall($id);
+
+        return response()->json(['message' => 'Order successfully recalled']);
     }
 }

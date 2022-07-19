@@ -2,6 +2,8 @@
 
 namespace App\Models\Catalog;
 
+use App\Helpers\Statuses\Order\OrderPaymentStatuses;
+use App\Helpers\Statuses\Order\OrderStatuses;
 use App\Models\ModelBase;
 use App\PivotModels\Catalog\OrderProduct;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -131,5 +133,25 @@ class Order extends ModelBase
     public function items(): HasMany
     {
         return $this->hasMany(OrderProduct::class);
+    }
+
+    public function isProcessing(): bool
+    {
+        return $this->getOrderStatusId() === OrderStatuses::PROCESSING;
+    }
+
+    public function isAssembly(): bool
+    {
+        return $this->getOrderStatusId() === OrderStatuses::ASSEMBLY;
+    }
+
+    public function isCanceled(): bool
+    {
+        return $this->getOrderStatusId() === OrderStatuses::CANCELED;
+    }
+
+    public function isNotPaid(): bool
+    {
+        return $this->getOrderStatusId() === OrderPaymentStatuses::NOT_PAID;
     }
 }

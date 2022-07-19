@@ -64,4 +64,12 @@ class ModelBase extends Model
     {
         return self::whereIn('id', $ids);
     }
+
+    public function checkChangesAndSave(): void
+    {
+        if ($this->isDirty()) {
+            $this->touch();
+            $this->save();
+        }
+    }
 }

@@ -6,7 +6,7 @@ use App\Dto\Catalog\BasketDto;
 use App\Dto\Catalog\BasketItemDto;
 use App\Dto\Catalog\ProductAddedToBasketDto;
 use App\Dto\Catalog\ProductUpdatedToBasketDto;
-use App\Exceptions\NonExistingBasketItemException;
+use App\Exceptions\Basket\NonExistingBasketItemException;
 use App\Services\Catalog\BasketService;
 use Illuminate\Support\Facades\Auth;
 

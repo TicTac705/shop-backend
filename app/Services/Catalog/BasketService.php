@@ -2,7 +2,7 @@
 
 namespace App\Services\Catalog;
 
-use App\Exceptions\BasketNotExistingException;
+use App\Exceptions\Basket\BasketNotExistingException;
 use App\Models\Catalog\Basket;
 use App\Models\Catalog\Product;
 use App\Models\User\User;
@@ -105,9 +105,6 @@ class BasketService
 
         $basket->setActive(false);
 
-        if ($basket->isDirty()) {
-            $basket->touch();
-            $basket->save();
-        }
+        $basket->checkChangesAndSave();
     }
 }

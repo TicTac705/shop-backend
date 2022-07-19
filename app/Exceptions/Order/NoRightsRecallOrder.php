@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Exceptions;
+namespace App\Exceptions\Order;
 
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class BasketNotExistingException extends Exception
+class NoRightsRecallOrder extends Exception
 {
-    protected $message = 'This basket does not exist';
+    protected $message = 'No rights to recall the order.';
 
     public function render(Request $request): JsonResponse
     {

@@ -14,4 +14,9 @@ class UserService
             $data->password,
         )->saveAndReturn();
     }
+
+    public function isAdmin(User $model): bool
+    {
+        return $model->hasRole('admin');
+    }
 }

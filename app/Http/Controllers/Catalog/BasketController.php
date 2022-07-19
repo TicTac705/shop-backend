@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Catalog;
 use App\Dto\Catalog\ProductAddedToBasketDto;
 use App\Dto\Catalog\ProductUpdatedToBasketDto;
 use App\EntityServices\Catalog\BasketEntityService;
-use App\Exceptions\NonExistingBasketItemException;
+use App\Exceptions\Basket\NonExistingBasketItemException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\BasketItemAddingRequest;
 use Illuminate\Http\JsonResponse;

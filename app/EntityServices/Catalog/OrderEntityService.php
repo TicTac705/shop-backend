@@ -5,7 +5,9 @@ namespace App\EntityServices\Catalog;
 use App\Dto\Catalog\BasketDto;
 use App\Dto\Catalog\OrderCreationFormDto;
 use App\Dto\Catalog\OrderDto;
-use App\Exceptions\BasketNotExistingException;
+use App\Exceptions\Basket\BasketNotExistingException;
+use App\Exceptions\Order\NoRightsRecallOrder;
+use App\Exceptions\Order\OrderCannotRecalled;
 use App\Services\Catalog\BasketService;
 use App\Services\Catalog\OrderService;
 use App\Services\Catalog\ProductService;
@@ -58,10 +60,18 @@ class OrderEntityService
         return OrderDto::fromModel($newOrder);
     }
 
-    public function recall(int $id)
+    /**
+     * @throws OrderCannotRecalled
+     * @throws NoRightsRecallOrder
+     */
+    public function recall(int $id): void
     {
         $order = $this->orderService->getById($id);
 
+        if (!$this->orderService->canRecallOrder($order)){
+            throw new OrderCannotRecalled();
+        }
 
+        $this->orderService->recall($order);
     }
 }
