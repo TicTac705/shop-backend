@@ -2,8 +2,9 @@
 
 namespace App\Models\User;
 
-use App\Dto\User\RoleDto;
+use App\Dto\User\RoleLightForTokenDto;
 use App\Models\Catalog\Basket;
+use App\Models\Catalog\Order;
 use App\Models\User\UserBase as Authenticatable;
 use App\PivotModels\User\UserRole;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -90,7 +91,7 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(): array
     {
         return [
-            'roles' => RoleDto::fromList(Auth::user()->role->all()),
+            'roles' => RoleLightForTokenDto::fromList(Auth::user()->role->all()),
         ];
     }
 
@@ -145,5 +146,10 @@ class User extends Authenticatable implements JWTSubject
     public function baskets(): HasMany
     {
         return $this->hasMany(Basket::class);
+    }
+
+    public function orders():HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 }

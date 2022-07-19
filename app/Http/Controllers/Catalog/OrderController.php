@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Catalog;
 
 use App\Dto\Catalog\OrderCreationFormDto;
 use App\EntityServices\Catalog\OrderEntityService;
@@ -20,9 +20,9 @@ class OrderController extends Controller
     }
 
 
-    public function getList()
+    public function getList(): JsonResponse
     {
-
+        return response()->json($this->orderEntityService->getList());
     }
 
     /**
@@ -33,5 +33,10 @@ class OrderController extends Controller
         $orderCreationFormDto = OrderCreationFormDto::fromRequest($request);
 
         return response()->json($this->orderEntityService->create($orderCreationFormDto), HTTPResponseStatuses::CREATED);
+    }
+
+    public function recall(int $id)
+    {
+        return response()->json($this->orderEntityService->recall($id));
     }
 }

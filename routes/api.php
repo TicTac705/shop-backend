@@ -5,8 +5,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Catalog\BasketController;
 use App\Http\Controllers\Catalog\CatalogController;
+use App\Http\Controllers\Catalog\OrderController;
 use App\Http\Controllers\ImageController;
-use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,9 +22,9 @@ Route::group(['middleware' => 'auth:api'], function () {
         'name' => 'profile.',
         'prefix' => 'profile'
     ], function () {
-//        Route::get('/orders', [OrderController::class, 'getList'])->name('orders');
+        Route::get('/orders', [OrderController::class, 'getList'])->name('orders');
         Route::post('/orders', [OrderController::class, 'create']);
-//        Route::put('/orders/{id}/recall', [OrderController::class, 'recall'])->name('order.recall');
+        Route::put('/orders/{id}/recall', [OrderController::class, 'recall'])->name('order.recall');
 
         Route::group(['middleware' => 'role:admin'], function () {
             Route::get('/catalog-management/products/', [ProductManagementController::class, 'getList'])->name('catalogManagement.products');

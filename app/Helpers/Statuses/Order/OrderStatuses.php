@@ -12,6 +12,7 @@ class OrderStatuses extends StatusesBase
     public const DELIVERY = 4;
     public const DELIVERED = 5;
     public const COMPLETED = 6;
+    public const CANCELED = 7;
 
     public const LIST = [
         self::PROCESSING,
@@ -20,5 +21,6 @@ class OrderStatuses extends StatusesBase
         self::DELIVERY,
         self::DELIVERED,
         self::COMPLETED,
+        self::CANCELED,
     ];
 }

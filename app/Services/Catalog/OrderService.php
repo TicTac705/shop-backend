@@ -2,37 +2,38 @@
 
 namespace App\Services\Catalog;
 
-use App\Dto\Catalog\BasketDto;
 use App\Dto\Catalog\OrderCreationFormDto;
 use App\Dto\Catalog\OrderDto;
-use App\Exceptions\BasketNotExistingException;
 use App\Helpers\Mappers\Order\OrderProduct;
 use App\Helpers\Statuses\Order\OrderPaymentStatuses;
 use App\Helpers\Statuses\Order\OrderStatuses;
 use App\Models\Catalog\Order;
+use App\Models\User\User;
 use Illuminate\Support\Facades\Auth;
 
 class OrderService
 {
     use OrderProduct;
 
-    private ProductService $productService;
-    private BasketService $basketService;
-
-    public function __construct(ProductService $productService, BasketService $basketService)
+    public function getById(int $id)
     {
-        $this->productService = $productService;
-        $this->basketService = $basketService;
+        return Order::query()->findOrFail($id)->first();
     }
 
     /**
-     * @throws BasketNotExistingException
+     * @param User $user
+     * @return OrderDto[]
      */
-    public function create(OrderCreationFormDto $dto): OrderDto
+    public function getListByUser(User $user): array
     {
-        $basket = BasketDto::fromModel($this->basketService->getBasketById($dto->basketId));
+        $orders = $user->orders()->getResults()->all();
 
-        $newOrder = Order::create(
+        return OrderDto::fromList($orders);
+    }
+
+    public function create(OrderCreationFormDto $dto): Order
+    {
+        return Order::create(
             Auth::user()->id,
             Auth::user()->name,
             Auth::user()->email,
@@ -41,17 +42,10 @@ class OrderService
             OrderStatuses::PROCESSING,
             OrderPaymentStatuses::NOT_PAID
         )->saveAndReturn();
+    }
 
-        $orderItems = $this->fromBasketToOrderProductList($basket, $newOrder->getId());
+    public function canRecallOrder(Order $model): bool
+    {
 
-        foreach ($orderItems as $item) {
-            $this->productService->reduceQuantityStockByNumber($item->getProductId(), $item->getCount());
-        }
-
-        $this->basketService->deactivateBasket($dto->basketId);
-
-        $newOrder->items()->saveMany($orderItems);
-
-        return OrderDto::fromModel($newOrder);
     }
 }

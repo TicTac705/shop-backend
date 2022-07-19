@@ -38,4 +38,13 @@ class OrderDto extends BaseDto
             'createdAt' => $order->getCreatedAtTimestamp(),
         ]);
     }
+
+    /**
+     * @param Order[] $items
+     * @return self[]
+     */
+    public function fromList(array $items): array
+    {
+        return array_map(fn(Order $item): self => self::fromModel($item), $items);
+    }
 }
