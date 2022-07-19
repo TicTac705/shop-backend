@@ -21,7 +21,6 @@ class OrderController extends Controller
         $this->orderEntityService = $orderEntityService;
     }
 
-
     public function getList(): JsonResponse
     {
         return response()->json($this->orderEntityService->getList());

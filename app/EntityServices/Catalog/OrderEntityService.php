@@ -5,6 +5,7 @@ namespace App\EntityServices\Catalog;
 use App\Dto\Catalog\BasketDto;
 use App\Dto\Catalog\OrderCreationFormDto;
 use App\Dto\Catalog\OrderDto;
+use App\Dto\PaginationDto;
 use App\Exceptions\Basket\BasketNotExistingException;
 use App\Exceptions\Order\NoRightsRecallOrder;
 use App\Exceptions\Order\OrderCannotRecalled;
@@ -36,6 +37,13 @@ class OrderEntityService
     public function getList(): array
     {
         return $this->orderService->getListByUser(Auth::user());
+    }
+
+    public function getListWithPagination(int $numberItemsPerPage): PaginationDto
+    {
+        $orders = $this->orderService->getListWithPagination($numberItemsPerPage);
+
+        return PaginationDto::fromResultService($orders, OrderDto::fromList($orders->items()));
     }
 
     /**

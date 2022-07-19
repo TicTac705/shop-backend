@@ -58,7 +58,7 @@ class ProductService
 
     public function getListWithPagination(int $numberItemsPerPage): LengthAwarePaginator
     {
-        return Product::query()->paginate($numberItemsPerPage);
+        return Product::getListWithPagination($numberItemsPerPage);
     }
 
     public function reduceQuantityStockByNumber(int $productId, int $number): void

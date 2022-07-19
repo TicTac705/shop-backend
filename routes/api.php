@@ -7,6 +7,7 @@ use App\Http\Controllers\Catalog\BasketController;
 use App\Http\Controllers\Catalog\CatalogController;
 use App\Http\Controllers\Catalog\OrderController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\Manager\OrderManagementController;
 use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,20 +27,37 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/orders', [OrderController::class, 'create']);
         Route::put('/orders/{id}/recall', [OrderController::class, 'recall'])->name('order.recall');
 
-        Route::group(['middleware' => 'role:admin'], function () {
-            Route::get('/catalog-management/products/', [ProductManagementController::class, 'getList'])->name('catalogManagement.products');
-            Route::get('/catalog-management/products/get-create-data', [ProductManagementController::class, 'getCreateData'])->name('catalogManagement.products.create');
-            Route::post('/catalog-management/products/', [ProductManagementController::class, 'store'])->name('catalogManagement.products.store');
+        Route::group([
+            'middleware' => 'role:admin',
+            'name' => 'catalogManagement.',
+            'prefix' => 'catalog-management'
+        ], function () {
+            Route::get('/products', [ProductManagementController::class, 'getList'])->name('products');
+            Route::get('/products/get-create-data', [ProductManagementController::class, 'getCreateData'])->name('products.create');
+            Route::post('/products', [ProductManagementController::class, 'store'])->name('products.store');
 
-            Route::get('/catalog-management/products/get-update-data/{id}', [ProductManagementController::class, 'getUpdateData'])->name('catalogManagement.products.edit');
-            Route::put('/catalog-management/products/{id}', [ProductManagementController::class, 'update'])->name('catalogManagement.products.update');
+            Route::get('/products/get-update-data/{id}', [ProductManagementController::class, 'getUpdateData'])->name('products.edit');
+            Route::put('/products/{id}', [ProductManagementController::class, 'update'])->name('products.update');
 
             //Добавить сво-во 'is_display' для управления отображением в каталоге
             //Добавить Soft Deleting для продуктов
-            //Route::delete('/catalog-management/products/{id}', [ProductManagementController::class, 'destroy'])->name('catalogManagement.products.destroy');
+            //Route::delete('/products/{id}', [ProductManagementController::class, 'destroy'])->name('products.destroy');
 
-            Route::post('/catalog-management/image/', [ImageController::class, 'store'])->name('catalogManagement.image.store');
-            Route::delete('/catalog-management/image/{id}', [ImageController::class, 'destroy'])->name('catalogManagement.image.destroy');
+            Route::post('/image/', [ImageController::class, 'store'])->name('image.store');
+            Route::delete('/image/{id}', [ImageController::class, 'destroy'])->name('image.destroy');
+        });
+
+        Route::group([
+            'middleware' => 'role:admin|manager',
+            'name' => 'ordersManagement.',
+            'prefix' => 'orders-management'
+        ], function () {
+            Route::get('/', [OrderManagementController::class, 'getList'])->name('getList');
+//            Route::get('/get-create-data', [OrderManagementController::class, 'geCreateData'])->name('geCreateData');
+//            Route::post('/', [OrderManagementController::class, 'store'])->name('store');
+
+//            Route::get('/{id}', [OrderManagementController::class, 'getOrder'])->name('getOrder');
+//            Route::put('/{id}', [OrderManagementController::class, 'update'])->name('update');
         });
     });
 

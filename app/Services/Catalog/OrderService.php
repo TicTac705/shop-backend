@@ -11,6 +11,7 @@ use App\Helpers\Statuses\Order\OrderStatuses;
 use App\Models\Catalog\Order;
 use App\Models\User\User;
 use App\Services\User\UserService;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 
 class OrderService
@@ -31,6 +32,11 @@ class OrderService
         $orders = $user->orders()->getResults()->all();
 
         return OrderDto::fromList($orders);
+    }
+
+    public function getListWithPagination(int $number): LengthAwarePaginator
+    {
+        return Order::getListWithPagination($number);
     }
 
     public function create(OrderCreationFormDto $dto): Order

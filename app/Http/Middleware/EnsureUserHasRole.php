@@ -15,12 +15,20 @@ class EnsureUserHasRole
      *
      * @param Request $request
      * @param Closure $next
-     * @param string $role
+     * @param string $roles
      * @return Response|RedirectResponse
      */
-    public function handle(Request $request, Closure $next, string $role)
+    public function handle(Request $request, Closure $next, string $roles)
     {
-        if ($request->user()->hasRole($role)) {
+        $roles = trim($roles);
+        if (preg_match('/\|/', $roles)) {
+            $roleList = explode("|", $roles);
+            $res = $request->user()->hasRoles($roleList);
+        } else {
+            $res = $request->user()->hasRole($roles);
+        }
+
+        if ($res) {
             return $next($request);
         }
 

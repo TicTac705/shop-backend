@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 
 /**
@@ -71,5 +72,10 @@ class ModelBase extends Model
             $this->touch();
             $this->save();
         }
+    }
+
+    public function getListWithPagination(int $number): LengthAwarePaginator
+    {
+        return self::query()->paginate($number);
     }
 }
