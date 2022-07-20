@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\OrderManagementController;
 use App\Http\Controllers\Admin\ProductManagementController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -7,7 +8,6 @@ use App\Http\Controllers\Catalog\BasketController;
 use App\Http\Controllers\Catalog\CatalogController;
 use App\Http\Controllers\Catalog\OrderController;
 use App\Http\Controllers\ImageController;
-use App\Http\Controllers\Manager\OrderManagementController;
 use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,16 +20,16 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/profile', [ProfileController::class, 'getUserInfo'])->name('profile');
 
     Route::group([
-        'name' => 'profile.',
+        'as' => 'profile.',
         'prefix' => 'profile'
     ], function () {
         Route::get('/orders', [OrderController::class, 'getList'])->name('orders');
-        Route::post('/orders', [OrderController::class, 'create']);
+        Route::post('/orders', [OrderController::class, 'create'])->name('create');
         Route::put('/orders/{id}/recall', [OrderController::class, 'recall'])->name('order.recall');
 
         Route::group([
-            'middleware' => 'role:admin',
-            'name' => 'catalogManagement.',
+            'middleware' => 'role:admin|manager',
+            'as' => 'catalogManagement.',
             'prefix' => 'catalog-management'
         ], function () {
             Route::get('/products', [ProductManagementController::class, 'getList'])->name('products');
@@ -49,23 +49,23 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::group([
             'middleware' => 'role:admin|manager',
-            'name' => 'ordersManagement.',
+            'as' => 'ordersManagement.',
             'prefix' => 'orders-management'
         ], function () {
             Route::get('/', [OrderManagementController::class, 'getList'])->name('getList');
 //            Route::get('/get-create-data', [OrderManagementController::class, 'geCreateData'])->name('geCreateData');
 //            Route::post('/', [OrderManagementController::class, 'store'])->name('store');
 
-//            Route::get('/{id}', [OrderManagementController::class, 'getOrder'])->name('getOrder');
-//            Route::put('/{id}', [OrderManagementController::class, 'update'])->name('update');
+            Route::get('/get-update-data/{id}', [OrderManagementController::class, 'getUpdateData'])->name('getOrder');
+            Route::put('/{id}', [OrderManagementController::class, 'update'])->name('update');
         });
     });
 
-    Route::get('/basket', [BasketController::class, 'getBasket'])->name('basket');
     Route::group([
-        'name' => 'basket.',
+        'as' => 'basket.',
         'prefix' => 'basket'
     ], function () {
+        Route::get('/', [BasketController::class, 'getBasket'])->name('getBasket');
         Route::post('/product', [BasketController::class, 'store'])->name('product.store');
         Route::put('/product', [BasketController::class, 'updateQuantity'])->name('product.update');
         Route::delete('/product/{id}', [BasketController::class, 'destroy'])->name('product.destroy');

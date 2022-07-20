@@ -4,6 +4,7 @@ namespace App\Services\Catalog;
 
 use App\Dto\Catalog\OrderCreationFormDto;
 use App\Dto\Catalog\OrderDto;
+use App\Dto\Catalog\OrderUpdateDto;
 use App\Exceptions\Order\NoRightsRecallOrder;
 use App\Helpers\Mappers\Order\OrderProduct;
 use App\Helpers\Statuses\Order\OrderPaymentStatuses;
@@ -82,5 +83,34 @@ class OrderService
         $model->setOrderStatusId(OrderStatuses::CANCELED);
 
         $model->checkChangesAndSave();
+    }
+
+    public function update(Order $model, OrderUpdateDto $dto): Order
+    {
+        if ($userName = $dto->userName) {
+            $model->setUserName($userName);
+        }
+
+        if ($userEmail = $dto->userEmail) {
+            $model->setUserEmail($userEmail);
+        }
+
+        if ($deliveryId = $dto->deliveryId) {
+            $model->setDeliveryId($deliveryId);
+        }
+
+        if ($deliveryAddress = $dto->deliveryAddress) {
+            $model->setDeliveryAddress($deliveryAddress);
+        }
+
+        if ($orderStatusId = $dto->orderStatusId) {
+            $model->setOrderStatusId($orderStatusId);
+        }
+
+        if ($paymentStatusId = $dto->paymentStatusId) {
+            $model->setPaymentStatusId($paymentStatusId);
+        }
+
+        return $model->checkChangesSaveAndReturn();
     }
 }

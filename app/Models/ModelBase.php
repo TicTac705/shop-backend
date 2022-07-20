@@ -29,7 +29,7 @@ class ModelBase extends Model
     }
 
 
-    public function saveAndReturn(): ModelBase
+    public function saveAndReturn(): self
     {
         $this->save();
 
@@ -72,6 +72,16 @@ class ModelBase extends Model
             $this->touch();
             $this->save();
         }
+    }
+
+    public function checkChangesSaveAndReturn(): self
+    {
+        if ($this->isDirty()) {
+            $this->touch();
+            return $this->saveAndReturn();
+        }
+
+        return $this;
     }
 
     public function getListWithPagination(int $number): LengthAwarePaginator

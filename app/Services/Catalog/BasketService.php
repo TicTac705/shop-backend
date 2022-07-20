@@ -53,12 +53,7 @@ class BasketService
             $item->setCount($item->getCount() + 1);
         }
 
-        if ($item->isDirty()) {
-            $item->touch();
-            return $item->saveAndReturn();
-        }
-
-        return $item;
+        return $item->checkChangesSaveAndReturn();
     }
 
     public function addItem(Basket $basket, int $productId): BasketProduct

@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Manager;
+namespace App\Http\Controllers\Admin;
 
+use App\Dto\Catalog\OrderUpdateDto;
 use App\EntityServices\Catalog\OrderEntityService;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Catalog\OrderUpdateRequest;
 use Illuminate\Http\JsonResponse;
 
 class OrderManagementController extends Controller
@@ -20,8 +22,15 @@ class OrderManagementController extends Controller
         return response()->json($this->orderEntityService->getListWithPagination(20));
     }
 
-    public function getOrder(int $id)
+    public function getUpdateData(int $id): JsonResponse
     {
+        return response()->json($this->orderEntityService->getUpdateData($id));
+    }
 
+    public function update(OrderUpdateRequest $request, int $id): JsonResponse
+    {
+        $orderUpdateDto = OrderUpdateDto::fromRequest($request);
+
+        return response()->json($this->orderEntityService->update($id, $orderUpdateDto));
     }
 }

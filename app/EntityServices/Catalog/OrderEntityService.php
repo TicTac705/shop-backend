@@ -5,6 +5,7 @@ namespace App\EntityServices\Catalog;
 use App\Dto\Catalog\BasketDto;
 use App\Dto\Catalog\OrderCreationFormDto;
 use App\Dto\Catalog\OrderDto;
+use App\Dto\Catalog\OrderUpdateDto;
 use App\Dto\PaginationDto;
 use App\Exceptions\Basket\BasketNotExistingException;
 use App\Exceptions\Order\NoRightsRecallOrder;
@@ -21,8 +22,8 @@ class OrderEntityService
     private ProductService $productService;
 
     public function __construct(
-        OrderService $orderService,
-        BasketService $basketService,
+        OrderService   $orderService,
+        BasketService  $basketService,
         ProductService $productService
     )
     {
@@ -76,10 +77,26 @@ class OrderEntityService
     {
         $order = $this->orderService->getById($id);
 
-        if (!$this->orderService->canRecallOrder($order)){
+        if (!$this->orderService->canRecallOrder($order)) {
             throw new OrderCannotRecalled();
         }
 
         $this->orderService->recall($order);
+    }
+
+    public function getUpdateData(int $id): OrderDto
+    {
+        $order = $this->orderService->getById($id);
+
+        return OrderDto::fromModel($order);
+    }
+
+    public function update(int $id, OrderUpdateDto $dto): OrderDto
+    {
+        $order = $this->orderService->getById($id);
+
+        $changedOrder = $this->orderService->update($order, $dto);
+
+        return OrderDto::fromModel($changedOrder);
     }
 }
