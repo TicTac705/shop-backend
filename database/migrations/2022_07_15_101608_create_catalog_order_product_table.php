@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateCatalogOrderProductTable extends Migration
 {
+    private string $table = 'catalog_order_product';
+
     /**
      * Run the migrations.
      *
@@ -13,24 +15,18 @@ class CreateCatalogOrderProductTable extends Migration
      */
     public function up()
     {
-        Schema::create('catalog_order_product', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('order_id');
-            $table->unsignedBigInteger('product_id');
-            $table->double('price');
-            $table->bigInteger('count');
-            $table->timestamps();
-
-            $table->foreign('order_id')
-                ->references('id')
-                ->on('catalog_orders')
-                ->onDelete('cascade');
-
-            $table->foreign('product_id')
-                ->references('id')
-                ->on('catalog_products')
-                ->onDelete('cascade');
-        });
+        if (!Schema::hasTable($this->table)) {
+            Schema::create($this->table, function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('order_id');
+                $table->foreign('order_id')->references('id')->on('catalog_orders')->onDelete('cascade');
+                $table->unsignedBigInteger('product_id');
+                $table->foreign('product_id')->references('id')->on('catalog_products')->onDelete('cascade');
+                $table->double('price');
+                $table->bigInteger('count');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -40,6 +36,6 @@ class CreateCatalogOrderProductTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_product');
+        Schema::dropIfExists($this->table);
     }
 }

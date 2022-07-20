@@ -3,7 +3,7 @@
 namespace App\Models\User;
 
 use App\Models\ModelBase;
-use App\PivotModels\User\UserRole;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
 
 /**
@@ -16,6 +16,8 @@ use Illuminate\Support\Carbon;
  */
 class Role extends ModelBase
 {
+    use HasFactory;
+
     protected $table = 'roles';
 
     protected $fillable = [
@@ -65,18 +67,8 @@ class Role extends ModelBase
         return $this;
     }
 
-    public function checkBySlug(string $slug): bool
-    {
-        return self::where('slug', $slug)->exists();
-    }
-
     public function getIdBySlug(string $slug): string
     {
         return self::where('slug', $slug)->first()->id;
-    }
-
-    public function getSlugById(string $id): string
-    {
-        return self::where('id', $id)->first()->slug;
     }
 }

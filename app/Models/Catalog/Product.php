@@ -8,6 +8,7 @@ use App\Models\UnitMeasure;
 use App\Models\User\User;
 use App\PivotModels\Catalog\ProductCategory;
 use App\PivotModels\Catalog\ProductImage;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
@@ -26,6 +27,8 @@ use Illuminate\Support\Carbon;
  */
 class Product extends ModelBase
 {
+    use HasFactory;
+
     protected $table = 'catalog_products';
 
     protected $fillable = [

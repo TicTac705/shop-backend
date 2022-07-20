@@ -21,7 +21,7 @@ class UserDto extends BaseDto
             'name' => $user->getName(),
             'email' => $user->getEmail(),
             'emailVerifiedAt' => $user->getEmailVerifiedAt(),
-            'roles' => RoleLightDto::fromList($user->role()->getResults()->all()),
+            'roles' => RoleLightDto::fromList($user->roles()->getResults()->all()),
             'updatedAt' => $user->getUpdatedAtTimestamp(),
             'createdAt' => $user->getCreatedAtTimestamp(),
         ]);

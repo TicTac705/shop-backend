@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateCatalogBasketsProductsTable extends Migration
 {
+    private string $table = 'catalog_baskets_products';
+
     /**
      * Run the migrations.
      *
@@ -13,23 +15,17 @@ class CreateCatalogBasketsProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('catalog_baskets_products', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('basket_id');
-            $table->unsignedBigInteger('product_id');
-            $table->bigInteger('count');
-            $table->timestamps();
-
-            $table->foreign('product_id')
-                ->references('id')
-                ->on('catalog_products')
-                ->onDelete('cascade');
-
-            $table->foreign('basket_id')
-                ->references('id')
-                ->on('catalog_baskets')
-                ->onDelete('cascade');
-        });
+        if (!Schema::hasTable($this->table)) {
+            Schema::create($this->table, function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('basket_id');
+                $table->foreign('basket_id')->references('id')->on('catalog_baskets')->onDelete('cascade');
+                $table->unsignedBigInteger('product_id');
+                $table->foreign('product_id')->references('id')->on('catalog_products')->onDelete('cascade');
+                $table->bigInteger('count');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -39,6 +35,6 @@ class CreateCatalogBasketsProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('catalog_baskets_products');
+        Schema::dropIfExists($this->table);
     }
 }

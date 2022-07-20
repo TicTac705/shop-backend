@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateCatalogProductsTable extends Migration
 {
+    private string $table = 'catalog_products';
+
     /**
      * Run the migrations.
      *
@@ -13,26 +15,22 @@ class CreateCatalogProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('catalog_products', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->text('description');
-            $table->double('price');
-            $table->unsignedBigInteger('unit_measure_id');
-            $table->bigInteger('store');
-            $table->unsignedBigInteger('user_id');
-            $table->timestamps();
-
-            $table->foreign('unit_measure_id')
-                ->references('id')
-                ->on('unit_measure')
-                ->onUpdate('cascade');
-
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onUpdate('cascade');
-        });
+        if (!Schema::hasTable($this->table)) {
+            Schema::create($this->table, function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->text('description');
+                $table->double('price');
+                $table->unsignedBigInteger('unit_measure_id');
+                $table->foreign('unit_measure_id')->references('id')->on('unit_measure')->onUpdate('cascade');
+                $table->bigInteger('store');
+                $table->unsignedBigInteger('user_id');
+                $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade');
+                $table->boolean('is_active')->default(true);
+                $table->softDeletes();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -42,6 +40,6 @@ class CreateCatalogProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('catalog_products');
+        Schema::dropIfExists($this->table);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Catalog\Basket;
 use App\Models\Catalog\Order;
 use App\Models\User\UserBase as Authenticatable;
 use App\PivotModels\User\UserRole;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
@@ -26,7 +27,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
+    use Notifiable, HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -91,7 +92,7 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(): array
     {
         return [
-            'roles' => RoleLightForTokenDto::fromList(Auth::user()->role->all()),
+            'roles' => RoleLightForTokenDto::fromList(Auth::user()->roles->all()),
         ];
     }
 
@@ -133,7 +134,7 @@ class User extends Authenticatable implements JWTSubject
         return $this;
     }
 
-    public function role(): BelongsToMany
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'users_roles')->withTimestamps()->using(UserRole::class);
     }
@@ -151,7 +152,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function hasRole(string $slug): bool
     {
-        return $this->role()->where('slug', $slug)->exists();
+        return $this->roles()->where('slug', $slug)->exists();
     }
 
     public function baskets(): HasMany

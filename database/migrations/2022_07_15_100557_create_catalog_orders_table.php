@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateCatalogOrdersTable extends Migration
 {
+    private string $table = 'catalog_orders';
+
     /**
      * Run the migrations.
      *
@@ -13,22 +15,20 @@ class CreateCatalogOrdersTable extends Migration
      */
     public function up()
     {
-        Schema::create('catalog_orders', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('user_name');
-            $table->string('user_email');
-            $table->integer('delivery_id');
-            $table->string('delivery_address')->nullable();
-            $table->integer('order_status_id');
-            $table->integer('payment_status_id');
-            $table->timestamps();
-
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
-        });
+        if (!Schema::hasTable($this->table)) {
+            Schema::create($this->table, function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id');
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+                $table->string('user_name');
+                $table->string('user_email');
+                $table->integer('delivery_id');
+                $table->string('delivery_address')->nullable();
+                $table->integer('order_status_id');
+                $table->integer('payment_status_id');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -38,6 +38,6 @@ class CreateCatalogOrdersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('catalog_orders');
+        Schema::dropIfExists($this->table);
     }
 }

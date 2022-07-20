@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
 
 /**
@@ -14,6 +15,8 @@ use Illuminate\Support\Carbon;
  */
 class UnitMeasure extends ModelBase
 {
+    use HasFactory;
+
     protected $table = 'unit_measure';
 
     protected $fillable = [

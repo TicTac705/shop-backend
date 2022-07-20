@@ -5,7 +5,9 @@ namespace App\Models\Catalog;
 use App\Models\ModelBase;
 use App\Models\User\User;
 use App\PivotModels\Catalog\BasketProduct;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
@@ -19,6 +21,8 @@ use Illuminate\Support\Carbon;
  */
 class Basket extends ModelBase
 {
+    use HasFactory;
+
     protected $table = 'catalog_baskets';
 
     protected $fillable = [
@@ -74,5 +78,10 @@ class Basket extends ModelBase
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'catalog_baskets_products')->withTimestamps()->using(BasketProduct::class);
     }
 }

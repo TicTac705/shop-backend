@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateCatalogProductsImagesTable extends Migration
 {
+    private string $table = 'catalog_products_images';
+
     /**
      * Run the migrations.
      *
@@ -13,22 +15,16 @@ class CreateCatalogProductsImagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('catalog_products_images', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('image_id');
-            $table->timestamps();
-
-            $table->foreign('product_id')
-                ->references('id')
-                ->on('catalog_products')
-                ->onDelete('cascade');
-
-            $table->foreign('image_id')
-                ->references('id')
-                ->on('images')
-                ->onDelete('cascade');
-        });
+        if (!Schema::hasTable($this->table)) {
+            Schema::create($this->table, function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('product_id');
+                $table->foreign('product_id')->references('id')->on('catalog_products')->onDelete('cascade');
+                $table->unsignedBigInteger('image_id');
+                $table->foreign('image_id')->references('id')->on('images')->onDelete('cascade');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -38,6 +34,6 @@ class CreateCatalogProductsImagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('catalog_products_images');
+        Schema::dropIfExists($this->table);
     }
 }

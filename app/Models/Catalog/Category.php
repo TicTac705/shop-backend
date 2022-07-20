@@ -4,6 +4,7 @@ namespace App\Models\Catalog;
 
 use App\Models\ModelBase;
 use App\PivotModels\Catalog\ProductCategory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
@@ -17,6 +18,8 @@ use Illuminate\Support\Carbon;
  */
 class Category extends ModelBase
 {
+    use HasFactory;
+
     protected $table = 'catalog_categories';
 
     protected $fillable = [

@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateCatalogCategoriesTable extends Migration
 {
+    private string $table = 'catalog_categories';
+
     /**
      * Run the migrations.
      *
@@ -13,12 +15,14 @@ class CreateCatalogCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('catalog_categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->nullable('false');
-            $table->string('slug')->unique();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable($this->table)) {
+            Schema::create($this->table, function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable('false');
+                $table->string('slug')->unique();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -28,6 +32,6 @@ class CreateCatalogCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('catalog_categories');
+        Schema::dropIfExists($this->table);
     }
 }

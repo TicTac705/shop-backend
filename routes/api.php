@@ -39,8 +39,6 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::get('/products/get-update-data/{id}', [ProductManagementController::class, 'getUpdateData'])->name('products.edit');
             Route::put('/products/{id}', [ProductManagementController::class, 'update'])->name('products.update');
 
-            //Добавить сво-во 'is_display' для управления отображением в каталоге
-            //Добавить Soft Deleting для продуктов
             //Route::delete('/products/{id}', [ProductManagementController::class, 'destroy'])->name('products.destroy');
 
             Route::post('/image/', [ImageController::class, 'store'])->name('image.store');
