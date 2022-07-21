@@ -14,6 +14,7 @@ class ProductUpdateDto extends BaseDto
     public ?int $unitMeasureId;
     public ?int $store;
     public ?int $userId;
+    public ?bool $isActive;
     public ?array $imagesId;
     public ?array $categories;
     public bool $haveNewImages;
@@ -27,6 +28,7 @@ class ProductUpdateDto extends BaseDto
             'unitMeasureId' => intval($request->get('unit_measure_id')),
             'store' => intval($request->get('store')),
             'userId' => Auth::user()->id,
+            'isActive' => $request->get('is_active'),
             'imagesId' => $request->get('imagesId'),
             'categories' => $request->get('categories'),
             'haveNewImages' => $request->hasFile('pictures'),

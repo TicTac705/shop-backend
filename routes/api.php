@@ -38,8 +38,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
             Route::get('/products/get-update-data/{id}', [ProductManagementController::class, 'getUpdateData'])->name('products.edit');
             Route::put('/products/{id}', [ProductManagementController::class, 'update'])->name('products.update');
-
-            //Route::delete('/products/{id}', [ProductManagementController::class, 'destroy'])->name('products.destroy');
+            Route::delete('/products/{id}', [ProductManagementController::class, 'destroy'])->name('products.destroy');
 
             Route::post('/image/', [ImageController::class, 'store'])->name('image.store');
             Route::delete('/image/{id}', [ImageController::class, 'destroy'])->name('image.destroy');
@@ -51,8 +50,6 @@ Route::group(['middleware' => 'auth:api'], function () {
             'prefix' => 'orders-management'
         ], function () {
             Route::get('/', [OrderManagementController::class, 'getList'])->name('getList');
-//            Route::get('/get-create-data', [OrderManagementController::class, 'geCreateData'])->name('geCreateData');
-//            Route::post('/', [OrderManagementController::class, 'store'])->name('store');
 
             Route::get('/get-update-data/{id}', [OrderManagementController::class, 'getUpdateData'])->name('getOrder');
             Route::put('/{id}', [OrderManagementController::class, 'update'])->name('update');

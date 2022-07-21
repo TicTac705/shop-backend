@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductCreateDto extends BaseDto
 {
+    public bool $isActive;
     public string $name;
     public string $description;
     public float $price;
@@ -20,6 +21,7 @@ class ProductCreateDto extends BaseDto
     static function fromRequest(ProductCreationRequest $request): self
     {
         return new self([
+            'isActive' => $request->get('is_active'),
             'name' => $request->get('name'),
             'description' => $request->get('description'),
             'price' => floatval($request->get('price')),

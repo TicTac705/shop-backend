@@ -17,12 +17,17 @@ class ProductService
             $data->price,
             $data->unitMeasureId,
             $data->store,
-            $data->userId
+            $data->userId,
+            $data->isActive
         )->saveAndReturn();
     }
 
     public function update(Product $model, ProductUpdateDto $data): Product
     {
+        if (is_bool($data->isActive)) {
+            $model->setIsActive($data->isActive);
+        }
+
         if ($data->name) {
             $model->setName($data->name);
         }
@@ -61,6 +66,11 @@ class ProductService
         return Product::getListWithPagination($numberItemsPerPage);
     }
 
+    public function getListWithPaginationFromManagement(int $numberItemsPerPage): LengthAwarePaginator
+    {
+        return Product::getListWithPagination($numberItemsPerPage, true);
+    }
+
     public function reduceQuantityStockByNumber(int $productId, int $number): void
     {
         $product = $this->getById($productId);
@@ -68,5 +78,10 @@ class ProductService
         $product->setStore($product->getStore() - $number);
 
         $product->checkChangesAndSave();
+    }
+
+    public function destroy(Product $model): void
+    {
+        $model->delete();
     }
 }

@@ -28,7 +28,7 @@ class ProductManagementController extends Controller
 
     public function getList(): JsonResponse
     {
-        return response()->json($this->catalogEntityService->getList());
+        return response()->json($this->catalogEntityService->getListFromManagement());
     }
 
     public function getCreateData(): JsonResponse
@@ -56,5 +56,12 @@ class ProductManagementController extends Controller
         $productFormDto = ProductUpdateDto::fromRequest($request);
 
         return response()->json($this->productManagementEntityService->update($id, $productFormDto));
+    }
+
+    public function destroy(int $id): JsonResponse
+    {
+        $this->productManagementEntityService->destroy($id);
+
+        return response()->json(['message' => 'Product successfully deleted.']);
     }
 }

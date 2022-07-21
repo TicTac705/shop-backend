@@ -84,8 +84,12 @@ class ModelBase extends Model
         return $this;
     }
 
-    public function getListWithPagination(int $number): LengthAwarePaginator
+    public function getListWithPagination(int $number, bool $isDisplayInactive = false): LengthAwarePaginator
     {
-        return self::query()->paginate($number);
+        if ($isDisplayInactive) {
+            return self::query()->paginate($number);
+        }
+
+        return self::query()->where('is_active', '=', true)->paginate($number);
     }
 }

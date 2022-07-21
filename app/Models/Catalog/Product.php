@@ -11,6 +11,7 @@ use App\PivotModels\Catalog\ProductImage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
@@ -21,13 +22,15 @@ use Illuminate\Support\Carbon;
  * @property int $unit_measure_id
  * @property int $store
  * @property int $user_id
+ * @property bool $is_active
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property null|Carbon $deleted_at
  *
  */
 class Product extends ModelBase
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'catalog_products';
 
@@ -40,7 +43,7 @@ class Product extends ModelBase
         'user_id'
     ];
 
-    protected $dates = ['created_at', 'updated_at'];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     public function create(
         string $name,
@@ -48,7 +51,8 @@ class Product extends ModelBase
         float  $price,
         int    $unitMeasureId,
         int    $store,
-        int    $userId
+        int    $userId,
+        bool $isActive
     ): self
     {
         $product = new self();
@@ -59,6 +63,7 @@ class Product extends ModelBase
         $product->setUnitMeasureId($unitMeasureId);
         $product->setStore($store);
         $product->setUserId($userId);
+        $product->setIsActive($isActive);
 
         return $product;
     }
@@ -91,6 +96,11 @@ class Product extends ModelBase
     public function getUserId(): int
     {
         return $this->user_id;
+    }
+
+    public function getIsActive(): bool
+    {
+        return $this->is_active;
     }
 
     public function setName(string $name): self
@@ -126,6 +136,12 @@ class Product extends ModelBase
     public function setUserId(int $userId): self
     {
         $this->user_id = $userId;
+        return $this;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->is_active = $isActive;
         return $this;
     }
 

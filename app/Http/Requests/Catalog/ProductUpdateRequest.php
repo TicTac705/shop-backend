@@ -21,6 +21,7 @@ class ProductUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'is_active' => ['boolean'],
             'name' => ['string', 'max:255', 'unique:catalog_products'],
             'description' => ['string'],
             'price' => ['numeric', 'gt:0'],

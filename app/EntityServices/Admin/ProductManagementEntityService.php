@@ -90,4 +90,11 @@ class ProductManagementEntityService
 
         return ProductDto::fromModel($changedProduct);
     }
+
+    public function destroy(int $id): void
+    {
+        $product = $this->productService->getById($id);
+
+        $this->productService->destroy($product);
+    }
 }

@@ -31,6 +31,7 @@ class ProductCreationRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'is_active' => ['required', 'boolean'],
             'name' => ['required', 'string', 'max:255', 'unique:catalog_products'],
             'description' => ['required', 'string'],
             'price' => ['required', 'numeric', 'gt:0'],

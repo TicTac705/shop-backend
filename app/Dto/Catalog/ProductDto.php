@@ -21,6 +21,7 @@ class ProductDto extends BaseDto
     /** @var \App\Dto\ImageLightDto[] */
     public array $images;
     public UserLightDto $creator;
+    public bool $isActive;
     public ?int $updatedAt;
     public ?int $createdAt;
 
@@ -37,6 +38,7 @@ class ProductDto extends BaseDto
             'categories' => CategoryLightDto::fromList($product->categories()->getResults()->all()),
             'images' => ImageLightDto::fromList($product->images()->getResults()->all()),
             'creator' => UserLightDto::fromModel($product->user()->getResults()),
+            'isActive' => $product->getIsActive(),
             'updatedAt' => $product->getUpdatedAtTimestamp(),
             'createdAt' => $product->getCreatedAtTimestamp(),
         ]);

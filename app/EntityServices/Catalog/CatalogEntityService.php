@@ -21,4 +21,11 @@ class CatalogEntityService
 
         return PaginationDto::fromResultService($products, ProductDto::fromList($products->items()));
     }
+
+    public function getListFromManagement(): PaginationDto
+    {
+        $products = $this->productService->getListWithPaginationFromManagement(10);
+
+        return PaginationDto::fromResultService($products, ProductDto::fromList($products->items()));
+    }
 }
