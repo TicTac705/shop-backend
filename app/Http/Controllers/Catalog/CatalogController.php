@@ -10,9 +10,7 @@ class CatalogController extends Controller
 {
     private CatalogEntityService $catalogEntityService;
 
-    public function __construct(
-        CatalogEntityService $catalogEntityService
-    )
+    public function __construct(CatalogEntityService $catalogEntityService)
     {
         $this->catalogEntityService = $catalogEntityService;
     }

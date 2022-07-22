@@ -22,6 +22,6 @@ trait ApiFormRequest
         throw new HttpResponseException(response()->json([
             'message' => 'Validation errors',
             'data' => $validator->errors()
-        ], HTTPResponseStatuses::UNAUTHORIZED));
+        ], HTTPResponseStatuses::UNPROCESSABLE_ENTITY));
     }
 }

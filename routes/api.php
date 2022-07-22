@@ -11,8 +11,8 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/sign-in', [LoginController::class, 'signIn']);
-Route::post('/signup', [RegisterController::class, 'register']);
+Route::post('/sign-in', [LoginController::class, 'signIn'])->name('signIn');
+Route::post('/signup', [RegisterController::class, 'register'])->name('signUp');;
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/', [CatalogController::class, 'getList'])->name('home');
@@ -50,7 +50,6 @@ Route::group(['middleware' => 'auth:api'], function () {
             'prefix' => 'orders-management'
         ], function () {
             Route::get('/', [OrderManagementController::class, 'getList'])->name('getList');
-
             Route::get('/get-update-data/{id}', [OrderManagementController::class, 'getUpdateData'])->name('getOrder');
             Route::put('/{id}', [OrderManagementController::class, 'update'])->name('update');
         });

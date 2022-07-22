@@ -9,7 +9,7 @@ class UserDto extends BaseDto
 {
     public string $name;
     public string $email;
-    public ?Carbon $emailVerifiedAt;
+    public ?int $emailVerifiedAt;
     /** @var \App\Dto\User\RoleLightDto[]  */
     public array $roles;
     public ?int $updatedAt;
@@ -20,7 +20,7 @@ class UserDto extends BaseDto
         return new self([
             'name' => $user->getName(),
             'email' => $user->getEmail(),
-            'emailVerifiedAt' => $user->getEmailVerifiedAt(),
+            'emailVerifiedAt' => $user->getEmailVerifiedAtTimestamp(),
             'roles' => RoleLightDto::fromList($user->roles()->getResults()->all()),
             'updatedAt' => $user->getUpdatedAtTimestamp(),
             'createdAt' => $user->getCreatedAtTimestamp(),

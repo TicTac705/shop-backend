@@ -111,6 +111,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->email_verified_at;
     }
 
+    public function getEmailVerifiedAtTimestamp(): ?int
+    {
+        return $this->email_verified_at === null ? null : $this->email_verified_at->timestamp;
+    }
+
     public function getPassword(): string
     {
         return $this->password;
@@ -137,17 +142,6 @@ class User extends Authenticatable implements JWTSubject
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'users_roles')->withTimestamps()->using(UserRole::class);
-    }
-
-    public function hasRoles(array $slugs): bool
-    {
-        foreach ($slugs as $slug) {
-            if ($this->hasRole($slug)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public function hasRole(string $slug): bool
