@@ -144,6 +144,17 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Role::class, 'users_roles')->withTimestamps()->using(UserRole::class);
     }
 
+    public function hasRoles(array $slugs): bool
+    {
+        foreach ($slugs as $slug) {
+            if ($this->hasRole($slug)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function hasRole(string $slug): bool
     {
         return $this->roles()->where('slug', $slug)->exists();

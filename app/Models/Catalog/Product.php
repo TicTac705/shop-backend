@@ -52,7 +52,7 @@ class Product extends ModelBase
         int    $unitMeasureId,
         int    $store,
         int    $userId,
-        bool $isActive
+        bool   $isActive
     ): self
     {
         $product = new self();

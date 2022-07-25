@@ -10,14 +10,9 @@ use Illuminate\Validation\ValidationException;
 trait ApiFormRequest
 {
     /**
-     * Handle a failed validation attempt.
-     *
-     * @param Validator $validator
-     * @return void
-     *
      * @throws ValidationException
      */
-    public function failedValidation(Validator $validator)
+    public function failedValidation(Validator $validator): void
     {
         throw new HttpResponseException(response()->json([
             'message' => 'Validation errors',

@@ -23,4 +23,9 @@ trait RoleTrait
     {
         return $this->roles->where('slug', '=', 'admin')->first();
     }
+
+    protected function getUserRole(): Role
+    {
+        return $this->roles->where('slug', '=', 'user')->first();
+    }
 }

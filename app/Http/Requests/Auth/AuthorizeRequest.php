@@ -11,14 +11,12 @@ class AuthorizeRequest extends FormRequest
 
     protected $stopOnFirstFailure = true;
 
-    protected $redirectRoute = 'signup';
-
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -28,7 +26,7 @@ class AuthorizeRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'email' => ['required', 'string', 'email', 'max:255'],
