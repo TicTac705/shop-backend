@@ -23,9 +23,9 @@ Route::group(['middleware' => 'auth:api'], function () {
         'as' => 'profile.',
         'prefix' => 'profile'
     ], function () {
-        Route::get('/orders', [OrderController::class, 'getList'])->name('orders');
-        Route::post('/orders', [OrderController::class, 'create'])->name('create');
-        Route::put('/orders/{id}/recall', [OrderController::class, 'recall'])->name('order.recall');
+        Route::get('/orders', [OrderController::class, 'getList'])->name('orders.getList');
+        Route::post('/orders', [OrderController::class, 'create'])->name('orders.create');
+        Route::put('/orders/{id}/recall', [OrderController::class, 'recall'])->name('orders.recall');
 
         Route::group([
             'middleware' => 'role:admin|manager',
