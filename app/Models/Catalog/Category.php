@@ -3,9 +3,7 @@
 namespace App\Models\Catalog;
 
 use App\Models\ModelBase;
-use App\PivotModels\Catalog\ProductCategory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -20,7 +18,7 @@ class Category extends ModelBase
 {
     use HasFactory;
 
-    protected $collection  = 'catalog_categories';
+    protected $collection = 'catalog_categories';
 
     protected $fillable = [
         'name',
@@ -33,8 +31,6 @@ class Category extends ModelBase
         'name' => 'string',
         'slug' => 'string'
     ];
-
-    protected $touches = ['products'];
 
     public static function create(
         string $name,
@@ -49,12 +45,12 @@ class Category extends ModelBase
         return $category;
     }
 
-    public function getName():string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getSlug():string
+    public function getSlug(): string
     {
         return $this->slug;
     }
@@ -65,14 +61,9 @@ class Category extends ModelBase
         return $this;
     }
 
-    public function setSlug(string $slug):self
+    public function setSlug(string $slug): self
     {
         $this->slug = $slug;
         return $this;
-    }
-
-    public function products(): BelongsToMany
-    {
-        return $this->belongsToMany(Product::class, 'catalog_products_categories')->withTimestamps()->using(ProductCategory::class);
     }
 }

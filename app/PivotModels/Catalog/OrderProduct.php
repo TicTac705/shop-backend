@@ -2,15 +2,13 @@
 
 namespace App\PivotModels\Catalog;
 
-use App\Models\Catalog\Product;
 use App\PivotModels\PivotBase;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- * @property int $id
- * @property int $order_id
- * @property int $product_id
+ * @property string $id
+ * @property string $order_id
+ * @property string $product_id
  * @property float $price
  * @property int $count
  * @property Carbon $created_at
@@ -19,7 +17,7 @@ use Illuminate\Support\Carbon;
  */
 class OrderProduct extends PivotBase
 {
-    protected $collection  = 'catalog_order_product';
+    protected $collection = 'catalog_order_product';
 
     protected $fillable = [
         'order_id',
@@ -29,9 +27,9 @@ class OrderProduct extends PivotBase
     ];
 
     protected $casts = [
-        'id' => 'integer',
-        'order_id' => 'integer',
-        'product_id' => 'integer',
+        'id' => 'string',
+        'order_id' => 'string',
+        'product_id' => 'string',
         'price' => 'float',
         'count' => 'integer',
     ];
@@ -39,10 +37,10 @@ class OrderProduct extends PivotBase
     protected $dates = ['created_at', 'updated_at'];
 
     public static function create(
-        int   $orderId,
-        int   $productId,
-        float $price,
-        int   $count
+        string $orderId,
+        string $productId,
+        float  $price,
+        int    $count
     ): self
     {
         $orderProduct = new self();
@@ -55,12 +53,12 @@ class OrderProduct extends PivotBase
         return $orderProduct;
     }
 
-    public function getOrderId(): int
+    public function getOrderId(): string
     {
         return $this->order_id;
     }
 
-    public function getProductId(): int
+    public function getProductId(): string
     {
         return $this->product_id;
     }
@@ -75,13 +73,13 @@ class OrderProduct extends PivotBase
         return $this->count;
     }
 
-    public function setOrderId(int $orderId): self
+    public function setOrderId(string $orderId): self
     {
         $this->order_id = $orderId;
         return $this;
     }
 
-    public function setProductId(int $productId): self
+    public function setProductId(string $productId): self
     {
         $this->product_id = $productId;
         return $this;
@@ -97,10 +95,5 @@ class OrderProduct extends PivotBase
     {
         $this->count = $count;
         return $this;
-    }
-
-    public function product(): BelongsTo
-    {
-        return $this->belongsTo(Product::class);
     }
 }

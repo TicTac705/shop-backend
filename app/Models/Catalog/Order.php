@@ -5,13 +5,11 @@ namespace App\Models\Catalog;
 use App\Helpers\Statuses\Order\OrderPaymentStatuses;
 use App\Helpers\Statuses\Order\OrderStatuses;
 use App\Models\ModelBase;
-use App\PivotModels\Catalog\OrderProduct;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
- * @property int $id
- * @property int $user_id
+ * @property string $id
+ * @property string $user_id
  * @property string $user_name
  * @property string $user_email
  * @property int $delivery_id
@@ -23,7 +21,7 @@ use Illuminate\Support\Carbon;
  */
 class Order extends ModelBase
 {
-    protected $collection  = 'catalog_orders';
+    protected $collection = 'catalog_orders';
 
     protected $fillable = [
         'user_id',
@@ -38,7 +36,7 @@ class Order extends ModelBase
     protected $dates = ['created_at', 'updated_at'];
 
     public function create(
-        int     $userId,
+        string  $userId,
         string  $userName,
         string  $userEmail,
         int     $deliveryId,
@@ -60,12 +58,12 @@ class Order extends ModelBase
         return $order;
     }
 
-    public function getUserId(): int
+    public function getUserId(): string
     {
         return $this->user_id;
     }
 
-    public function setUserId(int $userId): void
+    public function setUserId(string $userId): void
     {
         $this->user_id = $userId;
     }
@@ -128,11 +126,6 @@ class Order extends ModelBase
     public function setPaymentStatusId(int $paymentStatusId): void
     {
         $this->payment_status_id = $paymentStatusId;
-    }
-
-    public function items(): HasMany
-    {
-        return $this->hasMany(OrderProduct::class);
     }
 
     public function isProcessing(): bool

@@ -2,26 +2,19 @@
 
 namespace App\Models\Catalog;
 
-use App\Models\Image;
 use App\Models\ModelBase;
-use App\Models\UnitMeasure;
-use App\Models\User\User;
-use App\PivotModels\Catalog\ProductCategory;
-use App\PivotModels\Catalog\ProductImage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
- * @property int $id
+ * @property string $id
  * @property string $name
  * @property string $description
  * @property float $price
- * @property int $unit_measure_id
+ * @property string $unit_measure_id
  * @property int $store
- * @property int $user_id
+ * @property string $user_id
  * @property bool $is_active
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -32,7 +25,7 @@ class Product extends ModelBase
 {
     use HasFactory, SoftDeletes;
 
-    protected $collection  = 'catalog_products';
+    protected $collection = 'catalog_products';
 
     protected $fillable = [
         'name',
@@ -49,9 +42,9 @@ class Product extends ModelBase
         string $name,
         string $description,
         float  $price,
-        int    $unitMeasureId,
+        string $unitMeasureId,
         int    $store,
-        int    $userId,
+        string $userId,
         bool   $isActive
     ): self
     {
@@ -83,7 +76,7 @@ class Product extends ModelBase
         return $this->price;
     }
 
-    public function getUnitMeasureId(): int
+    public function getUnitMeasureId(): string
     {
         return $this->unit_measure_id;
     }
@@ -93,7 +86,7 @@ class Product extends ModelBase
         return $this->store;
     }
 
-    public function getUserId(): int
+    public function getUserId(): string
     {
         return $this->user_id;
     }
@@ -121,7 +114,7 @@ class Product extends ModelBase
         return $this;
     }
 
-    public function setUnitMeasureId(int $unitMeasureId): self
+    public function setUnitMeasureId(string $unitMeasureId): self
     {
         $this->unit_measure_id = $unitMeasureId;
         return $this;
@@ -133,7 +126,7 @@ class Product extends ModelBase
         return $this;
     }
 
-    public function setUserId(int $userId): self
+    public function setUserId(string $userId): self
     {
         $this->user_id = $userId;
         return $this;
@@ -143,25 +136,5 @@ class Product extends ModelBase
     {
         $this->is_active = $isActive;
         return $this;
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function unitMeasure(): BelongsTo
-    {
-        return $this->belongsTo(UnitMeasure::class);
-    }
-
-    public function categories(): BelongsToMany
-    {
-        return $this->belongsToMany(Category::class, 'catalog_products_categories')->withTimestamps()->using(ProductCategory::class);
-    }
-
-    public function images(): BelongsToMany
-    {
-        return $this->belongsToMany(Image::class, 'catalog_products_images')->withTimestamps()->using(ProductImage::class);
     }
 }

@@ -7,13 +7,13 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 
 /**
- * @property int $id
+ * @property string $id
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
 class ModelBase extends Model
 {
-    public function getId(): int
+    public function getId(): string
     {
         return $this->id;
     }
@@ -36,7 +36,7 @@ class ModelBase extends Model
         return $this;
     }
 
-    public function saveAndReturnId(): int
+    public function saveAndReturnId(): string
     {
         $this->save();
 
@@ -58,7 +58,7 @@ class ModelBase extends Model
     }
 
     /**
-     * @param int[] $ids
+     * @param string[] $ids
      * @return bool
      */
     public function deleteManyByIds(array $ids): bool

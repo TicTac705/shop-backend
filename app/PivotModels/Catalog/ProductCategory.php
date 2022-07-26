@@ -6,9 +6,9 @@ use App\PivotModels\PivotBase;
 use Illuminate\Support\Carbon;
 
 /**
- * @property int $id
- * @property int $product_id
- * @property int $category_id
+ * @property string $id
+ * @property string $product_id
+ * @property string $category_id
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
@@ -23,16 +23,16 @@ class ProductCategory extends PivotBase
     ];
 
     protected $casts = [
-        'id' => 'integer',
-        'product_id' => 'integer',
-        'category_id' => 'integer'
+        'id' => 'string',
+        'product_id' => 'string',
+        'category_id' => 'string'
     ];
 
     protected $dates = ['created_at', 'updated_at'];
 
     public static function create(
-        int $productId,
-        int $categoryId
+        string $productId,
+        string $categoryId
     ): self
     {
         $productCategory = new self();
@@ -43,23 +43,23 @@ class ProductCategory extends PivotBase
         return $productCategory;
     }
 
-    public function getProductId(): int
+    public function getProductId(): string
     {
         return $this->product_id;
     }
 
-    public function getCategoryId(): int
+    public function getCategoryId(): string
     {
         return $this->category_id;
     }
 
-    public function setProductId(int $productId): self
+    public function setProductId(string $productId): self
     {
         $this->product_id = $productId;
         return $this;
     }
 
-    public function setCategoryId(int $categoryId): self
+    public function setCategoryId(string $categoryId): self
     {
         $this->category_id = $categoryId;
         return $this;

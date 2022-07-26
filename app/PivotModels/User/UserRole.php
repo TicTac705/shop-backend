@@ -6,9 +6,9 @@ use App\PivotModels\PivotBase;
 use Illuminate\Support\Carbon;
 
 /**
- * @property int $id
- * @property int $user_id
- * @property int $role_id
+ * @property string $id
+ * @property string $user_id
+ * @property string $role_id
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
@@ -23,16 +23,16 @@ class UserRole extends PivotBase
     ];
 
     protected $casts = [
-        'id' => 'integer',
-        'user_id' => 'integer',
-        'role_id' => 'integer'
+        'id' => 'string',
+        'user_id' => 'string',
+        'role_id' => 'string'
     ];
 
     protected $dates = ['created_at', 'updated_at'];
 
     public static function create(
-        int $userId,
-        int $roleId
+        string $userId,
+        string $roleId
     ): self
     {
         $userRole = new self();
@@ -53,13 +53,13 @@ class UserRole extends PivotBase
         return $this->role_id;
     }
 
-    public function setUserId(int $userId): self
+    public function setUserId(string $userId): self
     {
         $this->user_id = $userId;
         return $this;
     }
 
-    public function setRoleId(int $roleId): self
+    public function setRoleId(string $roleId): self
     {
         $this->role_id = $roleId;
         return $this;
