@@ -5,7 +5,7 @@ namespace App\Models\User;
 use App\Dto\User\RoleLightForTokenDto;
 use App\Models\Catalog\Basket;
 use App\Models\Catalog\Order;
-use App\Models\User\UserBase as Authenticatable;
+use Jenssegers\Mongodb\Auth\User as Authenticatable;
 use App\PivotModels\User\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -29,6 +29,7 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable, HasFactory;
 
+    protected $collection  = 'users';
     /**
      * The attributes that are mass assignable.
      *

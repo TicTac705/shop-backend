@@ -22,7 +22,7 @@ use Illuminate\Support\Carbon;
  */
 class Image extends ModelBase
 {
-    protected $table = 'images';
+    protected $collection  = 'images';
 
     protected $fillable = [
         'user_id',

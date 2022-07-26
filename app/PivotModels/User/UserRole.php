@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
  */
 class UserRole extends PivotBase
 {
-    protected $table = 'users_roles';
+    protected $collection  = 'users_roles';
 
     protected $fillable = [
         'user_id',

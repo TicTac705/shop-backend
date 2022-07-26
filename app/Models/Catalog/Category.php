@@ -20,7 +20,7 @@ class Category extends ModelBase
 {
     use HasFactory;
 
-    protected $table = 'catalog_categories';
+    protected $collection  = 'catalog_categories';
 
     protected $fillable = [
         'name',

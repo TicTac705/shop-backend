@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
  */
 class ProductCategory extends PivotBase
 {
-    protected $table = 'catalog_products_categories';
+    protected $collection  = 'catalog_products_categories';
 
     protected $fillable = [
         'product_id',

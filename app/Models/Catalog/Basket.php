@@ -23,7 +23,7 @@ class Basket extends ModelBase
 {
     use HasFactory;
 
-    protected $table = 'catalog_baskets';
+    protected $collection  = 'catalog_baskets';
 
     protected $fillable = [
         'user_id',

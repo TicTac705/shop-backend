@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
  */
 class ProductImage extends PivotBase
 {
-    protected $table = 'catalog_products_images';
+    protected $collection  = 'catalog_products_images';
 
     protected $fillable = [
         'product_id',

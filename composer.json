@@ -16,7 +16,8 @@
         "laravel/framework": "^8.75",
         "laravel/tinker": "^2.5",
         "spatie/data-transfer-object": "2.8",
-        "tymon/jwt-auth": "1.0"
+        "tymon/jwt-auth": "1.0.*",
+        "jenssegers/mongodb": "3.8.*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

@@ -11,7 +11,7 @@ use App\PivotModels\Catalog\ProductImage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
@@ -32,7 +32,7 @@ class Product extends ModelBase
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'catalog_products';
+    protected $collection  = 'catalog_products';
 
     protected $fillable = [
         'name',

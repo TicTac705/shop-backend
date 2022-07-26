@@ -19,7 +19,7 @@ use Illuminate\Support\Carbon;
  */
 class BasketProduct extends PivotBase
 {
-    protected $table = 'catalog_baskets_products';
+    protected $collection  = 'catalog_baskets_products';
 
     protected $fillable = [
         'basket_id',

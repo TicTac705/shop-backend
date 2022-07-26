@@ -23,7 +23,7 @@ use Illuminate\Support\Carbon;
  */
 class Order extends ModelBase
 {
-    protected $table = 'catalog_orders';
+    protected $collection  = 'catalog_orders';
 
     protected $fillable = [
         'user_id',

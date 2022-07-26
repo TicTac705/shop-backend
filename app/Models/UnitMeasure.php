@@ -17,7 +17,7 @@ class UnitMeasure extends ModelBase
 {
     use HasFactory;
 
-    protected $table = 'unit_measure';
+    protected $collection  = 'unit_measure';
 
     protected $fillable = [
         'name',

@@ -18,7 +18,7 @@ class Role extends ModelBase
 {
     use HasFactory;
 
-    protected $table = 'roles';
+    protected $collection  = 'roles';
 
     protected $fillable = [
         'name',
