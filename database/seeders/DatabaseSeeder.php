@@ -16,36 +16,15 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $roles = Role::factory()->count(3)->state(new Sequence(
-            ['name' => 'Admin', 'slug' => 'admin'],
-            ['name' => 'Manager', 'slug' => 'manager'],
-            ['name' => 'User', 'slug' => 'user']
-        ))->create();
+        Role::create('Admin', 'admin')->save();
+        Role::create('Manager', 'manager')->save();
+        Role::create('User', 'user')->save();
 
-        foreach ($roles as $role) {
-            User::factory()->count(3)->hasAttached($role)->create();
-        }
+        Category::create('Fruit', 'fruit')->save();
+        Category::create('Vegetables', 'vegetables')->save();
+        Category::create('Cereals', 'cereals')->save();
 
-        $users = User::factory()->count(3)->hasAttached($roles)->create();
-
-
-        $categories = Category::factory()->count(3)->state(new Sequence(
-            ['name' => 'Fruit', 'slug' => 'fruit'],
-            ['name' => 'Vegetables', 'slug' => 'vegetables'],
-            ['name' => 'Cereals', 'slug' => 'cereals']
-        ))->create();
-
-        $unitMeasures = UnitMeasure::factory()->count(2)->state(new Sequence(
-            ['name' => 'Kilogram', 'slug' => 'kg'],
-            ['name' => 'Piece', 'slug' => 'piece']
-        ))->create();
-
-        foreach ($unitMeasures as $unitMeasure) {
-            Product::factory()->count(10)->for($unitMeasure)->hasAttached($categories)->create();
-        }
-
-        $products = Product::factory()->count(10)->for($unitMeasures->first())->hasAttached($categories)->create();
-
-        Basket::factory()->for($users->random()->first())->hasAttached($products, ['count' => (new Generator)->randomNumber()])->create();
+        UnitMeasure::create('Kilogram', 'kg')->save();
+        UnitMeasure::create('Piece', 'piece')->save();
     }
 }

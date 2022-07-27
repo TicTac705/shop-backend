@@ -7,7 +7,7 @@ use App\Models\Catalog\Category;
 
 class CategoryLightDto extends BaseDto
 {
-    public int $id;
+    public string $id;
     public string $name;
 
     public static function fromModel(Category $category): self

@@ -5,11 +5,9 @@ namespace App\Models\User;
 use App\Dto\User\RoleLightForTokenDto;
 use App\Models\Catalog\Basket;
 use App\Models\Catalog\Order;
+use Illuminate\Database\Eloquent\Collection;
 use Jenssegers\Mongodb\Auth\User as Authenticatable;
-use App\PivotModels\User\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +18,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string $name
  * @property string $email
  * @property string $password
+ * @property string[] $role_ids
  * @property null|Carbon $email_verified_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -38,7 +37,8 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'name',
         'email',
-        'password'
+        'password',
+        'role_ids'
     ];
 
     /**
@@ -60,10 +60,18 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * @param string $name
+     * @param string $email
+     * @param string $password
+     * @param string[] $roleIds
+     * @return static
+     */
     public static function create(
         string $name,
         string $email,
-        string $password
+        string $password,
+        array $roleIds
     ): self
     {
         $user = new self();
@@ -71,6 +79,7 @@ class User extends Authenticatable implements JWTSubject
         $user->setName($name);
         $user->setEmail($email);
         $user->setPassword($password);
+        $user->setRoles($roleIds);
 
         return $user;
     }
@@ -93,7 +102,7 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(): array
     {
         return [
-            'roles' => RoleLightForTokenDto::fromList(Auth::user()->roles->all()),
+            'roles' => RoleLightForTokenDto::fromList(Auth::user()->roles()->all()),
         ];
     }
 
@@ -122,6 +131,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->password;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getRoles(): array
+    {
+        return $this->role_ids;
+    }
+
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -140,9 +157,19 @@ class User extends Authenticatable implements JWTSubject
         return $this;
     }
 
-    public function roles(): BelongsToMany
+    /**
+     * @param string[] $roleIds
+     * @return $this
+     */
+    public function setRoles(array $roleIds): self
     {
-        return $this->belongsToMany(Role::class, 'users_roles')->withTimestamps()->using(UserRole::class);
+        $this->role_ids = $roleIds;
+        return $this;
+    }
+
+    public function roles(): Collection
+    {
+        return Role::getByIds($this->role_ids);
     }
 
     public function hasRoles(array $slugs): bool
@@ -158,7 +185,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function hasRole(string $slug): bool
     {
-        return $this->roles()->where('slug', $slug)->exists();
+        return $this->roles()->where('slug', $slug)->isNotEmpty();
     }
 
     public function baskets(): HasMany
@@ -169,5 +196,29 @@ class User extends Authenticatable implements JWTSubject
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function saveAndReturn(): self
+    {
+        $this->save();
+
+        return $this;
+    }
+
+    public function saveAndReturnId(): string
+    {
+        $this->save();
+
+        return $this->id;
+    }
+
+    public function getCreatedAtTimestamp(): ?int
+    {
+        return $this->created_at === null ? null : $this->created_at->timestamp;
+    }
+
+    public function getUpdatedAtTimestamp(): ?int
+    {
+        return $this->updated_at === null ? null : $this->updated_at->timestamp;
     }
 }

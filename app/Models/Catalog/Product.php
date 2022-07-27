@@ -14,6 +14,8 @@ use Illuminate\Support\Carbon;
  * @property float $price
  * @property string $unit_measure_id
  * @property int $store
+ * @property string[] $category_ids
+ * @property string[] $image_ids
  * @property string $user_id
  * @property bool $is_active
  * @property Carbon $created_at
@@ -33,17 +35,34 @@ class Product extends ModelBase
         'price',
         'unit_measure_id',
         'store',
-        'user_id'
+        'category_ids',
+        'image_ids',
+        'user_id',
+        'is_active'
     ];
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
+    /**
+     * @param string $name
+     * @param string $description
+     * @param float $price
+     * @param string $unitMeasureId
+     * @param int $store
+     * @param string[] $categoryIds
+     * @param string[] $imageIds
+     * @param string $userId
+     * @param bool $isActive
+     * @return $this
+     */
     public function create(
         string $name,
         string $description,
         float  $price,
         string $unitMeasureId,
         int    $store,
+        array  $categoryIds,
+        array  $imageIds,
         string $userId,
         bool   $isActive
     ): self
@@ -55,6 +74,8 @@ class Product extends ModelBase
         $product->setPrice($price);
         $product->setUnitMeasureId($unitMeasureId);
         $product->setStore($store);
+        $product->setCategories($categoryIds);
+        $product->setImages($imageIds);
         $product->setUserId($userId);
         $product->setIsActive($isActive);
 
@@ -84,6 +105,22 @@ class Product extends ModelBase
     public function getStore(): int
     {
         return $this->store;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getCategories(): array
+    {
+        return $this->category_ids;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getImages(): array
+    {
+        return $this->image_ids;
     }
 
     public function getUserId(): string
@@ -123,6 +160,26 @@ class Product extends ModelBase
     public function setStore(int $store): self
     {
         $this->store = $store;
+        return $this;
+    }
+
+    /**
+     * @param string[] $categoryIds
+     * @return $this
+     */
+    public function setCategories(array $categoryIds): self
+    {
+        $this->category_ids = $categoryIds;
+        return $this;
+    }
+
+    /**
+     * @param string[] $imageIds
+     * @return $this
+     */
+    public function setImages(array $imageIds): self
+    {
+        $this->image_ids = $imageIds;
         return $this;
     }
 
