@@ -13,6 +13,6 @@ class AuthErrorException extends Exception
 
     public function render(Request $request): JsonResponse
     {
-        return response()->json(['message' => $this->getMessage()], HTTPResponseStatuses::UNAUTHORIZED);
+        return response()->json(['message' => $this->getMessage()], HTTPResponseStatuses::INCORRECT_CREDENTIALS);
     }
 }

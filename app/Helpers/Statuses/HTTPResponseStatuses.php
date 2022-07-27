@@ -16,6 +16,7 @@ class HTTPResponseStatuses extends StatusesBase
     public const FORBIDDEN = 403;
     public const NOT_FOUND = 404;
     public const UNPROCESSABLE_ENTITY = 422;
+    public const INCORRECT_CREDENTIALS = 444;
 
     /** Server (Серверные) */
     public const INTERNAL_SERVER_ERROR = 500;
