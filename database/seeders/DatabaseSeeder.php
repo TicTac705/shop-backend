@@ -28,6 +28,9 @@ class DatabaseSeeder extends Seeder
 
         $users = User::factory()->count(3)->hasAttached($roles)->create();
 
+        $users->add(User::factory()->hasAttached($roles->where('slug', '=', 'admin'))->create([
+            'email' => 'admin@test.test'
+        ]));
 
         $categories = Category::factory()->count(3)->state(new Sequence(
             ['name' => 'Fruit', 'slug' => 'fruit'],
@@ -46,6 +49,7 @@ class DatabaseSeeder extends Seeder
 
         $products = Product::factory()->count(10)->for($unitMeasures->first())->hasAttached($categories)->create();
 
-        Basket::factory()->for($users->random()->first())->hasAttached($products, ['count' => (new Generator)->randomNumber()])->create();
+        Basket::factory()->for($users->first())->hasAttached($products, ['count' => (new Generator)->randomNumber()])->create();
+        Basket::factory()->for($users->last())->hasAttached($products, ['count' => (new Generator)->randomNumber()])->create();
     }
 }
