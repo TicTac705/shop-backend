@@ -3,7 +3,6 @@
 namespace App\Models\User;
 
 use App\Models\ModelBase;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
 
@@ -66,13 +65,5 @@ class Role extends ModelBase
     {
         $this->slug = $slug;
         return $this;
-    }
-
-    /**
-     * @param string[] $ids
-     */
-    public function getByIds(array $ids): Collection
-    {
-        return self::query()->whereIn('_id', $ids)->get();
     }
 }

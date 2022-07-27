@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Jenssegers\Mongodb\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -28,6 +29,18 @@ class ModelBase extends Model
         return $this->updated_at === null ? null : $this->updated_at->timestamp;
     }
 
+    public function getById(string $id)
+    {
+        return $this::where('_id', '=', $id)->firstOrFail();
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function getByIds(array $ids): Collection
+    {
+        return $this::query()->whereIn('_id', $ids)->get();
+    }
 
     public function saveAndReturn(): self
     {

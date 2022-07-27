@@ -169,7 +169,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function roles(): Collection
     {
-        return Role::getByIds($this->role_ids);
+        return Role::getByIds($this->getRoles());
     }
 
     public function hasRoles(array $slugs): bool

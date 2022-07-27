@@ -35,12 +35,12 @@ class ProductCreationRequest extends FormRequest
             'name' => ['required', 'string', 'max:255', 'unique:catalog_products'],
             'description' => ['required', 'string'],
             'price' => ['required', 'numeric', 'gt:0'],
-            'unit_measure_id' => ['required', 'integer', 'exists:App\Models\UnitMeasure,id'],
+            'unit_measure_id' => ['required', 'string', 'exists:App\Models\UnitMeasure,_id'],
             'store' => ['required', 'integer', 'gt:0', 'lte:10000'],
             'imagesId' => ['array'],
-            'imagesId.*' => ['integer', 'exists:App\Models\Image,id', 'distinct', new NotExistsInDataBase(new ProductImage(), 'image_id')],
+            'imagesId.*' => ['integer', 'exists:App\Models\Image,_id', 'distinct'],
             'categories' => ['required', 'array'],
-            'categories.*' => ['required', 'integer', 'exists:App\Models\Catalog\Category,id', 'distinct']
+            'categories.*' => ['required', 'string', 'exists:App\Models\Catalog\Category,_id', 'distinct']
         ];
     }
 }

@@ -17,8 +17,10 @@ class ProductService
             $data->price,
             $data->unitMeasureId,
             $data->store,
+            $data->categories,
             $data->userId,
-            $data->isActive
+            $data->isActive,
+            $data->imagesId
         )->saveAndReturn();
     }
 

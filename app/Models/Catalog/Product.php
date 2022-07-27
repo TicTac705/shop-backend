@@ -3,6 +3,8 @@
 namespace App\Models\Catalog;
 
 use App\Models\ModelBase;
+use App\Models\UnitMeasure;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -15,7 +17,7 @@ use Illuminate\Support\Carbon;
  * @property string $unit_measure_id
  * @property int $store
  * @property string[] $category_ids
- * @property string[] $image_ids
+ * @property null|string[] $image_ids
  * @property string $user_id
  * @property bool $is_active
  * @property Carbon $created_at
@@ -50,9 +52,9 @@ class Product extends ModelBase
      * @param string $unitMeasureId
      * @param int $store
      * @param string[] $categoryIds
-     * @param string[] $imageIds
      * @param string $userId
      * @param bool $isActive
+     * @param null|string[] $imageIds
      * @return $this
      */
     public function create(
@@ -62,9 +64,9 @@ class Product extends ModelBase
         string $unitMeasureId,
         int    $store,
         array  $categoryIds,
-        array  $imageIds,
         string $userId,
-        bool   $isActive
+        bool   $isActive,
+        ?array $imageIds
     ): self
     {
         $product = new self();
@@ -75,9 +77,11 @@ class Product extends ModelBase
         $product->setUnitMeasureId($unitMeasureId);
         $product->setStore($store);
         $product->setCategories($categoryIds);
-        $product->setImages($imageIds);
         $product->setUserId($userId);
         $product->setIsActive($isActive);
+        if ($imageIds !== null) {
+            $product->setImages($imageIds);
+        }
 
         return $product;
     }
@@ -193,5 +197,15 @@ class Product extends ModelBase
     {
         $this->is_active = $isActive;
         return $this;
+    }
+
+    public function unitMeasure(): UnitMeasure
+    {
+        return UnitMeasure::getById($this->getUnitMeasureId());
+    }
+
+    public function categories(): Collection
+    {
+        return Category::getByIds($this->getCategories());
     }
 }

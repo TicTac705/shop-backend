@@ -49,14 +49,6 @@ class ProductManagementEntityService
     {
         $newProduct = $this->productService->save($dto);
 
-        if (is_array($dto->imagesId) && count($dto->imagesId) > 0) {
-            $this->imageService->saveManyRelationshipToProduct($dto->imagesId, $newProduct);
-        }
-
-        if (count($dto->categories) > 0) {
-            $this->categoryService->saveManyRelationshipToProduct($dto->categories, $newProduct);
-        }
-
         return ProductDto::fromModel($newProduct);
     }
 

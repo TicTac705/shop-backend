@@ -6,12 +6,14 @@ use App\Models\User\Role;
 
 class RoleLightDto extends BaseDto
 {
+    public string $id;
     public string $name;
 
     public static function fromModel(Role $role): self
     {
         return new self([
-            'name' => $role->getName(),
+            'id' => $role->getId(),
+            'name' => $role->getName()
         ]);
     }
 
