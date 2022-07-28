@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Catalog\Product;
 use App\Models\User\User;
-use App\PivotModels\Catalog\ProductImage;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
@@ -31,8 +30,6 @@ class Image extends ModelBase
         'size',
         'src'
     ];
-
-    protected $touches = ['products'];
 
     public function create(
         string $userId,

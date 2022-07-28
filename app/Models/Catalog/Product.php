@@ -2,8 +2,10 @@
 
 namespace App\Models\Catalog;
 
+use App\Models\Image;
 use App\Models\ModelBase;
 use App\Models\UnitMeasure;
+use App\Models\User\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\SoftDeletes;
@@ -120,9 +122,9 @@ class Product extends ModelBase
     }
 
     /**
-     * @return string[]
+     * @return null|string[]
      */
-    public function getImages(): array
+    public function getImages(): ?array
     {
         return $this->image_ids;
     }
@@ -204,8 +206,18 @@ class Product extends ModelBase
         return UnitMeasure::getById($this->getUnitMeasureId());
     }
 
+    public function user(): User
+    {
+        return User::getById($this->getUserId());
+    }
+
     public function categories(): Collection
     {
         return Category::getByIds($this->getCategories());
+    }
+
+    public function images(): ?Collection
+    {
+        return Image::getByIds($this->getImages());
     }
 }

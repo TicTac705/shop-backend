@@ -10,7 +10,7 @@ use App\Models\Catalog\Product;
 
 class ProductDto extends BaseDto
 {
-    public int $id;
+    public string $id;
     public string $name;
     public string $description;
     public float $price;
@@ -19,7 +19,7 @@ class ProductDto extends BaseDto
     /** @var \App\Dto\Catalog\CategoryLightDto[] */
     public array $categories;
     /** @var \App\Dto\ImageLightDto[] */
-    public array $images;
+    public ?array $images;
     public UserLightDto $creator;
     public bool $isActive;
     public ?int $updatedAt;
@@ -36,8 +36,8 @@ class ProductDto extends BaseDto
             'unitMeasure' => UnitMeasureLightDto::fromModel($product->unitMeasure()),
             'store' => $product->getStore(),
             'categories' => CategoryLightDto::fromList($product->categories()->all()),
-            'images' => ImageLightDto::fromList($product->images()->getResults()->all()),
-            'creator' => UserLightDto::fromModel($product->user()->getResults()),
+            'images' => ImageLightDto::fromList($product->images()->all()),
+            'creator' => UserLightDto::fromModel($product->user()),
             'isActive' => $product->getIsActive(),
             'updatedAt' => $product->getUpdatedAtTimestamp(),
             'createdAt' => $product->getCreatedAtTimestamp(),

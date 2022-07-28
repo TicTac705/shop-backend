@@ -106,6 +106,11 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
     public function getName(): string
     {
         return $this->name;
@@ -220,5 +225,10 @@ class User extends Authenticatable implements JWTSubject
     public function getUpdatedAtTimestamp(): ?int
     {
         return $this->updated_at === null ? null : $this->updated_at->timestamp;
+    }
+
+    public function getById(string $id)
+    {
+        return self::where('_id', '=', $id)->firstOrFail();
     }
 }

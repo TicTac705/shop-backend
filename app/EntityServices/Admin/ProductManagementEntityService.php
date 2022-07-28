@@ -52,7 +52,7 @@ class ProductManagementEntityService
         return ProductDto::fromModel($newProduct);
     }
 
-    public function getUpdateData(int $id): ProductEditFormDto
+    public function getUpdateData(string $id): ProductEditFormDto
     {
         $product = $this->productService->getById($id);
 
@@ -66,24 +66,16 @@ class ProductManagementEntityService
         return ProductEditFormDto::fromDto($productDto, $unitsMeasureDtoList, $categoriesDtoList);
     }
 
-    public function update(int $id, ProductUpdateDto $dto): ProductDto
+    public function update(string $id, ProductUpdateDto $dto): ProductDto
     {
         $product = $this->productService->getById($id);
 
         $changedProduct = $this->productService->update($product, $dto);
 
-        if (count($dto->categories) > 0) {
-            $this->categoryService->saveManyRelationshipToProduct($dto->categories, $changedProduct);
-        }
-
-        if (is_array($dto->imagesId) && count($dto->imagesId)) {
-            $this->imageService->saveManyRelationshipToProduct($dto->imagesId, $changedProduct);
-        }
-
         return ProductDto::fromModel($changedProduct);
     }
 
-    public function destroy(int $id): void
+    public function destroy(string $id): void
     {
         $product = $this->productService->getById($id);
 

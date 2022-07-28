@@ -46,19 +46,19 @@ class ProductManagementController extends Controller
         );
     }
 
-    public function getUpdateData(int $id): JsonResponse
+    public function getUpdateData(string $id): JsonResponse
     {
         return response()->json($this->productManagementEntityService->getUpdateData($id));
     }
 
-    public function update(ProductUpdateRequest $request, int $id): JsonResponse
+    public function update(ProductUpdateRequest $request, string $id): JsonResponse
     {
         $productFormDto = ProductUpdateDto::fromRequest($request);
 
         return response()->json($this->productManagementEntityService->update($id, $productFormDto));
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(string $id): JsonResponse
     {
         $this->productManagementEntityService->destroy($id);
 

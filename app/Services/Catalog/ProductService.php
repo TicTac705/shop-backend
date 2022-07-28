@@ -50,7 +50,13 @@ class ProductService
             $model->setStore($data->store);
         }
 
-        if ($model->isDirty() || $data->haveNewImages) {
+        if ($data->imagesId){
+            $model->setImages(array_merge($model->getImages(), $data->imagesId));
+        }
+
+        $model->setCategories($data->categories);
+
+        if ($model->isDirty()) {
             $model->touch();
             return $model->saveAndReturn();
         }
@@ -58,9 +64,9 @@ class ProductService
         return $model;
     }
 
-    public function getById(int $id): Product
+    public function getById(string $id): Product
     {
-        return Product::query()->findOrFail($id)->first();
+        return Product::getById($id);
     }
 
     public function getListWithPagination(int $numberItemsPerPage): LengthAwarePaginator
@@ -85,5 +91,23 @@ class ProductService
     public function destroy(Product $model): void
     {
         $model->delete();
+    }
+
+    public function deleteImage(string $id): void
+    {
+        /** @var Product[] $products */
+        $products = Product::query()->where('image_ids', 'all', [$id])->get()->all();
+
+        foreach ($products as $product) {
+            $imageIds = $product->getImages();
+            foreach ($imageIds as $key => $imageId) {
+                if ($id === $imageId) {
+                    unset($imageIds[$key]);
+                }
+            }
+            $product->setImages($imageIds);
+
+            $product->checkChangesSaveAndReturn();
+        }
     }
 }

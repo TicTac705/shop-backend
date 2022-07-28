@@ -31,15 +31,19 @@ class ModelBase extends Model
 
     public function getById(string $id)
     {
-        return $this::where('_id', '=', $id)->firstOrFail();
+        return self::where('_id', '=', $id)->firstOrFail();
     }
 
     /**
      * @param string[] $ids
      */
-    public function getByIds(array $ids): Collection
+    public function getByIds(?array $ids): Collection
     {
-        return $this::query()->whereIn('_id', $ids)->get();
+        if ($ids === null) {
+            return new Collection();
+        }
+
+        return self::query()->whereIn('_id', $ids)->get();
     }
 
     public function saveAndReturn(): self

@@ -6,7 +6,7 @@ use App\Models\User\User;
 
 class UserLightDto extends BaseDto
 {
-    public int $id;
+    public string $id;
     public string $name;
 
     public static function fromModel(User $user): self
