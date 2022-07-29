@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Catalog;
 
 use App\Dto\Catalog\OrderCreationFormDto;
 use App\EntityServices\Catalog\OrderEntityService;
+use App\Exceptions\Basket\BasketEmptyException;
 use App\Exceptions\Basket\BasketNotExistingException;
-use App\Exceptions\Order\NoRightsRecallOrder;
-use App\Exceptions\Order\OrderCannotRecalled;
+use App\Exceptions\Order\NoRightsRecallOrderException;
+use App\Exceptions\Order\OrderCannotRecalledException;
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\OrderCreationRequest;
@@ -28,6 +29,7 @@ class OrderController extends Controller
 
     /**
      * @throws BasketNotExistingException
+     * @throws BasketEmptyException
      */
     public function create(OrderCreationRequest $request): JsonResponse
     {
@@ -37,10 +39,10 @@ class OrderController extends Controller
     }
 
     /**
-     * @throws NoRightsRecallOrder
-     * @throws OrderCannotRecalled
+     * @throws NoRightsRecallOrderException
+     * @throws OrderCannotRecalledException
      */
-    public function recall(int $id)
+    public function recall(string $id)
     {
         $this->orderEntityService->recall($id);
 

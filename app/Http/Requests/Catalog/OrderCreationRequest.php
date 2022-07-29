@@ -21,7 +21,7 @@ class OrderCreationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'basket_id' => ['required', 'integer', 'exists:App\Models\Catalog\Basket,id'],
+            'basket_id' => ['required', 'string', 'exists:App\Models\Catalog\Basket,_id'],
             'delivery_id' => ['required', 'integer', new ExistsDeliveryStatus],
             'delivery_address' => ['required_if:delivery_id,' . DeliveryStatuses::COURIER_DELIVERY, 'string']
         ];

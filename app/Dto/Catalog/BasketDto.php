@@ -7,7 +7,7 @@ use App\Models\Catalog\Basket;
 
 class BasketDto extends BaseDto
 {
-    public int $id;
+    public string $id;
     /** @var \App\Dto\Catalog\BasketItemDto[] */
     public array $items;
     public int $totalCount;
@@ -16,7 +16,7 @@ class BasketDto extends BaseDto
 
     public static function fromModel(Basket $basket): self
     {
-        $itemDtoList = BasketItemDto::fromList($basket->items()->getResults()->all());
+        $itemDtoList = BasketItemDto::fromList($basket->items()->all());
 
         return new self([
             'id' => $basket->getId(),

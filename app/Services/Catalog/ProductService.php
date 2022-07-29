@@ -79,11 +79,15 @@ class ProductService
         return Product::getListWithPagination($numberItemsPerPage, true);
     }
 
-    public function reduceQuantityStockByNumber(int $productId, int $number): void
+    public function reduceQuantityStockByNumber(string $productId, int $number): void
     {
         $product = $this->getById($productId);
 
         $product->setStore($product->getStore() - $number);
+
+        if ($product->getStore() < 1){
+            $product->setStore(0);
+        }
 
         $product->checkChangesAndSave();
     }

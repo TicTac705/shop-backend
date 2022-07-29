@@ -193,14 +193,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->roles()->where('slug', $slug)->isNotEmpty();
     }
 
-    public function baskets(): HasMany
+    public function baskets()
     {
-        return $this->hasMany(Basket::class);
+        return Basket::query()->where('user_id', '=', $this->getId())->get();
     }
 
-    public function orders(): HasMany
+    public function orders()
     {
-        return $this->hasMany(Order::class);
+        return Order::query()->where('user_id', '=', $this->getId())->get();
     }
 
     public function saveAndReturn(): self

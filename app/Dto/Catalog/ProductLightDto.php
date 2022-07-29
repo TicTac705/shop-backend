@@ -10,7 +10,7 @@ use App\Models\Catalog\Product;
 
 class ProductLightDto extends BaseDto
 {
-    public int $id;
+    public string $id;
     public string $name;
     public float $price;
     public UnitMeasureLightDto $unitMeasure;
@@ -27,10 +27,10 @@ class ProductLightDto extends BaseDto
             'id' => $product->getId(),
             'name' => $product->getName(),
             'price' => $product->getPrice(),
-            'unitMeasure' => UnitMeasureLightDto::fromModel($product->unitMeasure()->getResults()),
+            'unitMeasure' => UnitMeasureLightDto::fromModel($product->unitMeasure()),
             'store' => $product->getStore(),
-            'categories' => CategoryLightDto::fromList($product->categories()->getResults()->all()),
-            'images' => ImageLightDto::fromList($product->images()->getResults()->all()),
+            'categories' => CategoryLightDto::fromList($product->categories()->all()),
+            'images' => ImageLightDto::fromList($product->images()->all()),
         ]);
     }
 

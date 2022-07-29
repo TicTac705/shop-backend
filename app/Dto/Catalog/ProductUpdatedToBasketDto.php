@@ -3,17 +3,17 @@
 namespace App\Dto\Catalog;
 
 use App\Dto\BaseDto;
-use App\Http\Requests\Catalog\BasketItemAddingRequest;
+use App\Http\Requests\Catalog\BasketItemUpdatingRequest;
 
 class ProductUpdatedToBasketDto extends BaseDto
 {
-    public int $productId;
+    public string $productId;
     public int $quantity;
 
-    public static function fromRequest(BasketItemAddingRequest $request): self
+    public static function fromRequest(BasketItemUpdatingRequest $request): self
     {
         return new self([
-            'productId' => intval($request->get('product_id')),
+            'productId' => $request->get('product_id'),
             'quantity' => intval($request->get('quantity'))
         ]);
     }

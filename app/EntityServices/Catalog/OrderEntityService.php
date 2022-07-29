@@ -7,9 +7,10 @@ use App\Dto\Catalog\OrderCreationFormDto;
 use App\Dto\Catalog\OrderDto;
 use App\Dto\Catalog\OrderUpdateDto;
 use App\Dto\PaginationDto;
+use App\Exceptions\Basket\BasketEmptyException;
 use App\Exceptions\Basket\BasketNotExistingException;
-use App\Exceptions\Order\NoRightsRecallOrder;
-use App\Exceptions\Order\OrderCannotRecalled;
+use App\Exceptions\Order\NoRightsRecallOrderException;
+use App\Exceptions\Order\OrderCannotRecalledException;
 use App\Services\Catalog\BasketService;
 use App\Services\Catalog\OrderService;
 use App\Services\Catalog\ProductService;
@@ -49,10 +50,15 @@ class OrderEntityService
 
     /**
      * @throws BasketNotExistingException
+     * @throws BasketEmptyException
      */
     public function create(OrderCreationFormDto $dto): OrderDto
     {
         $basket = BasketDto::fromModel($this->basketService->getBasketById($dto->basketId));
+
+        if ($basket->totalCount < 1){
+            throw new BasketEmptyException();
+        }
 
         $newOrder = $this->orderService->create($dto);
 
@@ -60,38 +66,37 @@ class OrderEntityService
 
         foreach ($orderItems as $item) {
             $this->productService->reduceQuantityStockByNumber($item->getProductId(), $item->getCount());
+            $item->save();
         }
 
         $this->basketService->deactivateBasket($dto->basketId);
-
-        $newOrder->items()->saveMany($orderItems);
 
         return OrderDto::fromModel($newOrder);
     }
 
     /**
-     * @throws OrderCannotRecalled
-     * @throws NoRightsRecallOrder
+     * @throws OrderCannotRecalledException
+     * @throws NoRightsRecallOrderException
      */
-    public function recall(int $id): void
+    public function recall(string $id): void
     {
         $order = $this->orderService->getById($id);
 
         if (!$this->orderService->canRecallOrder($order)) {
-            throw new OrderCannotRecalled();
+            throw new OrderCannotRecalledException();
         }
 
         $this->orderService->recall($order);
     }
 
-    public function getUpdateData(int $id): OrderDto
+    public function getUpdateData(string $id): OrderDto
     {
         $order = $this->orderService->getById($id);
 
         return OrderDto::fromModel($order);
     }
 
-    public function update(int $id, OrderUpdateDto $dto): OrderDto
+    public function update(string $id, OrderUpdateDto $dto): OrderDto
     {
         $order = $this->orderService->getById($id);
 

@@ -6,8 +6,11 @@ use App\Dto\Catalog\ProductAddedToBasketDto;
 use App\Dto\Catalog\ProductUpdatedToBasketDto;
 use App\EntityServices\Catalog\BasketEntityService;
 use App\Exceptions\Basket\NonExistingBasketItemException;
+use App\Exceptions\Catalog\InvalidQuantityProductException;
+use App\Exceptions\Catalog\UnavailabilityException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\BasketItemAddingRequest;
+use App\Http\Requests\Catalog\BasketItemUpdatingRequest;
 use Illuminate\Http\JsonResponse;
 
 class BasketController extends Controller
@@ -24,6 +27,10 @@ class BasketController extends Controller
         return response()->json($this->basketEntityService->getBasket());
     }
 
+    /**
+     * @throws UnavailabilityException
+     * @throws InvalidQuantityProductException
+     */
     public function store(BasketItemAddingRequest $request): JsonResponse
     {
         $productAddedToCartDto = ProductAddedToBasketDto::fromRequest($request);
@@ -31,7 +38,11 @@ class BasketController extends Controller
         return response()->json($this->basketEntityService->store($productAddedToCartDto));
     }
 
-    public function updateQuantity(BasketItemAddingRequest $request): JsonResponse
+    /**
+     * @throws UnavailabilityException
+     * @throws InvalidQuantityProductException
+     */
+    public function updateQuantity(BasketItemUpdatingRequest $request): JsonResponse
     {
         $productAddedToCartDto = ProductUpdatedToBasketDto::fromRequest($request);
 
@@ -41,7 +52,7 @@ class BasketController extends Controller
     /**
      * @throws NonExistingBasketItemException
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(string $id): JsonResponse
     {
         $this->basketEntityService->destroy($id);
         return response()->json(['message' => 'Item successfully deleted']);

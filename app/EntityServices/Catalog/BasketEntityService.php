@@ -7,6 +7,8 @@ use App\Dto\Catalog\BasketItemDto;
 use App\Dto\Catalog\ProductAddedToBasketDto;
 use App\Dto\Catalog\ProductUpdatedToBasketDto;
 use App\Exceptions\Basket\NonExistingBasketItemException;
+use App\Exceptions\Catalog\InvalidQuantityProductException;
+use App\Exceptions\Catalog\UnavailabilityException;
 use App\Services\Catalog\BasketService;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,6 +26,10 @@ class BasketEntityService
         return BasketDto::fromModel($this->basketService->getUserBasket(Auth::user()));
     }
 
+    /**
+     * @throws UnavailabilityException
+     * @throws InvalidQuantityProductException
+     */
     public function store(ProductAddedToBasketDto $dto): BasketItemDto
     {
         $basket = $this->basketService->getUserBasket(Auth::user());
@@ -37,6 +43,10 @@ class BasketEntityService
         return BasketItemDto::fromModel($item);
     }
 
+    /**
+     * @throws UnavailabilityException
+     * @throws InvalidQuantityProductException
+     */
     public function updateQuantity(ProductUpdatedToBasketDto $dto): BasketItemDto
     {
         $basket = $this->basketService->getUserBasket(Auth::user());
@@ -53,7 +63,7 @@ class BasketEntityService
     /**
      * @throws NonExistingBasketItemException
      */
-    public function destroy(int $productId): void
+    public function destroy(string $productId): void
     {
         $basket = $this->basketService->getUserBasket(Auth::user());
 

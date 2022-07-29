@@ -5,6 +5,7 @@ namespace App\Models\Catalog;
 use App\Helpers\Statuses\Order\OrderPaymentStatuses;
 use App\Helpers\Statuses\Order\OrderStatuses;
 use App\Models\ModelBase;
+use App\PivotModels\Catalog\OrderProduct;
 use Illuminate\Support\Carbon;
 
 /**
@@ -146,5 +147,10 @@ class Order extends ModelBase
     public function isNotPaid(): bool
     {
         return $this->getOrderStatusId() === OrderPaymentStatuses::NOT_PAID;
+    }
+
+    public function items()
+    {
+        return OrderProduct::query()->where('order_id', '=', $this->getId())->get();
     }
 }

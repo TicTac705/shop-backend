@@ -7,8 +7,8 @@ use App\Models\Catalog\Order;
 
 class OrderDto extends BaseDto
 {
-    public int $id;
-    public int $userId;
+    public string $id;
+    public string $userId;
     public string $userName;
     public string $userEmail;
     public int $deliveryId;
@@ -22,7 +22,7 @@ class OrderDto extends BaseDto
 
     public static function fromModel(Order $order): self
     {
-        $itemDtoList = OrderItemDto::fromList($order->items()->getResults()->all());
+        $itemDtoList = OrderItemDto::fromList($order->items()->all());
 
         return new self([
             'id' => $order->getId(),

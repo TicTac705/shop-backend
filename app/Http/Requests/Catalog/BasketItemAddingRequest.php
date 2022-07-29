@@ -19,7 +19,7 @@ class BasketItemAddingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id' => ['required', 'integer', 'exists:App\Models\Catalog\Product,id']
+            'product_id' => ['required', 'string', 'exists:App\Models\Catalog\Product,_id']
         ];
     }
 }

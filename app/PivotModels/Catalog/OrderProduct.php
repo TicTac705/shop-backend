@@ -2,6 +2,7 @@
 
 namespace App\PivotModels\Catalog;
 
+use App\Models\Catalog\Product;
 use App\PivotModels\PivotBase;
 use Illuminate\Support\Carbon;
 
@@ -95,5 +96,10 @@ class OrderProduct extends PivotBase
     {
         $this->count = $count;
         return $this;
+    }
+
+    public function product()
+    {
+        return Product::query()->where('_id', '=', $this->getProductId())->get();
     }
 }

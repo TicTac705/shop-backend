@@ -7,12 +7,12 @@ use App\Http\Requests\Catalog\BasketItemAddingRequest;
 
 class ProductAddedToBasketDto extends BaseDto
 {
-    public int $productId;
+    public string $productId;
 
     public static function fromRequest(BasketItemAddingRequest $request): self
     {
         return new self([
-            'productId' => intval($request->get('product_id'))
+            'productId' => $request->get('product_id')
         ]);
     }
 }

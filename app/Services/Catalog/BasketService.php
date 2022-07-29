@@ -3,6 +3,8 @@
 namespace App\Services\Catalog;
 
 use App\Exceptions\Basket\BasketNotExistingException;
+use App\Exceptions\Catalog\InvalidQuantityProductException;
+use App\Exceptions\Catalog\UnavailabilityException;
 use App\Models\Catalog\Basket;
 use App\Models\Catalog\Product;
 use App\Models\User\User;
@@ -12,7 +14,7 @@ class BasketService
 {
     public function getUserBasket(User $user): Basket
     {
-        $baskets = $user->baskets()->getResults();
+        $baskets = $user->baskets();
         $basket = null;
 
         if ($baskets->isNotEmpty()) {
@@ -31,9 +33,9 @@ class BasketService
         return Basket::create($user->getId())->saveAndReturn();
     }
 
-    public function checkItem(Basket $basket, int $itemId): bool
+    public function checkItem(Basket $basket, string $itemId): bool
     {
-        $items = $basket->items()->getResults();
+        $items = $basket->items();
 
         if ($items->isEmpty()) {
             return false;
@@ -42,12 +44,32 @@ class BasketService
         return $items->where('product_id', '=', $itemId)->isNotEmpty();
     }
 
-    public function updateQuantityItem(Basket $basket, int $productId, ?int $quantity = null): BasketProduct
+    /**
+     * @throws InvalidQuantityProductException
+     * @throws UnavailabilityException
+     */
+    public function updateQuantityItem(Basket $basket, string $productId, ?int $quantity = null): BasketProduct
     {
+        $product = ProductService::getById($productId);
+
         /** @var BasketProduct $item */
         $item = $basket->items()->where('product_id', '=', $productId)->first();
 
+        if (!$product->getIsActive()) {
+            $this->deleteItem($basket, $productId);
+            throw new UnavailabilityException();
+        }
+
+        if ($product->getStore() < 1) {
+            $this->deleteItem($basket, $productId);
+            throw new InvalidQuantityProductException();
+        }
+
         if ($quantity !== null) {
+            if ($product->getStore() < $quantity) {
+                throw new InvalidQuantityProductException();
+            }
+
             $item->setCount($quantity);
         } else {
             $item->setCount($item->getCount() + 1);
@@ -56,9 +78,21 @@ class BasketService
         return $item->checkChangesSaveAndReturn();
     }
 
-    public function addItem(Basket $basket, int $productId): BasketProduct
+    /**
+     * @throws UnavailabilityException
+     * @throws InvalidQuantityProductException
+     */
+    public function addItem(Basket $basket, string $productId): BasketProduct
     {
         $product = ProductService::getById($productId);
+
+        if (!$product->getIsActive()) {
+            throw new UnavailabilityException();
+        }
+
+        if ($product->getStore() < 1) {
+            throw new InvalidQuantityProductException();
+        }
 
         return self::createItem($basket, $product, 1);
     }
@@ -72,15 +106,15 @@ class BasketService
         )->saveAndReturn();
     }
 
-    public function deleteItem(Basket $basket, int $productId): void
+    public function deleteItem(Basket $basket, string $productId): void
     {
-        $basket->items()->where('product_id', '=', $productId)->delete();
+        $basket->items()->where('product_id', '=', $productId)->first()->delete();
     }
 
     /**
      * @throws BasketNotExistingException
      */
-    public function getBasketById(int $id): Basket
+    public function getBasketById(string $id): Basket
     {
         $basket = Basket::query()->findOrFail($id)->where('is_active', '=', true)->first();
 
@@ -94,7 +128,7 @@ class BasketService
     /**
      * @throws BasketNotExistingException
      */
-    public function deactivateBasket(int $id): void
+    public function deactivateBasket(string $id): void
     {
         $basket = $this->getBasketById($id);
 

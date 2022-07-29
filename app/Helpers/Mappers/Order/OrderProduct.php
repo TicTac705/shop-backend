@@ -10,10 +10,10 @@ trait OrderProduct
 {
     /**
      * @param BasketDto $basket
-     * @param int $orderId
+     * @param string $orderId
      * @return OrderProductModel[]
      */
-    public function fromBasketToOrderProductList(BasketDto $basket, int $orderId): array
+    public function fromBasketToOrderProductList(BasketDto $basket, string $orderId): array
     {
         return array_map(
             function (BasketItemDto $item) use ($orderId): OrderProductModel {

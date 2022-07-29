@@ -3,6 +3,7 @@
 namespace App\Models\Catalog;
 
 use App\Models\ModelBase;
+use App\PivotModels\Catalog\BasketProduct;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
 
@@ -68,5 +69,10 @@ class Basket extends ModelBase
     {
         $this->is_active = $isActive;
         return $this;
+    }
+
+    public function items()
+    {
+        return BasketProduct::query()->where('basket_id', '=', $this->getId())->get();
     }
 }

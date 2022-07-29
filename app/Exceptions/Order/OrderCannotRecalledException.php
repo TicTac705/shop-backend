@@ -7,9 +7,9 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class NoRightsRecallOrder extends Exception
+class OrderCannotRecalledException extends Exception
 {
-    protected $message = 'No rights to recall the order.';
+    protected $message = 'Order cannot be recalled.';
 
     public function render(Request $request): JsonResponse
     {
