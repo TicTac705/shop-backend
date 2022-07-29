@@ -58,7 +58,7 @@ class ProductService
 
     public function getById(int $id): Product
     {
-        return Product::query()->findOrFail($id)->first();
+        return Product::findOrFail($id);
     }
 
     public function getListWithPagination(int $numberItemsPerPage): LengthAwarePaginator

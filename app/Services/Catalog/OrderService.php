@@ -21,7 +21,7 @@ class OrderService
 
     public function getById(int $id)
     {
-        return Order::query()->findOrFail($id)->first();
+        return Order::query()->findOrFail($id);
     }
 
     /**
