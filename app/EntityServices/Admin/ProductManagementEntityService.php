@@ -9,6 +9,7 @@ use App\Dto\Catalog\ProductDto;
 use App\Dto\Catalog\ProductEditFormDto;
 use App\Dto\Catalog\ProductUpdateDto;
 use App\Dto\UnitMeasureLightDto;
+use App\Exceptions\AppException;
 use App\Services\Catalog\CategoryService;
 use App\Services\Catalog\ProductService;
 use App\Services\ImageService;
@@ -18,19 +19,16 @@ class ProductManagementEntityService
 {
     private UnitMeasureService $unitMeasureService;
     private CategoryService $categoryService;
-    private ImageService $imageService;
     private ProductService $productService;
 
     public function __construct(
         UnitMeasureService $unitMeasureService,
         CategoryService    $categoryService,
-        ImageService       $imageService,
         ProductService     $productService
     )
     {
         $this->unitMeasureService = $unitMeasureService;
         $this->categoryService = $categoryService;
-        $this->imageService = $imageService;
         $this->productService = $productService;
     }
 
@@ -45,6 +43,9 @@ class ProductManagementEntityService
         return ProductCreationFormDto::fromDto($unitsMeasureDtoList, $categoriesDtoList);
     }
 
+    /**
+     * @throws AppException
+     */
     public function store(ProductCreateDto $dto): ProductDto
     {
         $newProduct = $this->productService->save($dto);
@@ -52,6 +53,9 @@ class ProductManagementEntityService
         return ProductDto::fromModel($newProduct);
     }
 
+    /**
+     * @throws AppException
+     */
     public function getUpdateData(string $id): ProductEditFormDto
     {
         $product = $this->productService->getById($id);
@@ -66,6 +70,9 @@ class ProductManagementEntityService
         return ProductEditFormDto::fromDto($productDto, $unitsMeasureDtoList, $categoriesDtoList);
     }
 
+    /**
+     * @throws AppException
+     */
     public function update(string $id, ProductUpdateDto $dto): ProductDto
     {
         $product = $this->productService->getById($id);
@@ -75,6 +82,9 @@ class ProductManagementEntityService
         return ProductDto::fromModel($changedProduct);
     }
 
+    /**
+     * @throws AppException
+     */
     public function destroy(string $id): void
     {
         $product = $this->productService->getById($id);

@@ -2,6 +2,7 @@
 
 namespace App\Models\Catalog;
 
+use App\Exceptions\AppException;
 use App\Models\Image;
 use App\Models\ModelBase;
 use App\Models\UnitMeasure;
@@ -111,9 +112,12 @@ class Product extends ModelBase
         return $this->price;
     }
 
+    /**
+     * @throws AppException
+     */
     public function getUnitMeasureId(): string
     {
-        return $this->unit_measure_id;
+        return $this->toAttribute('uuid', $this->unit_measure_id);
     }
 
     public function getStore(): int
@@ -123,23 +127,28 @@ class Product extends ModelBase
 
     /**
      * @return string[]
+     * @throws AppException
      */
     public function getCategories(): array
     {
-        return $this->category_ids;
+        return $this->toAttribute('uuid-array', $this->category_ids);
     }
 
     /**
      * @return null|string[]
+     * @throws AppException
      */
     public function getImages(): ?array
     {
-        return $this->image_ids;
+        return $this->toAttribute('uuid-array', $this->image_ids);
     }
 
+    /**
+     * @throws AppException
+     */
     public function getUserId(): string
     {
-        return $this->user_id;
+        return $this->toAttribute('uuid', $this->user_id);
     }
 
     public function getIsActive(): bool
@@ -209,21 +218,33 @@ class Product extends ModelBase
         return $this;
     }
 
+    /**
+     * @throws AppException
+     */
     public function unitMeasure(): UnitMeasure
     {
         return UnitMeasure::getById($this->getUnitMeasureId());
     }
 
+    /**
+     * @throws AppException
+     */
     public function user(): User
     {
         return User::getById($this->getUserId());
     }
 
+    /**
+     * @throws AppException
+     */
     public function categories(): Collection
     {
         return Category::getByIds($this->getCategories());
     }
 
+    /**
+     * @throws AppException
+     */
     public function images(): ?Collection
     {
         return Image::getByIds($this->getImages());

@@ -6,6 +6,7 @@ use App\Dto\Catalog\ProductCreateDto;
 use App\Dto\Catalog\ProductUpdateDto;
 use App\EntityServices\Admin\ProductManagementEntityService;
 use App\EntityServices\Catalog\CatalogEntityService;
+use App\Exceptions\AppException;
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\ProductCreationRequest;
@@ -36,6 +37,9 @@ class ProductManagementController extends Controller
         return response()->json($this->productManagementEntityService->getCreateData());
     }
 
+    /**
+     * @throws AppException
+     */
     public function store(ProductCreationRequest $request): JsonResponse
     {
         $productFormDto = ProductCreateDto::fromRequest($request);
@@ -46,11 +50,17 @@ class ProductManagementController extends Controller
         );
     }
 
+    /**
+     * @throws AppException
+     */
     public function getUpdateData(string $id): JsonResponse
     {
         return response()->json($this->productManagementEntityService->getUpdateData($id));
     }
 
+    /**
+     * @throws AppException
+     */
     public function update(ProductUpdateRequest $request, string $id): JsonResponse
     {
         $productFormDto = ProductUpdateDto::fromRequest($request);
@@ -58,6 +68,9 @@ class ProductManagementController extends Controller
         return response()->json($this->productManagementEntityService->update($id, $productFormDto));
     }
 
+    /**
+     * @throws AppException
+     */
     public function destroy(string $id): JsonResponse
     {
         $this->productManagementEntityService->destroy($id);

@@ -30,9 +30,6 @@ class User extends Authenticatable implements JWTSubject
 
     protected $collection  = 'users';
 
-    protected $primaryKey = "_id";
-    protected $keyType = "uuid";
-
     /**
      * The attributes that are mass assignable.
      *
@@ -88,6 +85,11 @@ class User extends Authenticatable implements JWTSubject
         $user->setRoles($roleIds);
 
         return $user;
+    }
+
+    public function getAuthIdentifierName(): string
+    {
+        return $this->getKeyName();
     }
 
     /**

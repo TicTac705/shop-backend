@@ -4,6 +4,7 @@ namespace App\Services\Catalog;
 
 use App\Dto\Catalog\ProductCreateDto;
 use App\Dto\Catalog\ProductUpdateDto;
+use App\Exceptions\AppException;
 use App\Models\Catalog\Product;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -24,6 +25,9 @@ class ProductService
         )->saveAndReturn();
     }
 
+    /**
+     * @throws AppException
+     */
     public function update(Product $model, ProductUpdateDto $data): Product
     {
         if (is_bool($data->isActive)) {
@@ -64,6 +68,9 @@ class ProductService
         return $model;
     }
 
+    /**
+     * @throws AppException
+     */
     public function getById(string $id): Product
     {
         return Product::getById($id);

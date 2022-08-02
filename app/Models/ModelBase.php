@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Exceptions\AppException;
+use App\Helpers\Mappers\MongoMapper;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Jenssegers\Mongodb\Eloquent\Model;
@@ -18,8 +19,6 @@ class ModelBase extends Model
 {
     use MongoBinaryUuid;
     use OrmMappingHelper;
-
-//    protected $dateFormat = "Y-m-d\TH:i:s O";
 
     public static function boot()
     {
@@ -51,9 +50,12 @@ class ModelBase extends Model
         return $this->updated_at === null ? null : $this->updated_at->timestamp;
     }
 
+    /**
+     * @throws AppException
+     */
     public function getById(string $id)
     {
-        return self::where('_id', '=', $id)->firstOrFail();
+        return self::where('_id', '=', MongoMapper::toMongoUuid($id))->firstOrFail();
     }
 
     /**
@@ -65,7 +67,7 @@ class ModelBase extends Model
             return new Collection();
         }
 
-        return self::query()->whereIn('_id', $ids)->get();
+        return self::query()->whereIn('_id', MongoMapper::toMongoUuidArray($ids))->get();
     }
 
     public function saveAndReturn(): self

@@ -8,9 +8,9 @@ use App\Dto\UnitMeasureLightDto;
 class ProductCreationFormDto extends BaseDto
 {
     /** @var \App\Dto\UnitMeasureLightDto[]  */
-    public array $unitsMeasureDtoList;
+    public array $unitsMeasureList;
     /** @var \App\Dto\Catalog\CategoryLightDto[] */
-    public array $categoriesDtoList;
+    public array $categoriesList;
 
     /**
      * @param UnitMeasureLightDto[]  $unitsMeasureDtoList
@@ -20,8 +20,8 @@ class ProductCreationFormDto extends BaseDto
     public static function fromDto(array $unitsMeasureDtoList, array $categoriesDtoList): self
     {
         return new self([
-            'unitsMeasureDtoList' => $unitsMeasureDtoList,
-            'categoriesDtoList' => $categoriesDtoList
+            'unitsMeasureList' => $unitsMeasureDtoList,
+            'categoriesList' => $categoriesDtoList
         ]);
     }
 }

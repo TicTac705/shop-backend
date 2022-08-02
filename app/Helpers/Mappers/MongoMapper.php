@@ -85,7 +85,7 @@ class MongoMapper
             $uuid = Uuid::fromString($id);
             return new Binary($uuid->getBytes(), Binary::TYPE_UUID);
         } catch (InvalidUuidStringException $e) {
-            throw new AppException("Invalid uuid string");
+            throw new AppException("Invalid uuid string: $id");
         }
     }
 

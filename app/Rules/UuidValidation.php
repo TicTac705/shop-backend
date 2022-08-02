@@ -3,8 +3,9 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use \Ramsey\Uuid\Uuid;
 
-class Uuid implements Rule
+class UuidValidation implements Rule
 {
     /**
      * Determine if the validation rule passes.
@@ -15,8 +16,7 @@ class Uuid implements Rule
      */
     public function passes($attribute, $value): bool
     {
-        var_dump(\Ramsey\Uuid\Uuid::isValid($value));
-        return \Ramsey\Uuid\Uuid::isValid($value);
+        return Uuid::isValid($value);
     }
 
     /**
