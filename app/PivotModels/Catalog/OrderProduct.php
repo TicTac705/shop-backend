@@ -28,11 +28,9 @@ class OrderProduct extends PivotBase
     ];
 
     protected $casts = [
-        'id' => 'string',
-        'order_id' => 'string',
-        'product_id' => 'string',
-        'price' => 'float',
-        'count' => 'integer',
+        '_id' => 'uuid',
+        'order_id' => 'uuid',
+        'product_id' => 'uuid'
     ];
 
     protected $dates = ['created_at', 'updated_at'];

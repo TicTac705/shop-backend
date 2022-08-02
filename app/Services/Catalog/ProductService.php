@@ -85,10 +85,6 @@ class ProductService
 
         $product->setStore($product->getStore() - $number);
 
-        if ($product->getStore() < 1){
-            $product->setStore(0);
-        }
-
         $product->checkChangesAndSave();
     }
 

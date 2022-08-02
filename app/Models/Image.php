@@ -31,6 +31,13 @@ class Image extends ModelBase
         'src'
     ];
 
+    protected $casts = [
+        '_id' => 'uuid',
+        'user_id' => 'uuid'
+    ];
+
+    protected $dates = ['created_at', 'updated_at'];
+
     public function create(
         string $userId,
         string $name,

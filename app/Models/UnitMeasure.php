@@ -26,6 +26,10 @@ class UnitMeasure extends ModelBase
 
     protected $dates = ['created_at', 'updated_at'];
 
+    protected $casts = [
+        '_id' => 'uuid'
+    ];
+
     public function create(string $name, string $slug): self
     {
         $unitMeasure = new self();

@@ -47,6 +47,14 @@ class Product extends ModelBase
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
+    protected $casts = [
+        '_id' => 'uuid',
+        'unit_measure_id' => 'uuid',
+        'category_ids' => 'uuid-array',
+        'image_ids' => 'uuid-array',
+        'user_id' => 'uuid',
+    ];
+
     /**
      * @param string $name
      * @param string $description

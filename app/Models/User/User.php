@@ -6,7 +6,7 @@ use App\Dto\User\RoleLightForTokenDto;
 use App\Models\Catalog\Basket;
 use App\Models\Catalog\Order;
 use Illuminate\Database\Eloquent\Collection;
-use Jenssegers\Mongodb\Auth\User as Authenticatable;
+use App\Models\User\UserBase as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -29,6 +29,10 @@ class User extends Authenticatable implements JWTSubject
     use Notifiable, HasFactory;
 
     protected $collection  = 'users';
+
+    protected $primaryKey = "_id";
+    protected $keyType = "uuid";
+
     /**
      * The attributes that are mass assignable.
      *
@@ -57,6 +61,8 @@ class User extends Authenticatable implements JWTSubject
      * @var array<string, string>
      */
     protected $casts = [
+        '_id' => 'uuid',
+        'role_ids' => 'uuid-array',
         'email_verified_at' => 'datetime',
     ];
 
@@ -85,8 +91,6 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
      * @return mixed
      */
     public function getJWTIdentifier()
@@ -94,21 +98,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->getKey();
     }
 
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
     public function getJWTCustomClaims(): array
     {
         return [
             'roles' => RoleLightForTokenDto::fromList(Auth::user()->roles()->all()),
         ];
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
     }
 
     public function getName(): string
@@ -141,7 +135,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getRoles(): array
     {
-        return $this->role_ids;
+        return $this->convertKeys($this->role_ids);
     }
 
     public function setName(string $name): self
@@ -201,20 +195,6 @@ class User extends Authenticatable implements JWTSubject
     public function orders()
     {
         return Order::query()->where('user_id', '=', $this->getId())->get();
-    }
-
-    public function saveAndReturn(): self
-    {
-        $this->save();
-
-        return $this;
-    }
-
-    public function saveAndReturnId(): string
-    {
-        $this->save();
-
-        return $this->id;
     }
 
     public function getCreatedAtTimestamp(): ?int

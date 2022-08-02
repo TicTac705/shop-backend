@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
  * @property string $id
  * @property string $user_id
  * @property bool $is_active
+ * @property null|array $positions
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
@@ -23,13 +24,13 @@ class Basket extends ModelBase
 
     protected $fillable = [
         'user_id',
-        'is_active'
+        'is_active',
+        'positions'
     ];
 
     protected $casts = [
-        'id' => 'string',
-        'user_id' => 'string',
-        'is_active' => 'boolean'
+        '_id' => 'uuid',
+        'user_id' => 'uuid'
     ];
 
     protected $dates = ['created_at', 'updated_at'];
@@ -45,6 +46,7 @@ class Basket extends ModelBase
 
         $basket->setUserId($userId);
         $basket->setActive($isActive);
+        $basket->setPositions([]);
 
         return $basket;
     }
@@ -59,6 +61,11 @@ class Basket extends ModelBase
         return $this->is_active;
     }
 
+    public function getPositions(): ?array
+    {
+        return $this->positions;
+    }
+
     public function setUserId(string $userId): self
     {
         $this->user_id = $userId;
@@ -68,6 +75,18 @@ class Basket extends ModelBase
     public function setActive(bool $isActive): self
     {
         $this->is_active = $isActive;
+        return $this;
+    }
+
+    public function setPositions(array $positions): self
+    {
+        $this->positions = $positions;
+        return $this;
+    }
+
+    public function addPosition(array $position): self
+    {
+        $this->positions = array_merge($this->positions, [$position]);
         return $this;
     }
 

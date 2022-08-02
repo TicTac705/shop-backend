@@ -35,7 +35,7 @@ class BasketService
 
     public function checkItem(Basket $basket, string $itemId): bool
     {
-        $items = $basket->items();
+        $items = collect($basket->getPositions());
 
         if ($items->isEmpty()) {
             return false;
@@ -52,9 +52,8 @@ class BasketService
     {
         $product = ProductService::getById($productId);
 
-        /** @var BasketProduct $item */
-        $item = $basket->items()->where('product_id', '=', $productId)->first();
-
+        $item = collect($basket->getPositions())->where('product_id', '=', $productId)->first();
+        dd($item);
         if (!$product->getIsActive()) {
             $this->deleteItem($basket, $productId);
             throw new UnavailabilityException();
@@ -82,7 +81,7 @@ class BasketService
      * @throws UnavailabilityException
      * @throws InvalidQuantityProductException
      */
-    public function addItem(Basket $basket, string $productId): BasketProduct
+    public function addItem(Basket $basket, string $productId): Basket
     {
         $product = ProductService::getById($productId);
 
@@ -94,7 +93,14 @@ class BasketService
             throw new InvalidQuantityProductException();
         }
 
-        return self::createItem($basket, $product, 1);
+        $basket->addPosition(
+            [
+                'product_id' => $product->getId(),
+                'quantity' => 1
+            ]
+        )->checkChangesAndSave();
+
+        return $basket;
     }
 
     public function createItem(Basket $basket, Product $product, int $quantity): BasketProduct

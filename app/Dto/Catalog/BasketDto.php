@@ -8,8 +8,7 @@ use App\Models\Catalog\Basket;
 class BasketDto extends BaseDto
 {
     public string $id;
-    /** @var \App\Dto\Catalog\BasketItemDto[] */
-    public array $items;
+    public ?array $items;
     public int $totalCount;
     public ?int $updatedAt;
     public ?int $createdAt;
@@ -20,7 +19,7 @@ class BasketDto extends BaseDto
 
         return new self([
             'id' => $basket->getId(),
-            'items' => $itemDtoList,
+            'items' => $basket->getPositions(),
             'totalCount' => count($itemDtoList),
             'updatedAt' => $basket->getUpdatedAtTimestamp(),
             'createdAt' => $basket->getCreatedAtTimestamp(),

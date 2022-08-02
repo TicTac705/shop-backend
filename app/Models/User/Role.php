@@ -28,8 +28,7 @@ class Role extends ModelBase
     protected $dates = ['created_at', 'updated_at'];
 
     protected $casts = [
-        'name' => 'string',
-        'slug' => 'string'
+        '_id' => 'uuid'
     ];
 
     public static function create(

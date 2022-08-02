@@ -30,17 +30,17 @@ class BasketEntityService
      * @throws UnavailabilityException
      * @throws InvalidQuantityProductException
      */
-    public function store(ProductAddedToBasketDto $dto): BasketItemDto
+    public function store(ProductAddedToBasketDto $dto): BasketDto
     {
         $basket = $this->basketService->getUserBasket(Auth::user());
 
         if ($this->basketService->checkItem($basket, $dto->productId)) {
-            $item = $this->basketService->updateQuantityItem($basket, $dto->productId);
+            $basket = $this->basketService->updateQuantityItem($basket, $dto->productId);
         } else {
-            $item = $this->basketService->addItem($basket, $dto->productId);
+            $basket = $this->basketService->addItem($basket, $dto->productId);
         }
 
-        return BasketItemDto::fromModel($item);
+        return BasketDto::fromModel($basket);
     }
 
     /**

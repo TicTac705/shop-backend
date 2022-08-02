@@ -36,6 +36,11 @@ class Order extends ModelBase
 
     protected $dates = ['created_at', 'updated_at'];
 
+    protected $casts = [
+        '_id' => 'uuid',
+        'user_id' => 'uuid'
+    ];
+
     public function create(
         string  $userId,
         string  $userName,
