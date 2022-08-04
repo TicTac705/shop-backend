@@ -2,89 +2,49 @@
 
 namespace App\PivotModels\Catalog;
 
+use App\Exceptions\AppException;
+use App\Helpers\Mappers\MongoMapper;
 use App\Models\Catalog\Product;
-use App\PivotModels\PivotBase;
-use Illuminate\Support\Carbon;
 
-/**
- * @property string $id
- * @property string $basket_id
- * @property string $product_id
- * @property int $count
- * @property Carbon $created_at
- * @property Carbon $updated_at
- *
- */
-class BasketProduct extends PivotBase
+class BasketProduct
 {
-    protected $collection  = 'catalog_baskets_products';
+    public string $productId;
+    public int $count;
 
-    protected $fillable = [
-        'basket_id',
-        'product_id',
-        'count'
-    ];
-
-    protected $casts = [
-        'id' => 'string',
-        'basket_id' => 'string',
-        'product_id' => 'string',
-        'count' => 'integer',
-        'price' => 'float',
-    ];
-
-    protected $dates = ['created_at', 'updated_at'];
-
-    public static function create(
-        string $basketId,
-        string $productId,
-        int $count
-    ): self
+    public function create(string $productId, int $count): self
     {
-        $productCategory = new self();
+        $basketProduct = new self();
+        $basketProduct->productId = $productId;
+        $basketProduct->count = $count;
 
-        $productCategory->setBasketId($basketId);
-        $productCategory->setProductId($productId);
-        $productCategory->setCount($count);
-
-        return $productCategory;
+        return $basketProduct;
     }
 
-    public function getBasketId(): string
+    public function fromArray(array $value): self
     {
-        return $this->basket_id;
+        $basketProduct = new self();
+        $basketProduct->productId = MongoMapper::fromMongoUuid($value['productId']);
+        $basketProduct->count = $value['count'];
+
+        return $basketProduct;
     }
 
-    public function getProductId(): string
+    /**
+     * @throws AppException
+     */
+    public function toArray(BasketProduct $value): array
     {
-        return $this->product_id;
+        return [
+            'productId' => MongoMapper::toMongoUuid($value->productId),
+            'count' => $value->count
+        ];
     }
 
-    public function getCount(): int
-    {
-        return $this->count;
-    }
-
-    public function setBasketId(string $basketId): self
-    {
-        $this->basket_id = $basketId;
-        return $this;
-    }
-
-    public function setProductId(string $productId): self
-    {
-        $this->product_id = $productId;
-        return $this;
-    }
-
-    public function setCount(int $count): self
-    {
-        $this->count = $count;
-        return $this;
-    }
-
+    /**
+     * @throws AppException
+     */
     public function product()
     {
-        return Product::query()->where('_id', '=', $this->getProductId())->get();
+        return Product::query()->where('_id', '=', MongoMapper::toMongoUuid($this->productId))->get();
     }
 }

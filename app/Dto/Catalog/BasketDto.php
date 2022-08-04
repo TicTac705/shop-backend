@@ -15,12 +15,10 @@ class BasketDto extends BaseDto
 
     public static function fromModel(Basket $basket): self
     {
-        $itemDtoList = BasketItemDto::fromList($basket->items()->all());
-
         return new self([
             'id' => $basket->getId(),
-            'items' => $basket->getPositions(),
-            'totalCount' => count($itemDtoList),
+            'items' => BasketItemDto::fromList($basket->getPositions()),
+            'totalCount' => count($basket->getPositions()),
             'updatedAt' => $basket->getUpdatedAtTimestamp(),
             'createdAt' => $basket->getCreatedAtTimestamp(),
         ]);

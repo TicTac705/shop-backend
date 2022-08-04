@@ -11,7 +11,7 @@ use Illuminate\Support\Carbon;
  * @property string $id
  * @property string $user_id
  * @property bool $is_active
- * @property null|array $positions
+ * @property null|BasketProduct[] $positions
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
@@ -30,7 +30,9 @@ class Basket extends ModelBase
 
     protected $casts = [
         '_id' => 'uuid',
-        'user_id' => 'uuid'
+        'user_id' => 'uuid',
+        'positions' => 'class-array:'. BasketProduct::class,
+        'positions.productId' => 'uuid'
     ];
 
     protected $dates = ['created_at', 'updated_at'];
@@ -82,16 +84,5 @@ class Basket extends ModelBase
     {
         $this->positions = $positions;
         return $this;
-    }
-
-    public function addPosition(array $position): self
-    {
-        $this->positions = array_merge($this->positions, [$position]);
-        return $this;
-    }
-
-    public function items()
-    {
-        return BasketProduct::query()->where('basket_id', '=', $this->getId())->get();
     }
 }

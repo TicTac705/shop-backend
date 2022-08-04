@@ -2,16 +2,20 @@
 
 namespace App\Services\Catalog;
 
+use App\Exceptions\AppException;
 use App\Exceptions\Basket\BasketNotExistingException;
 use App\Exceptions\Catalog\InvalidQuantityProductException;
 use App\Exceptions\Catalog\UnavailabilityException;
+use App\Helpers\Mappers\MongoMapper;
 use App\Models\Catalog\Basket;
-use App\Models\Catalog\Product;
 use App\Models\User\User;
 use App\PivotModels\Catalog\BasketProduct;
 
 class BasketService
 {
+    /**
+     * @throws AppException
+     */
     public function getUserBasket(User $user): Basket
     {
         $baskets = $user->baskets();
@@ -35,32 +39,48 @@ class BasketService
 
     public function checkItem(Basket $basket, string $itemId): bool
     {
-        $items = collect($basket->getPositions());
+        $items = $basket->getPositions();
 
-        if ($items->isEmpty()) {
+        if (count($items) < 1) {
             return false;
         }
 
-        return $items->where('product_id', '=', $itemId)->isNotEmpty();
+        foreach ($items as $item) {
+            if ($item->productId === $itemId) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * @throws InvalidQuantityProductException
      * @throws UnavailabilityException
+     * @throws  AppException
      */
-    public function updateQuantityItem(Basket $basket, string $productId, ?int $quantity = null): BasketProduct
+    public function updateQuantityItem(Basket $basket, string $productId, ?int $quantity = null): Basket
     {
         $product = ProductService::getById($productId);
 
-        $item = collect($basket->getPositions())->where('product_id', '=', $productId)->first();
-        dd($item);
+        $items = $basket->getPositions();
+
+        $basketItemKey = null;
+        foreach ($items as $key => $item) {
+            if ($item->productId === $productId) {
+                $basketItemKey = $key;
+            }
+        }
+
         if (!$product->getIsActive()) {
-            $this->deleteItem($basket, $productId);
+            unset($items[$basketItemKey]);
+            $basket->setPositions($items);
             throw new UnavailabilityException();
         }
 
         if ($product->getStore() < 1) {
-            $this->deleteItem($basket, $productId);
+            unset($items[$basketItemKey]);
+            $basket->setPositions($items);
             throw new InvalidQuantityProductException();
         }
 
@@ -68,18 +88,20 @@ class BasketService
             if ($product->getStore() < $quantity) {
                 throw new InvalidQuantityProductException();
             }
-
-            $item->setCount($quantity);
+            $items[$basketItemKey]->count = $quantity;
         } else {
-            $item->setCount($item->getCount() + 1);
+            $items[$basketItemKey]->count = $items[$basketItemKey]->count + 1;
         }
 
-        return $item->checkChangesSaveAndReturn();
+        $basket->setPositions($items);
+
+        return $basket->checkChangesSaveAndReturn();
     }
 
     /**
      * @throws UnavailabilityException
      * @throws InvalidQuantityProductException
+     * @throws AppException
      */
     public function addItem(Basket $basket, string $productId): Basket
     {
@@ -93,28 +115,32 @@ class BasketService
             throw new InvalidQuantityProductException();
         }
 
-        $basket->addPosition(
-            [
-                'product_id' => $product->getId(),
-                'quantity' => 1
-            ]
-        )->checkChangesAndSave();
+        $items = $basket->getPositions();
+        $items[] = BasketProduct::create($productId, 1);
+        $basket->setPositions($items);
+
+        $basket->checkChangesAndSave();
 
         return $basket;
     }
 
-    public function createItem(Basket $basket, Product $product, int $quantity): BasketProduct
-    {
-        return BasketProduct::create(
-            $basket->getId(),
-            $product->getId(),
-            $quantity
-        )->saveAndReturn();
-    }
-
     public function deleteItem(Basket $basket, string $productId): void
     {
-        $basket->items()->where('product_id', '=', $productId)->first()->delete();
+        $items = $basket->getPositions();
+
+        $basketItemKey = null;
+        foreach ($items as $key => $item) {
+            if ($item->productId === $productId) {
+                $basketItemKey = $key;
+            }
+        }
+
+        if ($basketItemKey !== null) {
+            unset($items[$basketItemKey]);
+        }
+
+        $basket->setPositions($items);
+        $basket->checkChangesAndSave();
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace App\Models\User;
 
 use App\Dto\User\RoleLightForTokenDto;
+use App\Exceptions\AppException;
+use App\Helpers\Mappers\MongoMapper;
 use App\Models\Catalog\Basket;
 use App\Models\Catalog\Order;
 use Illuminate\Database\Eloquent\Collection;
@@ -189,14 +191,20 @@ class User extends Authenticatable implements JWTSubject
         return $this->roles()->where('slug', $slug)->isNotEmpty();
     }
 
+    /**
+     * @throws AppException
+     */
     public function baskets()
     {
-        return Basket::query()->where('user_id', '=', $this->getId())->get();
+        return Basket::query()->where('user_id', '=', MongoMapper::toMongoUuid($this->getId()))->get();
     }
 
+    /**
+     * @throws AppException
+     */
     public function orders()
     {
-        return Order::query()->where('user_id', '=', $this->getId())->get();
+        return Order::query()->where('user_id', '=', MongoMapper::toMongoUuid($this->getId()))->get();
     }
 
     public function getCreatedAtTimestamp(): ?int

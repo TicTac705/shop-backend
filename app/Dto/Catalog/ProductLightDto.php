@@ -6,6 +6,7 @@ use App\Dto\BaseDto;
 use App\Dto\ImageLightDto;
 use App\Dto\UnitMeasureLightDto;
 use App\Dto\User\UserLightDto;
+use App\Exceptions\AppException;
 use App\Models\Catalog\Product;
 
 class ProductLightDto extends BaseDto
@@ -21,6 +22,9 @@ class ProductLightDto extends BaseDto
     public array $images;
 
 
+    /**
+     * @throws AppException
+     */
     public static function fromModel(Product $product): self
     {
         return new self([
@@ -37,6 +41,7 @@ class ProductLightDto extends BaseDto
     /**
      * @param Product[] $items
      * @return self[]
+     * @throws AppException
      */
     public function fromList(array $items): array
     {

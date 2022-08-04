@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Catalog;
 use App\Dto\Catalog\ProductAddedToBasketDto;
 use App\Dto\Catalog\ProductUpdatedToBasketDto;
 use App\EntityServices\Catalog\BasketEntityService;
+use App\Exceptions\AppException;
 use App\Exceptions\Basket\NonExistingBasketItemException;
 use App\Exceptions\Catalog\InvalidQuantityProductException;
 use App\Exceptions\Catalog\UnavailabilityException;
@@ -30,6 +31,7 @@ class BasketController extends Controller
     /**
      * @throws UnavailabilityException
      * @throws InvalidQuantityProductException
+     * @throws AppException
      */
     public function store(BasketItemAddingRequest $request): JsonResponse
     {
@@ -41,6 +43,7 @@ class BasketController extends Controller
     /**
      * @throws UnavailabilityException
      * @throws InvalidQuantityProductException
+     * @throws AppException
      */
     public function updateQuantity(BasketItemUpdatingRequest $request): JsonResponse
     {
@@ -51,6 +54,7 @@ class BasketController extends Controller
 
     /**
      * @throws NonExistingBasketItemException
+     * @throws AppException
      */
     public function destroy(string $id): JsonResponse
     {
