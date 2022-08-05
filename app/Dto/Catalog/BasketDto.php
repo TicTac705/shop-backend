@@ -3,6 +3,7 @@
 namespace App\Dto\Catalog;
 
 use App\Dto\BaseDto;
+use App\Exceptions\AppException;
 use App\Models\Catalog\Basket;
 
 class BasketDto extends BaseDto
@@ -13,6 +14,9 @@ class BasketDto extends BaseDto
     public ?int $updatedAt;
     public ?int $createdAt;
 
+    /**
+     * @throws AppException
+     */
     public static function fromModel(Basket $basket): self
     {
         return new self([

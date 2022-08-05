@@ -2,6 +2,7 @@
 namespace App\Dto;
 
 use App\Dto\User\UserLightDto;
+use App\Exceptions\AppException;
 use App\Models\Image;
 
 class ImageDto extends BaseDto
@@ -15,6 +16,9 @@ class ImageDto extends BaseDto
     public ?int $updatedAt;
     public ?int $createdAt;
 
+    /**
+     * @throws AppException
+     */
     public function fromModel(Image $image): self
     {
         return new self([
@@ -23,7 +27,7 @@ class ImageDto extends BaseDto
             'nameOriginal' => $image->getNameOriginal(),
             'size' => $image->getSize(),
             'src' => $image->getSrc(),
-            'creator' => UserLightDto::fromModel($image->user()->getResults()),
+            'creator' => UserLightDto::fromModel($image->user()),
             'updatedAt' => $image->getUpdatedAtTimestamp(),
             'createdAt' => $image->getCreatedAtTimestamp(),
         ]);

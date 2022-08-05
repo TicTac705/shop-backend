@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Catalog\Product;
+use App\Exceptions\AppException;
 use App\Models\User\User;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @property string $id
@@ -112,13 +111,11 @@ class Image extends ModelBase
         return $this;
     }
 
-    public function products(): BelongsToMany
+    /**
+     * @throws AppException
+     */
+    public function user()
     {
-        return $this->belongsToMany(Product::class, 'catalog_products_images')->withTimestamps()->using(ProductImage::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
+        return User::getById(Auth::user()->getId());
     }
 }

@@ -18,7 +18,7 @@ class OrderItemDto extends BaseDto
     public static function fromModel(OrderProduct $orderItem): self
     {
         return new self([
-            'product' => ProductLightForOrderDto::fromModel($orderItem->product()->first()),
+            'product' => ProductLightForOrderDto::fromModel($orderItem->product()),
             'price' => $orderItem->price,
             'count' => $orderItem->count,
         ]);
@@ -27,6 +27,7 @@ class OrderItemDto extends BaseDto
     /**
      * @param OrderProduct[] $items
      * @return self[]
+     * @throws AppException
      */
     public function fromList(array $items): array
     {

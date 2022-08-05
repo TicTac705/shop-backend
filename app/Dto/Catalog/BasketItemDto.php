@@ -17,7 +17,7 @@ class BasketItemDto extends BaseDto
     public static function fromModel(BasketProduct $basketItem): self
     {
         return new self([
-            'product' => ProductLightDto::fromModel($basketItem->product()->first()),
+            'product' => ProductLightDto::fromModel($basketItem->product()),
             'count' => $basketItem->count,
         ]);
     }
@@ -25,6 +25,7 @@ class BasketItemDto extends BaseDto
     /**
      * @param BasketProduct[] $items
      * @return self[]
+     * @throws AppException
      */
     public function fromList(array $items): array
     {

@@ -139,7 +139,7 @@ class BasketService
             unset($items[$basketItemKey]);
         }
 
-        $basket->setPositions($items);
+        $basket->setPositions(array_values($items));
         $basket->checkChangesAndSave();
     }
 

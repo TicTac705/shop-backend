@@ -14,6 +14,7 @@ class BasketFactory extends Factory
         return [
             'user_id' => '',
             'is_active' => true,
+            'positions' => [],
         ];
     }
 }

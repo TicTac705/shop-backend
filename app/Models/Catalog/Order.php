@@ -6,6 +6,7 @@ use App\Helpers\Statuses\Order\OrderPaymentStatuses;
 use App\Helpers\Statuses\Order\OrderStatuses;
 use App\Models\ModelBase;
 use App\PivotModels\Catalog\OrderProduct;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
 
 /**
@@ -23,6 +24,8 @@ use Illuminate\Support\Carbon;
  */
 class Order extends ModelBase
 {
+    use HasFactory;
+
     protected $collection = 'catalog_orders';
 
     protected $fillable = [
