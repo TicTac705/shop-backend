@@ -31,8 +31,7 @@ class Basket extends ModelBase
     protected $casts = [
         '_id' => 'uuid',
         'user_id' => 'uuid',
-        'positions' => 'class-array:'. BasketProduct::class,
-        'positions.productId' => 'uuid'
+        'positions' => 'class-array:' . BasketProduct::class
     ];
 
     protected $dates = ['created_at', 'updated_at'];

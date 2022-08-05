@@ -17,6 +17,7 @@ use Illuminate\Support\Carbon;
  * @property null|string $delivery_address
  * @property int $order_status_id
  * @property int $payment_status_id
+ * @property null|OrderProduct[] $positions
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
@@ -32,13 +33,15 @@ class Order extends ModelBase
         'delivery_address',
         'order_status_id',
         'payment_status_id',
+        'positions',
     ];
 
     protected $dates = ['created_at', 'updated_at'];
 
     protected $casts = [
         '_id' => 'uuid',
-        'user_id' => 'uuid'
+        'user_id' => 'uuid',
+        'positions' => 'class-array:' . OrderProduct::class
     ];
 
     public function create(
@@ -48,7 +51,8 @@ class Order extends ModelBase
         int     $deliveryId,
         ?string $deliveryAddress,
         int     $orderStatusId,
-        int     $paymentStatusId
+        int     $paymentStatusId,
+        ?array  $positions
     ): self
     {
         $order = new self();
@@ -60,6 +64,7 @@ class Order extends ModelBase
         $order->setDeliveryAddress($deliveryAddress);
         $order->setOrderStatusId($orderStatusId);
         $order->setPaymentStatusId($paymentStatusId);
+        $order->setPositions($positions);
 
         return $order;
     }
@@ -154,8 +159,14 @@ class Order extends ModelBase
         return $this->getOrderStatusId() === OrderPaymentStatuses::NOT_PAID;
     }
 
-    public function items()
+    public function getPositions(): ?array
     {
-        return OrderProduct::query()->where('order_id', '=', $this->getId())->get();
+        return $this->positions;
+    }
+
+    public function setPositions(array $positions): self
+    {
+        $this->positions = $positions;
+        return $this;
     }
 }

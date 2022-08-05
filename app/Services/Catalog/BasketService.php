@@ -145,10 +145,11 @@ class BasketService
 
     /**
      * @throws BasketNotExistingException
+     * @throws AppException
      */
     public function getBasketById(string $id): Basket
     {
-        $basket = Basket::query()->findOrFail($id)->where('is_active', '=', true)->first();
+        $basket = Basket::query()->findOrFail(MongoMapper::toMongoUuid($id))->where('is_active', '=', true)->first();
 
         if ($basket === null) {
             throw new BasketNotExistingException();
@@ -159,6 +160,7 @@ class BasketService
 
     /**
      * @throws BasketNotExistingException
+     * @throws AppException
      */
     public function deactivateBasket(string $id): void
     {

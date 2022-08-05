@@ -22,7 +22,7 @@ class OrderDto extends BaseDto
 
     public static function fromModel(Order $order): self
     {
-        $itemDtoList = OrderItemDto::fromList($order->items()->all());
+        $itemDtoList = OrderItemDto::fromList($order->getPositions());
 
         return new self([
             'id' => $order->getId(),

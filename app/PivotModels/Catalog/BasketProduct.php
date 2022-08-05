@@ -45,6 +45,6 @@ class BasketProduct
      */
     public function product()
     {
-        return Product::query()->where('_id', '=', MongoMapper::toMongoUuid($this->productId))->get();
+        return Product::getById(MongoMapper::toMongoUuid($this->productId));
     }
 }

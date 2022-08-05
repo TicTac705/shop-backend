@@ -48,7 +48,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
 
-        Route::pattern('id', '[a-z0-9_-]+');
+        Route::pattern('id', '[a-f0-9]{8}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{12}');
     }
 
     /**

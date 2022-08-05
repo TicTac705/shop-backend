@@ -2,39 +2,39 @@
 
 namespace App\EntityServices\Catalog;
 
-use App\Dto\Catalog\BasketDto;
 use App\Dto\Catalog\OrderCreationFormDto;
 use App\Dto\Catalog\OrderDto;
 use App\Dto\Catalog\OrderUpdateDto;
 use App\Dto\PaginationDto;
+use App\Exceptions\AppException;
 use App\Exceptions\Basket\BasketEmptyException;
 use App\Exceptions\Basket\BasketNotExistingException;
+use App\Exceptions\Catalog\InvalidQuantityProductException;
+use App\Exceptions\Catalog\UnavailabilityException;
 use App\Exceptions\Order\NoRightsRecallOrderException;
 use App\Exceptions\Order\OrderCannotRecalledException;
+use App\PivotModels\Catalog\BasketProduct;
 use App\Services\Catalog\BasketService;
 use App\Services\Catalog\OrderService;
-use App\Services\Catalog\ProductService;
 use Illuminate\Support\Facades\Auth;
 
 class OrderEntityService
 {
     private OrderService $orderService;
     private BasketService $basketService;
-    private ProductService $productService;
 
     public function __construct(
         OrderService   $orderService,
-        BasketService  $basketService,
-        ProductService $productService
+        BasketService  $basketService
     )
     {
         $this->orderService = $orderService;
         $this->basketService = $basketService;
-        $this->productService = $productService;
     }
 
     /**
      * @return OrderDto[]
+     * @throws AppException
      */
     public function getList(): array
     {
@@ -51,23 +51,24 @@ class OrderEntityService
     /**
      * @throws BasketNotExistingException
      * @throws BasketEmptyException
+     * @throws AppException
+     * @throws UnavailabilityException
+     * @throws InvalidQuantityProductException
      */
     public function create(OrderCreationFormDto $dto): OrderDto
     {
-        $basket = BasketDto::fromModel($this->basketService->getBasketById($dto->basketId));
+        $basket = $this->basketService->getBasketById($dto->basketId);
 
-        if ($basket->totalCount < 1){
+        if (count($basket->getPositions()) < 1) {
             throw new BasketEmptyException();
         }
 
-        $newOrder = $this->orderService->create($dto);
+        /** @var BasketProduct[]|null $basketItems */
+        $basketItems = $basket->getPositions();
 
-        $orderItems = $this->orderService->fromBasketToOrderProductList($basket, $newOrder->getId());
+        $orderItems = $this->orderService->getItemsFromBasket($basketItems);
 
-        foreach ($orderItems as $item) {
-            $this->productService->reduceQuantityStockByNumber($item->getProductId(), $item->getCount());
-            $item->save();
-        }
+        $newOrder = $this->orderService->create($dto, $orderItems);
 
         $this->basketService->deactivateBasket($dto->basketId);
 
@@ -77,6 +78,7 @@ class OrderEntityService
     /**
      * @throws OrderCannotRecalledException
      * @throws NoRightsRecallOrderException
+     * @throws AppException
      */
     public function recall(string $id): void
     {
@@ -89,6 +91,9 @@ class OrderEntityService
         $this->orderService->recall($order);
     }
 
+    /**
+     * @throws AppException
+     */
     public function getUpdateData(string $id): OrderDto
     {
         $order = $this->orderService->getById($id);
@@ -96,6 +101,9 @@ class OrderEntityService
         return OrderDto::fromModel($order);
     }
 
+    /**
+     * @throws AppException
+     */
     public function update(string $id, OrderUpdateDto $dto): OrderDto
     {
         $order = $this->orderService->getById($id);

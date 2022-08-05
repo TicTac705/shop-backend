@@ -3,6 +3,7 @@
 namespace App\Dto\Catalog;
 
 use App\Dto\BaseDto;
+use App\Exceptions\AppException;
 use App\PivotModels\Catalog\OrderProduct;
 
 class OrderItemDto extends BaseDto
@@ -11,12 +12,15 @@ class OrderItemDto extends BaseDto
     public float $price;
     public int $count;
 
+    /**
+     * @throws AppException
+     */
     public static function fromModel(OrderProduct $orderItem): self
     {
         return new self([
             'product' => ProductLightForOrderDto::fromModel($orderItem->product()->first()),
-            'price' => $orderItem->getPrice(),
-            'count' => $orderItem->getCount(),
+            'price' => $orderItem->price,
+            'count' => $orderItem->count,
         ]);
     }
 

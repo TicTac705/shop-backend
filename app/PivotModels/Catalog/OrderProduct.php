@@ -2,102 +2,53 @@
 
 namespace App\PivotModels\Catalog;
 
+use App\Exceptions\AppException;
+use App\Helpers\Mappers\MongoMapper;
 use App\Models\Catalog\Product;
-use App\PivotModels\PivotBase;
-use Illuminate\Support\Carbon;
 
-/**
- * @property string $id
- * @property string $order_id
- * @property string $product_id
- * @property float $price
- * @property int $count
- * @property Carbon $created_at
- * @property Carbon $updated_at
- *
- */
-class OrderProduct extends PivotBase
+class OrderProduct
 {
-    protected $collection = 'catalog_order_product';
+    public string $productId;
+    public float $price;
+    public int $count;
 
-    protected $fillable = [
-        'order_id',
-        'product_id',
-        'price',
-        'count'
-    ];
-
-    protected $casts = [
-        '_id' => 'uuid',
-        'order_id' => 'uuid',
-        'product_id' => 'uuid'
-    ];
-
-    protected $dates = ['created_at', 'updated_at'];
-
-    public static function create(
-        string $orderId,
-        string $productId,
-        float  $price,
-        int    $count
-    ): self
+    public function create(string $productId, float $price, int $count): self
     {
-        $orderProduct = new self();
+        $basketProduct = new self();
+        $basketProduct->productId = $productId;
+        $basketProduct->price = $price;
+        $basketProduct->count = $count;
 
-        $orderProduct->setOrderId($orderId);
-        $orderProduct->setProductId($productId);
-        $orderProduct->setPrice($price);
-        $orderProduct->setCount($count);
-
-        return $orderProduct;
+        return $basketProduct;
     }
 
-    public function getOrderId(): string
+    public function fromArray(array $value): self
     {
-        return $this->order_id;
+        $basketProduct = new self();
+        $basketProduct->productId = MongoMapper::fromMongoUuid($value['productId']);
+        $basketProduct->price = $value['price'];
+        $basketProduct->count = $value['count'];
+
+        return $basketProduct;
     }
 
-    public function getProductId(): string
+    /**
+     * @throws AppException
+     */
+    public function toArray(OrderProduct $value): array
     {
-        return $this->product_id;
+        return [
+            'productId' => MongoMapper::toMongoUuid($value->productId),
+            'price' => $value->price,
+            'count' => $value->count
+        ];
     }
 
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    public function getCount(): int
-    {
-        return $this->count;
-    }
-
-    public function setOrderId(string $orderId): self
-    {
-        $this->order_id = $orderId;
-        return $this;
-    }
-
-    public function setProductId(string $productId): self
-    {
-        $this->product_id = $productId;
-        return $this;
-    }
-
-    public function setPrice(float $price): self
-    {
-        $this->price = $price;
-        return $this;
-    }
-
-    public function setCount(int $count): self
-    {
-        $this->count = $count;
-        return $this;
-    }
-
+    /**
+     * @throws AppException
+     */
     public function product()
     {
-        return Product::query()->where('_id', '=', $this->getProductId())->get();
+        return Product::getById(MongoMapper::toMongoUuid($this->productId));
     }
 }
