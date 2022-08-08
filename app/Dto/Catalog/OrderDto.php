@@ -3,6 +3,7 @@
 namespace App\Dto\Catalog;
 
 use App\Dto\BaseDto;
+use App\Exceptions\AppException;
 use App\Models\Catalog\Order;
 
 class OrderDto extends BaseDto
@@ -20,6 +21,9 @@ class OrderDto extends BaseDto
     public ?int $createdAt;
     public ?int $updatedAt;
 
+    /**
+     * @throws AppException
+     */
     public static function fromModel(Order $order): self
     {
         $itemDtoList = OrderItemDto::fromList($order->getPositions());

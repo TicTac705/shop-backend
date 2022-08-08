@@ -25,7 +25,7 @@ class OrderCreationRequest extends FormRequest
         return [
             'basket_id' => ['bail', 'required', new UuidValidation(), new ExistsUuid('catalog_baskets')],
             'delivery_id' => ['required', 'integer', new ExistsDeliveryStatus],
-            'delivery_address' => ['required_if:delivery_id,' . DeliveryStatuses::COURIER_DELIVERY, 'string']
+            'delivery_address' => ['nullable', 'required_if:delivery_id,' . DeliveryStatuses::COURIER_DELIVERY, 'string']
         ];
     }
 }
