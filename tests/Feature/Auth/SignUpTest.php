@@ -14,7 +14,7 @@ class SignUpTest extends TestCase
     {
         $response = $this->postJson(route('signUp'), [
             'name' => 'Test',
-            'email' => 'test2@example.com',
+            'email' => 'test2@shop.local',
             'password' => 'password',
             'password_confirmation' => 'password'
         ]);
@@ -22,7 +22,7 @@ class SignUpTest extends TestCase
         $response->assertSuccessful();
 
         /** @var User $user */
-        $user = User::query()->where('email', '=', 'test2@example.com')->first();
+        $user = User::query()->where('email', '=', 'test2@shop.local')->first();
 
         $this->assertNotNull($user);
         $this->assertTrue($user->hasRole('user'));
