@@ -38,7 +38,9 @@ class OrderService
      */
     public function getListByUser(User $user): array
     {
-        $orders = $user->orders()->all();
+        $orders = $user->orders()->sortBy([
+            ['order_status_id', 'asc']
+        ])->all();
 
         return OrderDto::fromList($orders);
     }
