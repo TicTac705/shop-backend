@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
         ))->create();
 
         /** @var Product[] $products */
-        $products = Product::factory()->count(10)->state(new Sequence(
+        $products = Product::factory()->count(100)->state(new Sequence(
             ['unit_measure_id' => $kgId, 'category_ids' => [$fruitId, $cerealsId], 'user_id' => $superUser->getId()],
             ['unit_measure_id' => $pieceId, 'category_ids' => [$vegetablesId, $cerealsId], 'user_id' => $superUser->getId()],
         ))->create();

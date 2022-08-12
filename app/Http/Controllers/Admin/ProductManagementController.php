@@ -27,6 +27,9 @@ class ProductManagementController extends Controller
         $this->productManagementEntityService = $productManagementEntityService;
     }
 
+    /**
+     * @throws AppException
+     */
     public function getList(): JsonResponse
     {
         return response()->json($this->catalogEntityService->getListFromManagement());
