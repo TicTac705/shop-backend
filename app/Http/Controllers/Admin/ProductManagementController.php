@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Dto\Catalog\ProductCreateDto;
+use App\Dto\Catalog\ProductDestroyDto;
 use App\Dto\Catalog\ProductUpdateDto;
 use App\EntityServices\Admin\ProductManagementEntityService;
 use App\EntityServices\Catalog\CatalogEntityService;
 use App\Exceptions\AppException;
+use App\Exceptions\Catalog\UnableToDestroyProductsException;
 use App\Helpers\Statuses\HTTPResponseStatuses;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\ProductCreationRequest;
+use App\Http\Requests\Catalog\ProductDestroyRequest;
 use App\Http\Requests\Catalog\ProductUpdateRequest;
 use Illuminate\Http\JsonResponse;
 
@@ -73,11 +76,24 @@ class ProductManagementController extends Controller
 
     /**
      * @throws AppException
+     * @throws UnableToDestroyProductsException
      */
     public function destroy(string $id): JsonResponse
     {
         $this->productManagementEntityService->destroy($id);
 
         return response()->json(['message' => 'Product successfully deleted.']);
+    }
+
+    /**
+     * @throws UnableToDestroyProductsException
+     */
+    public function destroyMany(ProductDestroyRequest $request): JsonResponse
+    {
+        $dto = ProductDestroyDto::fromRequest($request);
+
+        $this->productManagementEntityService->destroyMany($dto);
+
+        return response()->json(['message' => 'Products successfully deleted.']);
     }
 }

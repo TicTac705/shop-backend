@@ -59,6 +59,14 @@ class ModelBase extends Model
     }
 
     /**
+     * @throws AppException
+     */
+    public function getByIdWithTrashed(string $id)
+    {
+        return self::withTrashed()->where('_id', '=', MongoMapper::toMongoUuid($id))->firstOrFail();
+    }
+
+    /**
      * @param string[] $ids
      */
     public function getByIds(?array $ids): Collection
@@ -105,7 +113,10 @@ class ModelBase extends Model
     public function getListWithPagination(int $number, bool $isDisplayInactive = false): LengthAwarePaginator
     {
         if ($isDisplayInactive) {
-            return self::query()->paginate($number);
+            return self::query()
+                ->orderBy('is_active', 'desc')
+                ->orderBy('name', 'asc')
+                ->paginate($number);
         }
 
         return self::query()->where('is_active', '=', true)->paginate($number);

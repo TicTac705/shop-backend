@@ -169,4 +169,19 @@ class OrderService
             $basketItems
         );
     }
+
+    /**
+     * @param string[] $productIds
+     * @return string[]
+     */
+    public function getCannotRemovedPositions(array $productIds): array
+    {
+        $productIdsFromOrders = Order::getByPositions($productIds)->pluck('positions')->all();
+        $productIdsFromOrders = call_user_func_array('array_merge', $productIdsFromOrders);
+        $productIdsFromOrdersCollect = collect($productIdsFromOrders);
+
+        return array_values($productIdsFromOrdersCollect->whereIn('productId', $productIds)->map(function (OrderProduct $orderProduct) {
+            return $orderProduct->productId;
+        })->all());
+    }
 }

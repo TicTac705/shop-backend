@@ -249,4 +249,9 @@ class Product extends ModelBase
     {
         return Image::getByIds($this->getImages());
     }
+
+    public function getDeletedAtTimestamp(): ?int
+    {
+        return $this->deleted_at === null ? null : $this->deleted_at->timestamp;
+    }
 }

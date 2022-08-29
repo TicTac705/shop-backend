@@ -25,6 +25,7 @@ class ProductDto extends BaseDto
     public UserLightDto $creator;
     public ?int $updatedAt;
     public ?int $createdAt;
+    public ?int $deletedAt;
 
 
     /**
@@ -45,6 +46,7 @@ class ProductDto extends BaseDto
             'creator' => UserLightDto::fromModel($product->user()),
             'updatedAt' => $product->getUpdatedAtTimestamp(),
             'createdAt' => $product->getCreatedAtTimestamp(),
+            'deletedAt' => $product->getDeletedAtTimestamp(),
         ]);
     }
 

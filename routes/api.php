@@ -39,6 +39,7 @@ Route::group(['middleware' => 'auth:api'], function () {
             Route::get('/products/get-update-data/{id}', [ProductManagementController::class, 'getUpdateData'])->name('products.edit');
             Route::put('/products/{id}', [ProductManagementController::class, 'update'])->name('products.update');
             Route::delete('/products/{id}', [ProductManagementController::class, 'destroy'])->name('products.destroy');
+            Route::delete('/products/', [ProductManagementController::class, 'destroyMany'])->name('products.destroyMany');
 
             Route::post('/image/', [ImageController::class, 'store'])->name('image.store');
             Route::delete('/image/{id}', [ImageController::class, 'destroy'])->name('image.destroy');

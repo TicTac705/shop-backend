@@ -5,7 +5,9 @@ namespace App\Services\Catalog;
 use App\Dto\Catalog\ProductCreateDto;
 use App\Dto\Catalog\ProductUpdateDto;
 use App\Exceptions\AppException;
+use App\Helpers\Mappers\MongoMapper;
 use App\Models\Catalog\Product;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductService
@@ -54,7 +56,7 @@ class ProductService
             $model->setStore($data->store);
         }
 
-        if ($data->imagesId){
+        if ($data->imagesId) {
             $model->setImages(array_merge($model->getImages(), $data->imagesId));
         }
 
@@ -76,6 +78,14 @@ class ProductService
         return Product::getById($id);
     }
 
+    /**
+     * @param string[] $ids
+     */
+    public function destroyByIds(array $ids)
+    {
+        Product::query()->whereIn('_id', MongoMapper::toMongoUuidArray($ids))->delete();
+    }
+
     public function getListWithPagination(int $numberItemsPerPage): LengthAwarePaginator
     {
         return Product::getListWithPagination($numberItemsPerPage);
@@ -84,15 +94,6 @@ class ProductService
     public function getListWithPaginationFromManagement(int $numberItemsPerPage): LengthAwarePaginator
     {
         return Product::getListWithPagination($numberItemsPerPage, true);
-    }
-
-    public function reduceQuantityStockByNumber(string $productId, int $number): void
-    {
-        $product = $this->getById($productId);
-
-        $product->setStore($product->getStore() - $number);
-
-        $product->checkChangesAndSave();
     }
 
     public function destroy(Product $model): void

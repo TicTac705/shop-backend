@@ -49,6 +49,6 @@ class OrderProduct
      */
     public function product()
     {
-        return Product::getById(MongoMapper::toMongoUuid($this->productId));
+        return Product::getByIdWithTrashed($this->productId);
     }
 }

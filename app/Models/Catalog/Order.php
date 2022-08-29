@@ -2,6 +2,7 @@
 
 namespace App\Models\Catalog;
 
+use App\Helpers\Mappers\MongoMapper;
 use App\Helpers\Statuses\Order\OrderPaymentStatuses;
 use App\Helpers\Statuses\Order\OrderStatuses;
 use App\Models\ModelBase;
@@ -171,5 +172,13 @@ class Order extends ModelBase
     {
         $this->positions = $positions;
         return $this;
+    }
+
+    /**
+     * @param string[] $positionIds
+     */
+    public function getByPositions(array $positionIds)
+    {
+        return self::query()->whereIn('positions.productId', MongoMapper::toMongoUuidArray($positionIds))->get();
     }
 }
