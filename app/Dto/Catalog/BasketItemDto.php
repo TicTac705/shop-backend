@@ -3,6 +3,7 @@
 namespace App\Dto\Catalog;
 
 use App\Dto\BaseDto;
+use App\Exceptions\AppException;
 use App\PivotModels\Catalog\BasketProduct;
 
 class BasketItemDto extends BaseDto
@@ -10,17 +11,21 @@ class BasketItemDto extends BaseDto
     public ProductLightDto $product;
     public int $count;
 
+    /**
+     * @throws AppException
+     */
     public static function fromModel(BasketProduct $basketItem): self
     {
         return new self([
-            'product' => ProductLightDto::fromModel($basketItem->product()->getResults()),
-            'count' => $basketItem->getCount(),
+            'product' => ProductLightDto::fromModel($basketItem->product()),
+            'count' => $basketItem->count,
         ]);
     }
 
     /**
      * @param BasketProduct[] $items
      * @return self[]
+     * @throws AppException
      */
     public function fromList(array $items): array
     {

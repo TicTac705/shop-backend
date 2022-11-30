@@ -7,14 +7,14 @@ use App\Http\Requests\Catalog\OrderCreationRequest;
 
 class OrderCreationFormDto extends BaseDto
 {
-    public int $basketId;
+    public string $basketId;
     public int $deliveryId;
     public ?string $deliveryAddress;
 
     static function fromRequest(OrderCreationRequest $request): self
     {
         return new self([
-            'basketId' => intval($request->get('basket_id')),
+            'basketId' => $request->get('basket_id'),
             'deliveryId' => intval($request->get('delivery_id')),
             'deliveryAddress' => $request->get('delivery_address')
         ]);

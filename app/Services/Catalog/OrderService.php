@@ -5,42 +5,57 @@ namespace App\Services\Catalog;
 use App\Dto\Catalog\OrderCreationFormDto;
 use App\Dto\Catalog\OrderDto;
 use App\Dto\Catalog\OrderUpdateDto;
-use App\Exceptions\Order\NoRightsRecallOrder;
-use App\Helpers\Mappers\Order\OrderProduct;
+use App\Exceptions\AppException;
+use App\Exceptions\Catalog\InvalidQuantityProductException;
+use App\Exceptions\Catalog\UnavailabilityException;
+use App\Exceptions\Order\NoRightsRecallOrderException;
 use App\Helpers\Statuses\Order\OrderPaymentStatuses;
 use App\Helpers\Statuses\Order\OrderStatuses;
 use App\Models\Catalog\Order;
+use App\Models\Catalog\Product;
 use App\Models\User\User;
+use App\PivotModels\Catalog\BasketProduct;
+use App\PivotModels\Catalog\OrderProduct;
 use App\Services\User\UserService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 
 class OrderService
 {
-    use OrderProduct;
 
-    public function getById(int $id)
+    /**
+     * @throws AppException
+     */
+    public function getById(string $id)
     {
-        return Order::query()->findOrFail($id);
+        return Order::getById($id);
     }
 
     /**
      * @param User $user
      * @return OrderDto[]
+     * @throws AppException
      */
     public function getListByUser(User $user): array
     {
-        $orders = $user->orders()->getResults()->all();
+        $orders = $user->orders()->sortBy([
+            ['order_status_id', 'asc']
+        ])->all();
 
         return OrderDto::fromList($orders);
     }
 
     public function getListWithPagination(int $number): LengthAwarePaginator
     {
-        return Order::getListWithPagination($number);
+        return Order::getListWithPagination($number, true);
     }
 
-    public function create(OrderCreationFormDto $dto): Order
+    /**
+     * @param OrderCreationFormDto $dto
+     * @param OrderProduct[] $orderItems
+     * @return Order
+     */
+    public function create(OrderCreationFormDto $dto, array $orderItems): Order
     {
         return Order::create(
             Auth::user()->id,
@@ -49,17 +64,18 @@ class OrderService
             $dto->deliveryId,
             $dto->deliveryAddress,
             OrderStatuses::PROCESSING,
-            OrderPaymentStatuses::NOT_PAID
+            OrderPaymentStatuses::NOT_PAID,
+            $orderItems
         )->saveAndReturn();
     }
 
     /**
-     * @throws NoRightsRecallOrder
+     * @throws NoRightsRecallOrderException
      */
     public function canRecallOrder(Order $model): bool
     {
         if (!$this->isOrderCreator($model) || !UserService::isAdmin(Auth::user())) {
-            throw new NoRightsRecallOrder();
+            throw new NoRightsRecallOrderException();
         }
 
         if ($model->isCanceled()) {
@@ -112,5 +128,60 @@ class OrderService
         }
 
         return $model->checkChangesSaveAndReturn();
+    }
+
+    /**
+     * @param BasketProduct[] $basketItems
+     * @return OrderProduct[]
+     * @throws AppException
+     * @throws InvalidQuantityProductException
+     * @throws UnavailabilityException
+     */
+    public function getItemsFromBasket(array $basketItems): array
+    {
+        return array_map(
+        /**
+         * @throws UnavailabilityException
+         * @throws AppException
+         * @throws InvalidQuantityProductException
+         */
+            function (BasketProduct $item) {
+                /** @var Product $product */
+                $product = Product::getById($item->productId);
+
+                if (!$product->getIsActive()) {
+                    throw new UnavailabilityException();
+                }
+
+                if ($product->getStore() < 1 || $product->getStore() < $item->count) {
+                    throw new InvalidQuantityProductException();
+                }
+
+                $product->setStore($product->getStore() - $item->count);
+                $product->checkChangesAndSave();
+
+                return OrderProduct::create(
+                    $product->getId(),
+                    $product->getPrice(),
+                    $item->count
+                );
+            },
+            $basketItems
+        );
+    }
+
+    /**
+     * @param string[] $productIds
+     * @return string[]
+     */
+    public function getCannotRemovedPositions(array $productIds): array
+    {
+        $productIdsFromOrders = Order::getByPositions($productIds)->pluck('positions')->all();
+        $productIdsFromOrders = call_user_func_array('array_merge', $productIdsFromOrders);
+        $productIdsFromOrdersCollect = collect($productIdsFromOrders);
+
+        return array_values($productIdsFromOrdersCollect->whereIn('productId', $productIds)->map(function (OrderProduct $orderProduct) {
+            return $orderProduct->productId;
+        })->all());
     }
 }

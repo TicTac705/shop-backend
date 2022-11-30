@@ -67,7 +67,7 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
+            'driver' => 'mongo-user-provider',
             'model' => \App\Models\User\User::class,
         ],
 

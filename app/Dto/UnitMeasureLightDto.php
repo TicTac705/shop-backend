@@ -5,7 +5,7 @@ use App\Models\UnitMeasure;
 
 class UnitMeasureLightDto extends BaseDto
 {
-    public int $id;
+    public string $id;
     public string $name;
 
     public function fromModel(UnitMeasure $unitMeasure): self

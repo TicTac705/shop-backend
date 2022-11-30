@@ -12,9 +12,9 @@ class ProductCreateDto extends BaseDto
     public string $name;
     public string $description;
     public float $price;
-    public int $unitMeasureId;
+    public string $unitMeasureId;
     public int $store;
-    public int $userId;
+    public string $userId;
     public ?array $imagesId;
     public array $categories;
 
@@ -25,7 +25,7 @@ class ProductCreateDto extends BaseDto
             'name' => $request->get('name'),
             'description' => $request->get('description'),
             'price' => floatval($request->get('price')),
-            'unitMeasureId' => intval($request->get('unit_measure_id')),
+            'unitMeasureId' => $request->get('unit_measure_id'),
             'store' => intval($request->get('store')),
             'userId' => Auth::user()->id,
             'imagesId' => $request->get('imagesId'),

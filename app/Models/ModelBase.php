@@ -2,20 +2,42 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Exceptions\AppException;
+use App\Helpers\Mappers\MongoMapper;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
+use Jenssegers\Mongodb\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 
 /**
- * @property int $id
+ * @property string $id
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
 class ModelBase extends Model
 {
-    public function getId(): int
+    use MongoBinaryUuid;
+    use OrmMappingHelper;
+
+    public static function boot()
     {
-        return $this->id;
+        parent::boot();
+        self::bootMongodbBinaryUuid();
+    }
+
+    public function getId(): string
+    {
+        return $this->getIdAttribute();
+    }
+
+    public function getIdAttribute($value = null)
+    {
+        if (!$value && array_key_exists('_id', $this->attributes)) {
+            $value = $this->attributes['_id'];
+        }
+
+        return $this->convertKeyToString($value);
     }
 
     public function getCreatedAtTimestamp(): ?int
@@ -28,6 +50,33 @@ class ModelBase extends Model
         return $this->updated_at === null ? null : $this->updated_at->timestamp;
     }
 
+    /**
+     * @throws AppException
+     */
+    public function getById(string $id)
+    {
+        return self::where('_id', '=', MongoMapper::toMongoUuid($id))->firstOrFail();
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function getByIdWithTrashed(string $id)
+    {
+        return self::withTrashed()->where('_id', '=', MongoMapper::toMongoUuid($id))->firstOrFail();
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function getByIds(?array $ids): Collection
+    {
+        if ($ids === null) {
+            return new Collection();
+        }
+
+        return self::query()->whereIn('_id', MongoMapper::toMongoUuidArray($ids))->get();
+    }
 
     public function saveAndReturn(): self
     {
@@ -36,34 +85,11 @@ class ModelBase extends Model
         return $this;
     }
 
-    public function saveAndReturnId(): int
+    public function saveAndReturnId(): string
     {
         $this->save();
 
         return $this->id;
-    }
-
-    /**
-     * @param ModelBase[] $records
-     * @return bool
-     */
-    public function saveMany(array $records): bool
-    {
-        foreach ($records as &$record) {
-            $record->updateTimestamps();
-            $record = $record->getAttributes();
-        }
-
-        return self::insert($records);
-    }
-
-    /**
-     * @param int[] $ids
-     * @return bool
-     */
-    public function deleteManyByIds(array $ids): bool
-    {
-        return self::whereIn('id', $ids);
     }
 
     public function checkChangesAndSave(): void
@@ -87,9 +113,92 @@ class ModelBase extends Model
     public function getListWithPagination(int $number, bool $isDisplayInactive = false): LengthAwarePaginator
     {
         if ($isDisplayInactive) {
-            return self::query()->paginate($number);
+            return self::query()
+                ->orderBy('is_active', 'desc')
+                ->orderBy('name', 'asc')
+                ->paginate($number);
         }
 
         return self::query()->where('is_active', '=', true)->paginate($number);
+    }
+
+    public function hasGetMutator($key): bool
+    {
+        if ($this->hasCast($key)) {
+            return true;
+        }
+
+        return parent::hasGetMutator($key);
+    }
+
+    public function hasSetMutator($key): bool
+    {
+        if ($this->hasCast($key)) {
+            return true;
+        }
+
+        return parent::hasSetMutator($key);
+    }
+
+    /**
+     * Convert from mongo to php.
+     * @param $key
+     * @param $value
+     * @return ModelBase|ModelBase[]|array|Carbon|mixed|string|null
+     * @throws AppException
+     */
+    protected function mutateAttribute($key, $value)
+    {
+        if (method_exists($this, 'get' . Str::studly($key) . 'Attribute')) {
+            return $this->{'get' . Str::studly($key) . 'Attribute'}($value);
+        }
+        $casts = $this->casts;
+        if (array_key_exists($key, $casts)) {
+            $type = $casts[$key];
+            return $this->fromAttribute($type, $value);
+        }
+        return null;
+    }
+
+    /**
+     * @throws AppException
+     */
+    protected function castAttribute($key, $value)
+    {
+        if (is_null($value)) {
+            return null;
+        }
+        $type = $this->getCastType($key);
+
+        return $this->fromAttribute($type, $value);
+    }
+
+    protected function getCastType($key)
+    {
+        if (array_key_exists($key, $this->casts)) {
+            $type = $this->casts[$key];
+            if (0 === strpos($type, 'class:') || 0 === strpos($type, 'class-array:')) {
+                return $type;
+            }
+        }
+
+        return parent::getCastType($key);
+    }
+
+    /**
+     * Convert from php to mongo.
+     * @param $key
+     * @param $value
+     * @throws AppException
+     */
+    protected function setMutatedAttributeValue($key, $value)
+    {
+        if (method_exists($this, 'set' . Str::studly($key) . 'Attribute')) {
+            $this->{'set' . Str::studly($key) . 'Attribute'}($value);
+
+            return;
+        }
+        $type = $this->getCastType($key);
+        $this->attributes[$key] = $this->toAttribute($type, $value);
     }
 }

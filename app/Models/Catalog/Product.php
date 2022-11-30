@@ -2,26 +2,26 @@
 
 namespace App\Models\Catalog;
 
+use App\Exceptions\AppException;
 use App\Models\Image;
 use App\Models\ModelBase;
 use App\Models\UnitMeasure;
 use App\Models\User\User;
-use App\PivotModels\Catalog\ProductCategory;
-use App\PivotModels\Catalog\ProductImage;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
- * @property int $id
+ * @property string $id
  * @property string $name
  * @property string $description
  * @property float $price
- * @property int $unit_measure_id
+ * @property string $unit_measure_id
  * @property int $store
- * @property int $user_id
+ * @property string[] $category_ids
+ * @property null|string[] $image_ids
+ * @property string $user_id
  * @property bool $is_active
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -32,7 +32,7 @@ class Product extends ModelBase
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'catalog_products';
+    protected $collection = 'catalog_products';
 
     protected $fillable = [
         'name',
@@ -40,19 +40,44 @@ class Product extends ModelBase
         'price',
         'unit_measure_id',
         'store',
-        'user_id'
+        'category_ids',
+        'image_ids',
+        'user_id',
+        'is_active'
     ];
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
+    protected $casts = [
+        '_id' => 'uuid',
+        'unit_measure_id' => 'uuid',
+        'category_ids' => 'uuid-array',
+        'image_ids' => 'uuid-array',
+        'user_id' => 'uuid',
+    ];
+
+    /**
+     * @param string $name
+     * @param string $description
+     * @param float $price
+     * @param string $unitMeasureId
+     * @param int $store
+     * @param string[] $categoryIds
+     * @param string $userId
+     * @param bool $isActive
+     * @param null|string[] $imageIds
+     * @return $this
+     */
     public function create(
         string $name,
         string $description,
         float  $price,
-        int    $unitMeasureId,
+        string $unitMeasureId,
         int    $store,
-        int    $userId,
-        bool   $isActive
+        array  $categoryIds,
+        string $userId,
+        bool   $isActive,
+        ?array $imageIds
     ): self
     {
         $product = new self();
@@ -62,8 +87,12 @@ class Product extends ModelBase
         $product->setPrice($price);
         $product->setUnitMeasureId($unitMeasureId);
         $product->setStore($store);
+        $product->setCategories($categoryIds);
         $product->setUserId($userId);
         $product->setIsActive($isActive);
+        if ($imageIds !== null) {
+            $product->setImages($imageIds);
+        }
 
         return $product;
     }
@@ -83,9 +112,12 @@ class Product extends ModelBase
         return $this->price;
     }
 
-    public function getUnitMeasureId(): int
+    /**
+     * @throws AppException
+     */
+    public function getUnitMeasureId(): string
     {
-        return $this->unit_measure_id;
+        return $this->toAttribute('uuid', $this->unit_measure_id);
     }
 
     public function getStore(): int
@@ -93,9 +125,30 @@ class Product extends ModelBase
         return $this->store;
     }
 
-    public function getUserId(): int
+    /**
+     * @return string[]
+     * @throws AppException
+     */
+    public function getCategories(): array
     {
-        return $this->user_id;
+        return $this->toAttribute('uuid-array', $this->category_ids);
+    }
+
+    /**
+     * @return null|string[]
+     * @throws AppException
+     */
+    public function getImages(): ?array
+    {
+        return $this->toAttribute('uuid-array', $this->image_ids);
+    }
+
+    /**
+     * @throws AppException
+     */
+    public function getUserId(): string
+    {
+        return $this->toAttribute('uuid', $this->user_id);
     }
 
     public function getIsActive(): bool
@@ -121,7 +174,7 @@ class Product extends ModelBase
         return $this;
     }
 
-    public function setUnitMeasureId(int $unitMeasureId): self
+    public function setUnitMeasureId(string $unitMeasureId): self
     {
         $this->unit_measure_id = $unitMeasureId;
         return $this;
@@ -133,7 +186,27 @@ class Product extends ModelBase
         return $this;
     }
 
-    public function setUserId(int $userId): self
+    /**
+     * @param string[] $categoryIds
+     * @return $this
+     */
+    public function setCategories(array $categoryIds): self
+    {
+        $this->category_ids = $categoryIds;
+        return $this;
+    }
+
+    /**
+     * @param string[] $imageIds
+     * @return $this
+     */
+    public function setImages(array $imageIds): self
+    {
+        $this->image_ids = $imageIds;
+        return $this;
+    }
+
+    public function setUserId(string $userId): self
     {
         $this->user_id = $userId;
         return $this;
@@ -145,23 +218,40 @@ class Product extends ModelBase
         return $this;
     }
 
-    public function user(): BelongsTo
+    /**
+     * @throws AppException
+     */
+    public function unitMeasure(): UnitMeasure
     {
-        return $this->belongsTo(User::class);
+        return UnitMeasure::getById($this->getUnitMeasureId());
     }
 
-    public function unitMeasure(): BelongsTo
+    /**
+     * @throws AppException
+     */
+    public function user(): User
     {
-        return $this->belongsTo(UnitMeasure::class);
+        return User::getById($this->getUserId());
     }
 
-    public function categories(): BelongsToMany
+    /**
+     * @throws AppException
+     */
+    public function categories(): Collection
     {
-        return $this->belongsToMany(Category::class, 'catalog_products_categories')->withTimestamps()->using(ProductCategory::class);
+        return Category::getByIds($this->getCategories());
     }
 
-    public function images(): BelongsToMany
+    /**
+     * @throws AppException
+     */
+    public function images(): ?Collection
     {
-        return $this->belongsToMany(Image::class, 'catalog_products_images')->withTimestamps()->using(ProductImage::class);
+        return Image::getByIds($this->getImages());
+    }
+
+    public function getDeletedAtTimestamp(): ?int
+    {
+        return $this->deleted_at === null ? null : $this->deleted_at->timestamp;
     }
 }

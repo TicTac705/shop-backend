@@ -6,11 +6,13 @@ use App\Dto\BaseDto;
 use App\Dto\ImageLightDto;
 use App\Dto\UnitMeasureLightDto;
 use App\Dto\User\UserLightDto;
+use App\Exceptions\AppException;
 use App\Models\Catalog\Product;
 
 class ProductDto extends BaseDto
 {
-    public int $id;
+    public string $id;
+    public bool $isActive;
     public string $name;
     public string $description;
     public float $price;
@@ -19,34 +21,39 @@ class ProductDto extends BaseDto
     /** @var \App\Dto\Catalog\CategoryLightDto[] */
     public array $categories;
     /** @var \App\Dto\ImageLightDto[] */
-    public array $images;
+    public ?array $images;
     public UserLightDto $creator;
-    public bool $isActive;
     public ?int $updatedAt;
     public ?int $createdAt;
+    public ?int $deletedAt;
 
 
+    /**
+     * @throws AppException
+     */
     public static function fromModel(Product $product): self
     {
         return new self([
             'id' => $product->getId(),
+            'isActive' => $product->getIsActive(),
             'name' => $product->getName(),
             'description' => $product->getDescription(),
             'price' => $product->getPrice(),
-            'unitMeasure' => UnitMeasureLightDto::fromModel($product->unitMeasure()->getResults()),
+            'unitMeasure' => UnitMeasureLightDto::fromModel($product->unitMeasure()),
             'store' => $product->getStore(),
-            'categories' => CategoryLightDto::fromList($product->categories()->getResults()->all()),
-            'images' => ImageLightDto::fromList($product->images()->getResults()->all()),
-            'creator' => UserLightDto::fromModel($product->user()->getResults()),
-            'isActive' => $product->getIsActive(),
+            'categories' => CategoryLightDto::fromList($product->categories()->all()),
+            'images' => ImageLightDto::fromList($product->images()->all()),
+            'creator' => UserLightDto::fromModel($product->user()),
             'updatedAt' => $product->getUpdatedAtTimestamp(),
             'createdAt' => $product->getCreatedAtTimestamp(),
+            'deletedAt' => $product->getDeletedAtTimestamp(),
         ]);
     }
 
     /**
      * @param Product[] $items
      * @return self[]
+     * @throws AppException
      */
     public function fromList(array $items): array
     {

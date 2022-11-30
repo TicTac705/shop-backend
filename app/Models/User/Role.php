@@ -18,7 +18,7 @@ class Role extends ModelBase
 {
     use HasFactory;
 
-    protected $table = 'roles';
+    protected $collection  = 'roles';
 
     protected $fillable = [
         'name',
@@ -28,8 +28,7 @@ class Role extends ModelBase
     protected $dates = ['created_at', 'updated_at'];
 
     protected $casts = [
-        'name' => 'string',
-        'slug' => 'string'
+        '_id' => 'uuid'
     ];
 
     public static function create(
@@ -65,10 +64,5 @@ class Role extends ModelBase
     {
         $this->slug = $slug;
         return $this;
-    }
-
-    public function getIdBySlug(string $slug): string
-    {
-        return self::where('slug', $slug)->first()->id;
     }
 }

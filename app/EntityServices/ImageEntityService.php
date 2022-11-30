@@ -3,6 +3,7 @@
 namespace App\EntityServices;
 
 use App\Dto\ImageCreateDto;
+use App\Services\Catalog\ProductService;
 use App\Services\ImageService;
 
 class ImageEntityService
@@ -16,14 +17,14 @@ class ImageEntityService
 
     /**
      * @param ImageCreateDto $dto
-     * @return int[]
+     * @return string[]
      */
     public function store(ImageCreateDto $dto): array
     {
         return $this->imageService->saveMany('catalog_img', $dto->images);
     }
 
-    public function destroy(int $id): void
+    public function destroy(string $id): void
     {
         $this->imageService->findAndDelete($id);
     }

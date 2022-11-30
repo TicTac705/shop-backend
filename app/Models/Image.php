@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\Catalog\Product;
+use App\Exceptions\AppException;
 use App\Models\User\User;
-use App\PivotModels\Catalog\ProductImage;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 /**
- * @property int $id
+ * @property string $id
  * @property string $user_id;
  * @property string $name;
  * @property string $name_original;
@@ -22,7 +20,7 @@ use Illuminate\Support\Carbon;
  */
 class Image extends ModelBase
 {
-    protected $table = 'images';
+    protected $collection  = 'images';
 
     protected $fillable = [
         'user_id',
@@ -32,7 +30,12 @@ class Image extends ModelBase
         'src'
     ];
 
-    protected $touches = ['products'];
+    protected $casts = [
+        '_id' => 'uuid',
+        'user_id' => 'uuid'
+    ];
+
+    protected $dates = ['created_at', 'updated_at'];
 
     public function create(
         string $userId,
@@ -108,13 +111,11 @@ class Image extends ModelBase
         return $this;
     }
 
-    public function products(): BelongsToMany
+    /**
+     * @throws AppException
+     */
+    public function user()
     {
-        return $this->belongsToMany(Product::class, 'catalog_products_images')->withTimestamps()->using(ProductImage::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
+        return User::getById(Auth::user()->getId());
     }
 }

@@ -3,18 +3,15 @@
 namespace App\Models\Catalog;
 
 use App\Models\ModelBase;
-use App\Models\User\User;
 use App\PivotModels\Catalog\BasketProduct;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
- * @property int $id
- * @property int $user_id
+ * @property string $id
+ * @property string $user_id
  * @property bool $is_active
+ * @property null|BasketProduct[] $positions
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
@@ -23,32 +20,39 @@ class Basket extends ModelBase
 {
     use HasFactory;
 
-    protected $table = 'catalog_baskets';
+    protected $collection = 'catalog_baskets';
 
     protected $fillable = [
         'user_id',
-        'is_active'
+        'is_active',
+        'positions'
     ];
 
     protected $casts = [
-        'id' => 'integer',
-        'user_id' => 'integer',
-        'is_active' => 'boolean'
+        '_id' => 'uuid',
+        'user_id' => 'uuid',
+        'positions' => 'class-array:' . BasketProduct::class
     ];
 
     protected $dates = ['created_at', 'updated_at'];
 
-    public function create(int $userId, bool $isActive = true): self
+    /**
+     * @param string $userId
+     * @param bool $isActive
+     * @return $this
+     */
+    public function create(string $userId, bool $isActive = true): self
     {
         $basket = new self();
 
         $basket->setUserId($userId);
         $basket->setActive($isActive);
+        $basket->setPositions([]);
 
         return $basket;
     }
 
-    public function getUserId(): int
+    public function getUserId(): string
     {
         return $this->user_id;
     }
@@ -58,7 +62,12 @@ class Basket extends ModelBase
         return $this->is_active;
     }
 
-    public function setUserId(int $userId): self
+    public function getPositions(): ?array
+    {
+        return $this->positions;
+    }
+
+    public function setUserId(string $userId): self
     {
         $this->user_id = $userId;
         return $this;
@@ -70,18 +79,9 @@ class Basket extends ModelBase
         return $this;
     }
 
-    public function items(): HasMany
+    public function setPositions(array $positions): self
     {
-        return $this->hasMany(BasketProduct::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function products(): BelongsToMany
-    {
-        return $this->belongsToMany(Product::class, 'catalog_baskets_products')->withTimestamps()->using(BasketProduct::class);
+        $this->positions = $positions;
+        return $this;
     }
 }

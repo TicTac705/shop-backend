@@ -18,9 +18,10 @@ class ProductFactory extends Factory
             'price' => $this->faker->randomNumber(),
             'unit_measure_id' => '',
             'store' => $this->faker->randomNumber(),
-            'user_id' => User::query()->whereHas('roles', function ($query) {
-                $query->where('slug', 'admin');
-            })->get()->first()
+            'category_ids' => '',
+            'user_id' => '',
+            'is_active' => $this->faker->boolean(),
+            'image_ids' => []
         ];
     }
 }

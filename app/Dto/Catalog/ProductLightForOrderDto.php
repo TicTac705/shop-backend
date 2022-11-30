@@ -6,30 +6,35 @@ use App\Dto\BaseDto;
 use App\Dto\ImageLightDto;
 use App\Dto\UnitMeasureLightDto;
 use App\Dto\User\UserLightDto;
+use App\Exceptions\AppException;
 use App\Models\Catalog\Product;
 
 class ProductLightForOrderDto extends BaseDto
 {
-    public int $id;
+    public string $id;
     public string $name;
     public UnitMeasureLightDto $unitMeasure;
     /** @var \App\Dto\ImageLightDto[] */
     public array $images;
 
 
+    /**
+     * @throws AppException
+     */
     public static function fromModel(Product $product): self
     {
         return new self([
             'id' => $product->getId(),
             'name' => $product->getName(),
-            'unitMeasure' => UnitMeasureLightDto::fromModel($product->unitMeasure()->getResults()),
-            'images' => ImageLightDto::fromList($product->images()->getResults()->all()),
+            'unitMeasure' => UnitMeasureLightDto::fromModel($product->unitMeasure()),
+            'images' => ImageLightDto::fromList($product->images()->all()),
         ]);
     }
 
     /**
      * @param Product[] $items
      * @return self[]
+     * @throws AppException
      */
     public function fromList(array $items): array
     {

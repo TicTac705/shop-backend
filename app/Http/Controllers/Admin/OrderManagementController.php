@@ -22,12 +22,12 @@ class OrderManagementController extends Controller
         return response()->json($this->orderEntityService->getListWithPagination(20));
     }
 
-    public function getUpdateData(int $id): JsonResponse
+    public function getUpdateData(string $id): JsonResponse
     {
         return response()->json($this->orderEntityService->getUpdateData($id));
     }
 
-    public function update(OrderUpdateRequest $request, int $id): JsonResponse
+    public function update(OrderUpdateRequest $request, string $id): JsonResponse
     {
         $orderUpdateDto = OrderUpdateDto::fromRequest($request);
 

@@ -2,28 +2,32 @@
 
 namespace App\Models\Catalog;
 
+use App\Helpers\Mappers\MongoMapper;
 use App\Helpers\Statuses\Order\OrderPaymentStatuses;
 use App\Helpers\Statuses\Order\OrderStatuses;
 use App\Models\ModelBase;
 use App\PivotModels\Catalog\OrderProduct;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
 
 /**
- * @property int $id
- * @property int $user_id
+ * @property string $id
+ * @property string $user_id
  * @property string $user_name
  * @property string $user_email
  * @property int $delivery_id
  * @property null|string $delivery_address
  * @property int $order_status_id
  * @property int $payment_status_id
+ * @property null|OrderProduct[] $positions
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
 class Order extends ModelBase
 {
-    protected $table = 'catalog_orders';
+    use HasFactory;
+
+    protected $collection = 'catalog_orders';
 
     protected $fillable = [
         'user_id',
@@ -33,18 +37,26 @@ class Order extends ModelBase
         'delivery_address',
         'order_status_id',
         'payment_status_id',
+        'positions',
     ];
 
     protected $dates = ['created_at', 'updated_at'];
 
+    protected $casts = [
+        '_id' => 'uuid',
+        'user_id' => 'uuid',
+        'positions' => 'class-array:' . OrderProduct::class
+    ];
+
     public function create(
-        int     $userId,
+        string  $userId,
         string  $userName,
         string  $userEmail,
         int     $deliveryId,
         ?string $deliveryAddress,
         int     $orderStatusId,
-        int     $paymentStatusId
+        int     $paymentStatusId,
+        ?array  $positions
     ): self
     {
         $order = new self();
@@ -56,16 +68,17 @@ class Order extends ModelBase
         $order->setDeliveryAddress($deliveryAddress);
         $order->setOrderStatusId($orderStatusId);
         $order->setPaymentStatusId($paymentStatusId);
+        $order->setPositions($positions);
 
         return $order;
     }
 
-    public function getUserId(): int
+    public function getUserId(): string
     {
         return $this->user_id;
     }
 
-    public function setUserId(int $userId): void
+    public function setUserId(string $userId): void
     {
         $this->user_id = $userId;
     }
@@ -130,11 +143,6 @@ class Order extends ModelBase
         $this->payment_status_id = $paymentStatusId;
     }
 
-    public function items(): HasMany
-    {
-        return $this->hasMany(OrderProduct::class);
-    }
-
     public function isProcessing(): bool
     {
         return $this->getOrderStatusId() === OrderStatuses::PROCESSING;
@@ -153,5 +161,24 @@ class Order extends ModelBase
     public function isNotPaid(): bool
     {
         return $this->getOrderStatusId() === OrderPaymentStatuses::NOT_PAID;
+    }
+
+    public function getPositions(): ?array
+    {
+        return $this->positions;
+    }
+
+    public function setPositions(array $positions): self
+    {
+        $this->positions = $positions;
+        return $this;
+    }
+
+    /**
+     * @param string[] $positionIds
+     */
+    public function getByPositions(array $positionIds)
+    {
+        return self::query()->whereIn('positions.productId', MongoMapper::toMongoUuidArray($positionIds))->get();
     }
 }

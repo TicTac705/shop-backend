@@ -3,12 +3,13 @@
 namespace App\Dto\Catalog;
 
 use App\Dto\BaseDto;
+use App\Exceptions\AppException;
 use App\Models\Catalog\Order;
 
 class OrderDto extends BaseDto
 {
-    public int $id;
-    public int $userId;
+    public string $id;
+    public string $userId;
     public string $userName;
     public string $userEmail;
     public int $deliveryId;
@@ -20,9 +21,12 @@ class OrderDto extends BaseDto
     public ?int $createdAt;
     public ?int $updatedAt;
 
+    /**
+     * @throws AppException
+     */
     public static function fromModel(Order $order): self
     {
-        $itemDtoList = OrderItemDto::fromList($order->items()->getResults()->all());
+        $itemDtoList = OrderItemDto::fromList($order->getPositions());
 
         return new self([
             'id' => $order->getId(),

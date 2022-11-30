@@ -3,8 +3,8 @@
 namespace Tests\Helpers;
 
 use App\Models\User\User;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
-use Illuminate\Support\Facades\Hash;
 
 trait UserTrait
 {
@@ -15,26 +15,24 @@ trait UserTrait
     /** @var User */
     protected User $user;
 
-    protected string $defaultAdminEmail = 'test-admin@example.com';
-    protected string $defaultUserEmail = 'test-user@example.com';
+    protected string $defaultAdminEmail = 'super-user@shop.local';
+    protected string $defaultUserEmail = 'test-user@shop.local';
     protected string $defaultPassword = 'password';
 
     public function createAdmin(?string $email = null): User
     {
-        $this->admin = User::factory()->hasAttached($this->getAdminRole())->create([
-            'email' => $email ?? $this->defaultAdminEmail,
-            'password' => Hash::make($this->defaultPassword),
-        ]);
+        $this->admin = User::factory()->state(new Sequence(
+            ['role_ids' => [$this->getAdminRole()], 'email' => $email ?? $this->defaultAdminEmail]
+        ))->create();
 
         return $this->admin;
     }
 
     public function createUser(?string $email = null): User
     {
-        $this->user = User::factory()->hasAttached($this->getUserRole())->create([
-            'email' => $email ?? $this->defaultUserEmail,
-            'password' => Hash::make($this->defaultPassword),
-        ]);
+        $this->user = User::factory()->state(new Sequence(
+            ['role_ids' => [$this->getUserRole()], 'email' => $email ?? $this->defaultUserEmail]
+        ))->create();
 
         return $this->user;
     }

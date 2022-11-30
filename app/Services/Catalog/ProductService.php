@@ -4,7 +4,10 @@ namespace App\Services\Catalog;
 
 use App\Dto\Catalog\ProductCreateDto;
 use App\Dto\Catalog\ProductUpdateDto;
+use App\Exceptions\AppException;
+use App\Helpers\Mappers\MongoMapper;
 use App\Models\Catalog\Product;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductService
@@ -17,11 +20,16 @@ class ProductService
             $data->price,
             $data->unitMeasureId,
             $data->store,
+            $data->categories,
             $data->userId,
-            $data->isActive
+            $data->isActive,
+            $data->imagesId
         )->saveAndReturn();
     }
 
+    /**
+     * @throws AppException
+     */
     public function update(Product $model, ProductUpdateDto $data): Product
     {
         if (is_bool($data->isActive)) {
@@ -48,7 +56,13 @@ class ProductService
             $model->setStore($data->store);
         }
 
-        if ($model->isDirty() || $data->haveNewImages) {
+        if ($data->imagesId) {
+            $model->setImages(array_merge($model->getImages(), $data->imagesId));
+        }
+
+        $model->setCategories($data->categories);
+
+        if ($model->isDirty()) {
             $model->touch();
             return $model->saveAndReturn();
         }
@@ -56,9 +70,20 @@ class ProductService
         return $model;
     }
 
-    public function getById(int $id): Product
+    /**
+     * @throws AppException
+     */
+    public function getById(string $id): Product
     {
-        return Product::findOrFail($id);
+        return Product::getById($id);
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function destroyByIds(array $ids)
+    {
+        Product::query()->whereIn('_id', MongoMapper::toMongoUuidArray($ids))->delete();
     }
 
     public function getListWithPagination(int $numberItemsPerPage): LengthAwarePaginator
@@ -71,17 +96,26 @@ class ProductService
         return Product::getListWithPagination($numberItemsPerPage, true);
     }
 
-    public function reduceQuantityStockByNumber(int $productId, int $number): void
-    {
-        $product = $this->getById($productId);
-
-        $product->setStore($product->getStore() - $number);
-
-        $product->checkChangesAndSave();
-    }
-
     public function destroy(Product $model): void
     {
         $model->delete();
+    }
+
+    public function deleteImage(string $id): void
+    {
+        /** @var Product[] $products */
+        $products = Product::query()->where('image_ids', 'all', [$id])->get()->all();
+
+        foreach ($products as $product) {
+            $imageIds = $product->getImages();
+            foreach ($imageIds as $key => $imageId) {
+                if ($id === $imageId) {
+                    unset($imageIds[$key]);
+                }
+            }
+            $product->setImages($imageIds);
+
+            $product->checkChangesSaveAndReturn();
+        }
     }
 }

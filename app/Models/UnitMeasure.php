@@ -17,7 +17,7 @@ class UnitMeasure extends ModelBase
 {
     use HasFactory;
 
-    protected $table = 'unit_measure';
+    protected $collection  = 'unit_measure';
 
     protected $fillable = [
         'name',
@@ -25,6 +25,10 @@ class UnitMeasure extends ModelBase
     ];
 
     protected $dates = ['created_at', 'updated_at'];
+
+    protected $casts = [
+        '_id' => 'uuid'
+    ];
 
     public function create(string $name, string $slug): self
     {

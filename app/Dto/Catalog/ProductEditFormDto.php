@@ -9,9 +9,9 @@ class ProductEditFormDto extends BaseDto
 {
     public ProductDto $product;
     /** @var \App\Dto\UnitMeasureLightDto[]  */
-    public array $unitsMeasureDtoList;
+    public array $unitsMeasureList;
     /** @var \App\Dto\Catalog\CategoryLightDto[] */
-    public array $categoriesDtoList;
+    public array $categoriesList;
 
     /**
      * @param UnitMeasureLightDto[]  $unitsMeasureDtoList
@@ -22,8 +22,8 @@ class ProductEditFormDto extends BaseDto
     {
         return new self([
             'product' => $productDto,
-            'unitsMeasureDtoList' => $unitsMeasureDtoList,
-            'categoriesDtoList' => $categoriesDtoList
+            'unitsMeasureList' => $unitsMeasureDtoList,
+            'categoriesList' => $categoriesDtoList
         ]);
     }
 }

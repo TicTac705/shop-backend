@@ -23,7 +23,7 @@ class ImageController extends Controller
         return response()->json($this->imageEntityService->store($imageCreateDto));
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(string $id): JsonResponse
     {
         $this->imageEntityService->destroy($id);
 

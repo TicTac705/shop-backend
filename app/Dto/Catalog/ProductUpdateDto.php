@@ -11,13 +11,12 @@ class ProductUpdateDto extends BaseDto
     public ?string $name;
     public ?string $description;
     public ?float $price;
-    public ?int $unitMeasureId;
+    public ?string $unitMeasureId;
     public ?int $store;
-    public ?int $userId;
+    public ?string $userId;
     public ?bool $isActive;
     public ?array $imagesId;
-    public ?array $categories;
-    public bool $haveNewImages;
+    public array $categories;
 
     static function fromRequest(ProductUpdateRequest $request): self
     {
@@ -25,13 +24,12 @@ class ProductUpdateDto extends BaseDto
             'name' => $request->get('name'),
             'description' => $request->get('description'),
             'price' => floatval($request->get('price')),
-            'unitMeasureId' => intval($request->get('unit_measure_id')),
+            'unitMeasureId' => $request->get('unit_measure_id'),
             'store' => intval($request->get('store')),
             'userId' => Auth::user()->id,
             'isActive' => $request->get('is_active'),
             'imagesId' => $request->get('imagesId'),
-            'categories' => $request->get('categories'),
-            'haveNewImages' => $request->hasFile('pictures'),
+            'categories' => $request->get('categories')
         ]);
     }
 }
